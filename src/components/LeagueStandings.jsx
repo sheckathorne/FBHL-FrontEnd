@@ -13,10 +13,12 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import MobileContext from './MobileContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLeagueStandingsPage } from '../reducers/paginationReducer'
+import { setLeagueOpen } from '../reducers/viewToggleReducer.js'
 
-const LeagueStandings = ({ teamData, lightTheme, handleTableClick, leagueOpen, handleCollapseClick }) => {
+const LeagueStandings = ({ teamData, lightTheme, handleTableClick }) => {
   const dispatch = useDispatch()
   const leagueStandingsPage = useSelector(state => state.pagination.leagueStandingsPage)
+  const leagueOpen = useSelector(state => state.viewToggle.leagueOpen)
 
   const handlePaginationChange = (e,n) => {
     dispatch(setLeagueStandingsPage(n))
@@ -47,7 +49,7 @@ const LeagueStandings = ({ teamData, lightTheme, handleTableClick, leagueOpen, h
   const caret = leagueOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
 
   const clickableTitle = isMobile ? (
-    <Col className='mt-1' onClick={handleCollapseClick('league')}>
+    <Col className='mt-1' onClick={() => dispatch(setLeagueOpen(!leagueOpen))}>
       <h5 className={themeClass + ' tiny-caps section-title'}>League Standings{caret}</h5>
     </Col>
   ) : (

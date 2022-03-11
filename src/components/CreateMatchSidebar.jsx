@@ -3,12 +3,17 @@ import { Offcanvas, Form, Button, Col } from 'react-bootstrap'
 import Calendar from 'react-calendar'
 import MatchCreateTeamDropdown from './MatchCreateTeamDropdown'
 import dayjs from 'dayjs'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCreateMatchIsOpen } from '../reducers/viewToggleReducer'
 
-const CreateMatchSidebar = ({ createMatchIsOpen, setCreateMatchIsOpen, handleCreateMatchSubmit }) => {
+const CreateMatchSidebar = ({ handleCreateMatchSubmit }) => {
   const [ value, setValue ] = useState(new Date())
   const [ awayTeamId, setAwayTeamId ] = useState('')
   const [ homeTeamId, setHomeTeamId ] = useState('')
-  
+  const createMatchIsOpen = useSelector(state => state.viewToggle.createMatchIsOpen)
+
+  const dispatch = useDispatch()
+
   const onChange = nextValue => setValue(nextValue)
   
   const setTeamId = (type, teamId) => () => {
@@ -22,7 +27,7 @@ const CreateMatchSidebar = ({ createMatchIsOpen, setCreateMatchIsOpen, handleCre
   const buttonDiabled = awayTeamId === '' || homeTeamId === ''
 
   return (
-    <Offcanvas show={createMatchIsOpen} placement='end' onHide={() => setCreateMatchIsOpen(false)}>
+    <Offcanvas show={createMatchIsOpen} placement='end' onHide={() => dispatch(setCreateMatchIsOpen(false))}>
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>
           Create Match

@@ -6,13 +6,12 @@ import data from '../helpers/data.js'
 import Switch from '@mui/material/Switch'
 
 
-const AppNavGroup = ({ handleSwitch, theme, user, handleSidebarAction, handleLogout, setCreateMatchIsOpen }) => {
+const AppNavGroup = ({ handleSwitch, theme, user, handleSidebarAction, handleLogout }) => {
   const loginForm = user === null ?
     <Nav.Item><Nav.Link onClick={handleSidebarAction('open')}>Login</Nav.Link></Nav.Item> :
     <LoggedInNavItem 
       username={user.username}
       handleLogout={handleLogout}
-      setCreateMatchIsOpen={setCreateMatchIsOpen}
     />
 
   return (

@@ -18,6 +18,7 @@ import loginService from './services/login'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeMatches } from './reducers/matchesReducer'
+import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -31,8 +32,6 @@ const App = () => {
   const [ user, setUser ] = useState(null)
 
   /* Administration */
-  const [ createMatchIsOpen, setCreateMatchIsOpen ] = useState(false)
-  const [ loginIsOpen, setLoginIsOpen ] = useState(false)
   const [ loadingProgress, setLoadingProgress ] = useState({ matches: false, players: false, schedule: false })
 
   /* Sort players */
@@ -48,10 +47,7 @@ const App = () => {
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
 
-  /* Collapsible modules on home page */
-  const [ resultsOpen, setResultsOpen ] = useState(true)
-  const [ leagueOpen, setLeagueOpen ] = useState(true)
-  const [ playerOpen, setPlayerOpen ] = useState(true)
+  /* Fail/Success banner */
   const [ message, setMessage ] = useState({ type: null, text: null })
 
   const dispatch = useDispatch()
@@ -126,7 +122,6 @@ const App = () => {
 
   const handleLogin = async (e, username, password) => {
     e.preventDefault()
-
     try {
       const user = await loginService.login({
         username: username.toLowerCase(), password,
@@ -137,7 +132,7 @@ const App = () => {
       )
       chelService.setToken(user.token)
       setUser(user)
-      setLoginIsOpen(false)
+      dispatch(setLoginIsOpen(false))
       setMessage({ type: 'success', text: `Logged in as ${username}` })
       setUsername('')
       setPassword('')
@@ -145,7 +140,7 @@ const App = () => {
         setMessage({ type: null, text: null })
       }, 3000)
     } catch (exception) {
-      setLoginIsOpen(false)
+      dispatch(setLoginIsOpen(false))
       setMessage({ type: 'danger', text: 'Login failed - Bad credentials' })
       setTimeout(() => {
         setMessage({ type: null, text: null })
@@ -168,7 +163,7 @@ const App = () => {
       const awayTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[0]).abbreviation
       const homeTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[1]).abbreviation
 
-      setCreateMatchIsOpen(false)
+      dispatch(setCreateMatchIsOpen(false))
       setMessage({ type: 'success', text: `Game bewteen ${awayTeamAbbreviation} and ${homeTeamAbbreviation} added for ${newScheduledMatch.matchDate}` })
       setTimeout(() => {
         setMessage({ type: null, text: null })
@@ -190,21 +185,11 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCollapseClick = (type) => () => {
-    if ( type === 'league' ) {
-      setLeagueOpen(!leagueOpen)
-    } else if ( type === 'players' )  {
-      setPlayerOpen(!playerOpen)
-    } else if ( type === 'results' ) {
-      setResultsOpen(!resultsOpen)
-    }
-  }
-
   const handleSidebarAction = (action) => () => {
     if ( action === 'open' ) {
-      setLoginIsOpen(true)
+      dispatch(setLoginIsOpen(true))
     } else if ( action === 'close' ) {
-      setLoginIsOpen(false)
+      dispatch(setLoginIsOpen(false))
     }
   }
 
@@ -242,20 +227,20 @@ const App = () => {
 
   //determine device/window size
   useEffect(() => {
+    const handleWindowSizeChange = () => {
+      setWidth(window.innerWidth)
+      if ( window.innerWidth >= 768 ) {
+        dispatch(setResultsOpen(true))
+        dispatch(setLeagueOpen(true))
+        dispatch(setPlayerOpen(true))
+      }
+    }
+    
     window.addEventListener('resize', handleWindowSizeChange)
     return () => {
       window.removeEventListener('resize', handleWindowSizeChange)
     }
-  }, [])
-
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth)
-    if ( window.innerWidth >= 768 ) {
-      setResultsOpen(true)
-      setLeagueOpen(true)
-      setPlayerOpen(true)
-    }
-  }
+  }, [dispatch])
 
   const handleSwitch = (theme) => {
     if ( theme === 'light' ) {
@@ -294,12 +279,7 @@ const App = () => {
       players={{ skaters: skaters, goaltenders: goaltenders }}
       skaterOrGoalie={skaterOrGoalie}
       handleTableClick={handleTableClick}
-      leagueOpen={leagueOpen}
-      playerOpen={playerOpen}
-      resultsOpen={resultsOpen}
-      handleCollapseClick={handleCollapseClick}
       width={width}
-      loginIsOpen={loginIsOpen}
       user={user}
       schedule={schedule}
       setSchedule={setSchedule}
@@ -329,12 +309,9 @@ const App = () => {
                 handleSidebarAction={handleSidebarAction}
                 user={user}
                 handleLogout={handleLogout}
-                createMatchIsOpen={createMatchIsOpen}
-                setCreateMatchIsOpen={setCreateMatchIsOpen}
                 handleCreateMatchSubmit={handleCreateMatchSubmit}
               />
               <LoginSidebar
-                loginIsOpen={loginIsOpen}
                 username={username}
                 password={password}
                 handleSidebarAction={handleSidebarAction}
@@ -343,8 +320,6 @@ const App = () => {
                 handleLogin={handleLogin}
               />
               <CreateMatchSidebar
-                createMatchIsOpen={createMatchIsOpen}
-                setCreateMatchIsOpen={setCreateMatchIsOpen}
                 handleCreateMatchSubmit={handleCreateMatchSubmit}
               />
               {errorBanner}

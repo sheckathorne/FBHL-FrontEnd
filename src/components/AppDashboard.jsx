@@ -11,7 +11,6 @@ import PlayersLayout from './PlayersLayout'
 import PlayersDisplay from './PlayersDisplay'
 import PlayersDisplayTeam from './PlayersDisplayTeam'
 
-
 const AppDashboard = ({
   teamData,
   handleSkaterOrGoalieClick,
@@ -20,10 +19,6 @@ const AppDashboard = ({
   players,
   skaterOrGoalie,
   handleTableClick,
-  handleCollapseClick,
-  leagueOpen,
-  playerOpen,
-  resultsOpen,
   width,
   user,
   schedule,
@@ -37,10 +32,6 @@ const AppDashboard = ({
           players={players}
           handleTableClick={handleTableClick}
           sortField={sortField}
-          leagueOpen={leagueOpen}
-          playerOpen={playerOpen}
-          resultsOpen={resultsOpen}
-          handleCollapseClick={handleCollapseClick}
           width={width}
         /></>} />
       <Route path='calendar' element={

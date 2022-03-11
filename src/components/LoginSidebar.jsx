@@ -1,7 +1,10 @@
 import React from 'react'
 import { Form, Offcanvas, Button } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
-const LoginSidebar = ({ loginIsOpen, handleSidebarAction, username, password, handleUsernameChange, handlePasswordChange, handleLogin }) => {
+const LoginSidebar = ({ handleSidebarAction, username, password, handleUsernameChange, handlePasswordChange, handleLogin }) => {
+  const loginIsOpen = useSelector(state => state.viewToggle.loginIsOpen)
+  
   return (
     <Offcanvas show={loginIsOpen} onHide={handleSidebarAction('close')}>
       <Offcanvas.Header closeButton>

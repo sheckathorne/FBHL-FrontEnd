@@ -14,12 +14,14 @@ import MobileContext from './MobileContext'
 import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayerStandingsPage } from '../reducers/paginationReducer'
+import { setPlayerOpen } from '../reducers/viewToggleReducer.js'
 
-const PlayerStandings = ({ lightTheme, players, handleTableClick, playerOpen, handleCollapseClick }) => {
+const PlayerStandings = ({ lightTheme, players, handleTableClick }) => {
   const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
+  const playerOpen = useSelector(state => state.viewToggle.playerOpen)
   const dispatch = useDispatch()
+
   const isMobile = useContext(MobileContext)
-  
   const caret = playerOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const themeClass = lightTheme ? '' : 'dark-theme-text'
   const topPlayers = data.topPlayers
@@ -84,7 +86,7 @@ const PlayerStandings = ({ lightTheme, players, handleTableClick, playerOpen, ha
   }
 
   const clickableTitle = isMobile ? (
-    <Col className='mt-1' onClick={handleCollapseClick('players')}>
+    <Col className='mt-1' onClick={() => dispatch(setPlayerOpen(!playerOpen))}>
       <h5 className={themeClass + ' tiny-caps section-title'}>{top.title} {caret}</h5>
     </Col>
   ) : (

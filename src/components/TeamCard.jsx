@@ -5,8 +5,12 @@ import { Link } from 'react-router-dom'
 import data from '../helpers/data.js'
 import HorizontalDivider from './HorizontalDivider'
 import ThemeContext from './ThemeContext'
+import { useDispatch } from 'react-redux'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const TeamCard = ({ team, addDefaultSrc, handlePaginationClick }) => {
+const TeamCard = ({ team, addDefaultSrc }) => {
+  const dispatch = useDispatch()
+
   const stats = {
     gamesPlayed: team.gamesPlayed,
     wins: team.wins,
@@ -66,7 +70,7 @@ const TeamCard = ({ team, addDefaultSrc, handlePaginationClick }) => {
 
   return (
     <div className='mb-2 d-grid gap-2'>
-      <Button as={Link} to={`/players/${team.teamId}`} variant={themeVariant} value={team.teamId} onClick={() => handlePaginationClick(1,'players')}>
+      <Button as={Link} to={`/players/${team.teamId}`} variant={themeVariant} value={team.teamId} onClick={() => dispatch(setPlayersActivePage(1))}>
         <Row>
           <Col xs={12} className='pl-4 pr-4'>
             <Row className='mt-2'>

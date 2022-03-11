@@ -16,7 +16,6 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
       teamId={teamId}
       value={playerMaxValue}
       players={players}
-      handlePaginationClick={handlePaginationClick}
     />
 
   const counterPartObj = rowCounterpart ? rowCounterpart.value === 0 ? null :
@@ -28,7 +27,6 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
       teamId={rowCounterpart.clubId}
       value={rowCounterpart.value}
       players={players}
-      handlePaginationClick={handlePaginationClick}
     />
     : null
 

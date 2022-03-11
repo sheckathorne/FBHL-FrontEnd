@@ -11,8 +11,17 @@ import Stack from '@mui/material/Stack'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import MobileContext from './MobileContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLeagueStandingsPage } from '../reducers/paginationReducer'
 
-const LeagueStandings = ({ teamData, lightTheme, handleTableClick, leagueStandingsPage, leagueOpen, handleLeaguePaginationChange, handleCollapseClick }) => {
+const LeagueStandings = ({ teamData, lightTheme, handleTableClick, leagueOpen, handleCollapseClick }) => {
+  const dispatch = useDispatch()
+  const leagueStandingsPage = useSelector(state => state.pagination.leagueStandingsPage)
+
+  const handlePaginationChange = (e,n) => {
+    dispatch(setLeagueStandingsPage(n))
+  }
+  
   const useStyles = makeStyles(() => {
     if ( !lightTheme ) {
       return (
@@ -56,7 +65,7 @@ const LeagueStandings = ({ teamData, lightTheme, handleTableClick, leagueStandin
           color='primary'
           size={paginationSize}
           variant='outlined'
-          onChange={handleLeaguePaginationChange}
+          onChange={handlePaginationChange}
           page={leagueStandingsPage}
           renderItem={(item) => (
             <PaginationItem

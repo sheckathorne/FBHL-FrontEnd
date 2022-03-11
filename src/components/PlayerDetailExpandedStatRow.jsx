@@ -1,15 +1,19 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
+import { useDispatch } from 'react-redux'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayerDetailExpandedRow = ({ playerName, playerId, players, itemsPerPage, statValue, rank, valueClass, handlePaginationClick }) => {
+const PlayerDetailExpandedRow = ({ playerName, playerId, players, itemsPerPage, statValue, rank, valueClass }) => {
   const navigate = useNavigate('')
+  const dispatch = useDispatch()
   const url = `/players?playerId=${playerId}`
   const playerIndex = players.findIndex(p => p.playerId === playerId)
 
   const handlePlayerClick = () => {
     navigate(url)
-    handlePaginationClick(Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage)),'players')
+    const pageNum = Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage))
+    dispatch(setPlayersActivePage(pageNum))
   }
 
   return (

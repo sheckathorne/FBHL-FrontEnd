@@ -12,9 +12,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import MobileContext from './MobileContext'
 import generateRankNumber from '../helpers/rankFunction'
+import { useDispatch, useSelector } from 'react-redux'
+import { setPlayerStandingsPage } from '../reducers/paginationReducer'
 
-const PlayerStandings = ({ lightTheme, players, handleTableClick, playerStandingsPage, playerOpen, handleCollapseClick, handlePlayerPaginationChange }) => {
+const PlayerStandings = ({ lightTheme, players, handleTableClick, playerOpen, handleCollapseClick }) => {
+  const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
+  const dispatch = useDispatch()
   const isMobile = useContext(MobileContext)
+  
   const caret = playerOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const themeClass = lightTheme ? '' : 'dark-theme-text'
   const topPlayers = data.topPlayers
@@ -36,6 +41,10 @@ const PlayerStandings = ({ lightTheme, players, handleTableClick, playerStanding
       )
     }
   })
+
+  const handlePlayerPaginationChange = (e,n) => {
+    dispatch(setPlayerStandingsPage(n))
+  }
 
   const rankThePlayers = (players, sortField) =>
     players.map((player,i) => {

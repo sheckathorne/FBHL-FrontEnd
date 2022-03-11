@@ -3,22 +3,29 @@ import PlayerCardDashboard from './PlayerCardDashboard'
 import PaginationRow from './PaginationRow'
 import { Row, Col } from 'react-bootstrap'
 import paginationFunction from '../helpers/paginationFunction.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayersAndPaginationDisplay = ({ sortField, playerIsRanked, playerSearch, rankedFilteredPlayers, playersActivePage, itemsPerPage, delta, handlePaginationClick, queriedPlayer, playerDetailStats }) => {
+const PlayersAndPaginationDisplay = ({ sortField, playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats }) => {
+  const dispatch = useDispatch()
+  const playersActivePage = useSelector(state => state.pagination.playersActivePage)
+
   const paginationClick = (type, num) => () => {
     switch(type) {
     case 'next':
       if ( playersActivePage < pageCount ) {
-        handlePaginationClick(playersActivePage + 1, 'players')
+        const pageNum = playersActivePage + 1
+        dispatch(setPlayersActivePage(pageNum))
       }
       break
     case 'prev':
       if ( playersActivePage > 1 ) {
-        handlePaginationClick(playersActivePage - 1, 'players')
+        const pageNum = playersActivePage - 1
+        dispatch(setPlayersActivePage(pageNum))
       }
       break
     case 'num':
-      handlePaginationClick(num, 'players')
+      dispatch(setPlayersActivePage(num))
       break
     default:
       break

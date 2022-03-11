@@ -31,7 +31,6 @@ const TeamDropdown = ({ source, resetAllPagination }) => {
             team={team}
             source={source}
             addDefaultSrc={addDefaultSrc}
-            resetAllPagination={resetAllPagination}
           />
         )}
       </DropdownButton>

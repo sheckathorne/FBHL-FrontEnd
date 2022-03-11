@@ -3,7 +3,7 @@ import { Row, Col } from 'react-bootstrap'
 import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import PlayerDetailExpandedStatRow from './PlayerDetailExpandedStatRow'
 
-const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, handlePaginationClick, itemsPerPage }) => {
+const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, itemsPerPage }) => {
   const rowIsSelected = selectedStat === statTitle
   const titleClass = lightTheme ? '' : 'dark-theme-text'
   const valueClass = lightTheme ? 'fw-light' : 'dark-theme-text fw-light'
@@ -37,7 +37,6 @@ const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGa
           statValue={percentageStat ? player.value.toFixed(2).toString()+'%' : player.value.toFixed(2).toString()}
           rank={ordinal_suffix_of(player.rank)}
           valueClass={player.playerId === playerId ? valueClass.replace('fw-light','fw-bold fst-italic') : valueClass}
-          handlePaginationClick={handlePaginationClick}
         />
       </Row>
     )

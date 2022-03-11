@@ -11,7 +11,7 @@ import MobileContext from './MobileContext'
 import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 
-const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, timestampRangeOfSelectedDay, matchActivePage, handlePaginationClick, resetAllPagination, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, timestampRangeOfSelectedDay, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])
@@ -28,15 +28,13 @@ const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredM
 
   const matchDetails = queriedMatch ? (
     <Col lg={8} className='mt-2'>
-      <MatchDetailDashboard match={queriedMatch} players={players} handlePaginationClick={handlePaginationClick} />
+      <MatchDetailDashboard match={queriedMatch} players={players} />
     </Col> ) : null
 
   const matchCardDashboard = (timestampRangeOfSelectedDay.begin > 0 && timestampRangeOfSelectedDay.end > 0) ? (
     <Col lg={4} className='mt-2'>
       <MatchCardDashboard
         filteredMatchCards={rangedFilteredMatchCards}
-        matchActivePage={matchActivePage}
-        handlePaginationClick={handlePaginationClick}
         queriedMatch={queriedMatch}
         teamId={teamId}
         deleteScheduledMatch={deleteScheduledMatch}
@@ -49,7 +47,7 @@ const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredM
   const calendar = queriedMatch ? null : (
     <Col lg={4} className='mt-2 '>
       {mobileTitle}
-      <Row><Col><TeamDropdown source='calendar' resetAllPagination={resetAllPagination} /></Col></Row>
+      <Row><Col><TeamDropdown source='calendar' /></Col></Row>
       <Row className='mt-2'><Col><MatchTypeDropdown selectedType={matchTypeFilter} handleMatchTypeChange={handleMatchTypeChange} /></Col></Row>
       <Row>
         <Col className='d-flex justify-content-center mt-2'>

@@ -2,15 +2,19 @@ import React, { useContext } from 'react'
 import { Col } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import ThemeContext from './ThemeContext'
+import { useDispatch } from 'react-redux'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const LeaderDetailValue = ({ offset, position, name, playerId, teamId, value, players, handlePaginationClick }) => {
+const LeaderDetailValue = ({ offset, position, name, playerId, teamId, value, players }) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate('')
   const lightTheme = useContext(ThemeContext).value === 'light'
-  let navigate = useNavigate('')
-
   const playerIndex = players.skaters.filter(player => player.teamId === teamId).findIndex(p => p.playerId === playerId)
   const itemsPerPage = 6
+  
   const handlePlayerClick = () => {
-    handlePaginationClick(Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage)),'players')
+    const pageNum = Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage))
+    dispatch(setPlayersActivePage(pageNum))
     navigate(`/players/${teamId}?playerId=${playerId}`)
   }
 

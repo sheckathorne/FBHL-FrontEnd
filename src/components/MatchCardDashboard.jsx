@@ -8,9 +8,14 @@ import { Link } from 'react-router-dom'
 import { Row, Col, Button, Alert } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
 import MobileContext from './MobileContext'
+import { useSelector, useDispatch } from 'react-redux'
+import { setMatchActivePage } from '../reducers/paginationReducer.js'
 
-const MatchCardDashboard = ({ filteredMatchCards, matchActivePage, handlePaginationClick, queriedMatch, teamId, deleteScheduledMatch, updateScheduledMatch, user }) => {
+const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, deleteScheduledMatch, updateScheduledMatch, user }) => {
   const [ alertMessage, setAlertMessage ] = useState({ message: null, type: null })
+  
+  const matchActivePage = useSelector(state => state.pagination.matchActivePage)
+  const dispatch = useDispatch()
 
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
 
@@ -38,16 +43,18 @@ const MatchCardDashboard = ({ filteredMatchCards, matchActivePage, handlePaginat
       switch(type) {
       case 'next':
         if ( matchActivePage < pageCount ) {
-          handlePaginationClick(matchActivePage + 1, 'match')
+          const pageNum = matchActivePage + 1
+          dispatch(setMatchActivePage(pageNum))
         }
         break
       case 'prev':
         if ( matchActivePage > 1 ) {
-          handlePaginationClick(matchActivePage - 1, 'match')
+          const pageNum = matchActivePage - 1
+          dispatch(setMatchActivePage(pageNum))
         }
         break
       case 'num':
-        handlePaginationClick(num, 'match')
+        dispatch(setMatchActivePage(num))
         break
       default:
         break
@@ -59,7 +66,7 @@ const MatchCardDashboard = ({ filteredMatchCards, matchActivePage, handlePaginat
   const goToLastPaginationPage = () => {
     const pageCount = Math.ceil((filteredMatchCards.length - 1)/itemsPerPage)
     if ( matchActivePage > pageCount ) {
-      handlePaginationClick(pageCount, 'match')
+      dispatch(setMatchActivePage(pageCount))
     }
   }
 

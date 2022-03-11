@@ -21,7 +21,6 @@ const TeamDisplay = () => {
           <TeamCard
             team={displayedTeam}
             addDefaultSrc={contextObj.addDefaultSrc}
-            handlePaginationClick={contextObj.handlePaginationClick}
           />
         </Col>
       </Row>

@@ -41,9 +41,6 @@ const CalendarDashboard = () => {
         filteredMatchCards={filteredMatchCards}
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > contextObj.timestampRangeOfSelectedDay.begin && match.timestamp < contextObj.timestampRangeOfSelectedDay.end )}
         timestampRangeOfSelectedDay={contextObj.timestampRangeOfSelectedDay}
-        matchActivePage={contextObj.matchActivePage}
-        handlePaginationClick={contextObj.handlePaginationClick}
-        resetAllPagination={contextObj.resetAllPagination}
         teamId={teamId}
         players={contextObj.players}
         deleteScheduledMatch={contextObj.deleteScheduledMatch}

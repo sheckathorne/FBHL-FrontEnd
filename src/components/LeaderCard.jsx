@@ -5,7 +5,7 @@ import dataHelper from '../helpers/data'
 import LeaderDetail from './LeaderDetail'
 import ThemeContext from './ThemeContext'
 
-const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId, players, handlePaginationClick }) => {
+const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId, players }) => {
   const lightTheme = useContext(ThemeContext).value === 'light'
   const leaderSpec = dataHelper.leadersSpec.find(spec => spec.propName === leaderCategory)
 
@@ -51,7 +51,6 @@ const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId, players, handl
           rowDiff={rowDiff}
           currentRow={i}
           players={players}
-          handlePaginationClick={handlePaginationClick}
         />
       )}
     </>

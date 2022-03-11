@@ -22,7 +22,6 @@ const TeamsDisplay = () => {
               key={team.teamId}
               team={team}
               addDefaultSrc={contextObj.addDefaultSrc}
-              handlePaginationClick={contextObj.handlePaginationClick}
             />
           )}
         </Col>

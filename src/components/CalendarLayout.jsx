@@ -5,9 +5,11 @@ import dayjs from 'dayjs'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import LeagueContext from './LeagueContext'
 import chelService from '../services/api'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setMatchActivePage } from '../reducers/paginationReducer'
 
-const CalendarLayout = ({ matchActivePage, handlePaginationClick, resetAllPagination, players, user, schedule, setSchedule }) => {
+const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
+  const dispatch = useDispatch()
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)
@@ -21,9 +23,9 @@ const CalendarLayout = ({ matchActivePage, handlePaginationClick, resetAllPagina
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
 
   useEffect(() => {
-    handlePaginationClick(1,'match')
+    dispatch(setMatchActivePage(1))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[dispatch])
 
   // sets calendar to last date a given team (or all teams if none selected) played a game
   useEffect(() => {
@@ -49,7 +51,7 @@ const CalendarLayout = ({ matchActivePage, handlePaginationClick, resetAllPagina
   const onChange = (newSelectedDate) => {
     setTimestampRangeOfSelectedDay({ begin: dayjs(newSelectedDate).unix(), end: dayjs(newSelectedDate).add(1,'d').subtract(1,'s').unix() })
     setSelectedDate(newSelectedDate)
-    handlePaginationClick(1,'match')
+    dispatch(setMatchActivePage(1))
   }
 
   const deleteScheduledMatch = (id) => {
@@ -87,9 +89,6 @@ const CalendarLayout = ({ matchActivePage, handlePaginationClick, resetAllPagina
           onChange,
           matches,
           schedule,
-          matchActivePage,
-          handlePaginationClick,
-          resetAllPagination,
           players,
           deleteScheduledMatch,
           updateScheduledMatch,

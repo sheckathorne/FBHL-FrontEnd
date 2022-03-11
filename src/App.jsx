@@ -29,10 +29,11 @@ const App = () => {
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
-  const [ loginIsOpen, setLoginIsOpen ] = useState(false)
 
   /* Administration */
   const [ createMatchIsOpen, setCreateMatchIsOpen ] = useState(false)
+  const [ loginIsOpen, setLoginIsOpen ] = useState(false)
+  const [ loadingProgress, setLoadingProgress ] = useState({ matches: false, players: false, schedule: false })
 
   /* Sort players */
   const [ sortField, setSortField ] = useState({ field: 'skpoints', descending: true, alpha: false })
@@ -43,15 +44,7 @@ const App = () => {
   const [ skaters, setSkaters ] = useState([])
   const [ goaltenders, setGoaltenders ] = useState([])
   const [ teamData, setTeamData ] = useState([])
-  const [ loadingProgress, setLoadingProgress ] = useState(0)
-
-  /* Pagination */
-  const [ matchActivePage, setMatchActivePage ] = useState(1)
-  const [ playersActivePage, setPlayersActivePage ] = useState(1)
-  const [ teamsActivePage, setTeamsActivePage ] = useState(1)
-  const [ leagueStandingsPage, setLeagueStandingsPage ] = useState(1)
-  const [ playerStandingsPage, setPlayerStandingsPage ] = useState(1)
-
+  
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
 
@@ -59,7 +52,6 @@ const App = () => {
   const [ resultsOpen, setResultsOpen ] = useState(true)
   const [ leagueOpen, setLeagueOpen ] = useState(true)
   const [ playerOpen, setPlayerOpen ] = useState(true)
-
   const [ message, setMessage ] = useState({ type: null, text: null })
 
   const dispatch = useDispatch()
@@ -68,15 +60,16 @@ const App = () => {
   // retrieve match history from database
   useEffect(() => {
     dispatch(initializeMatches())
-    setLoadingProgress(v => v + 1)
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matches: true })))
   }, [dispatch])
 
   useEffect(() => {
     chelService
       .getData('/schedule')
       .then(initialData => {
-        setSchedule(initialData)
+        setSchedule(initialData)        
       })
+      .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, schedule: true })))
   }, [])
 
   // retrieve player data from database
@@ -84,13 +77,10 @@ const App = () => {
     chelService
       .getData('/playerData')
       .then(initialData => {
-        setLoadingProgress(v => v + 1)
         setSkaters([...initialData].filter(player => player.skater).sort((a, b) => b[`${sortField.field}`] - a[`${sortField.field}`]))
         setGoaltenders([...initialData].filter(player => !player.skater))
       })
-      .then (
-        () => setLoadingProgress(v => v + 1)
-      )
+      .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, players: true })))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
@@ -200,9 +190,6 @@ const App = () => {
     setUser(null)
   }
 
-  const handleLeaguePaginationChange = (e,n) => setLeagueStandingsPage(n)
-  const handlePlayerPaginationChange = (e,n) => setPlayerStandingsPage(n)
-
   const handleCollapseClick = (type) => () => {
     if ( type === 'league' ) {
       setLeagueOpen(!leagueOpen)
@@ -253,14 +240,6 @@ const App = () => {
     league: handleLeagueRowClick
   }
 
-  const handlePaginationClick = (n,type) => ( type === 'match' ) ? setMatchActivePage(n) : ( type === 'teams' ) ? setTeamsActivePage(n) : setPlayersActivePage(n)
-
-  const resetAllPagination = () => {
-    setMatchActivePage(1)
-    setTeamsActivePage(1)
-    setPlayersActivePage(1)
-  }
-
   //determine device/window size
   useEffect(() => {
     window.addEventListener('resize', handleWindowSizeChange)
@@ -304,47 +283,34 @@ const App = () => {
 
   const isMobile = width < 768
 
-  const progress = (loadingProgress) => {
-    const target = 4
-    const current = (parseFloat(loadingProgress) / parseFloat(target)) * 100
-    return { target: target, current: current }
-  }
+  const appIsLoaded = (loadingProgress) => Object.values(loadingProgress).every(item => item === true)
 
-  const appMain = loadingProgress < progress(loadingProgress).target ?
-    <Container>
-      <Row className='mt-4'>
-        <Col className='d-flex justify-content-center'>
-          <CircularProgress />
-        </Col>
-      </Row>
-    </Container> :
+  const appMain = appIsLoaded(loadingProgress) ?
     <AppDashboard
       teamData={teamData}
-      matchActivePage={matchActivePage}
-      handlePaginationClick={handlePaginationClick}
-      resetAllPagination={resetAllPagination}
       handleSortClick={handleSortClick}
       handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
       sortField={sortField}
       players={{ skaters: skaters, goaltenders: goaltenders }}
-      playersActivePage={playersActivePage}
-      teamsActivePage={teamsActivePage}
       skaterOrGoalie={skaterOrGoalie}
       handleTableClick={handleTableClick}
       leagueOpen={leagueOpen}
       playerOpen={playerOpen}
       resultsOpen={resultsOpen}
-      leagueStandingsPage={leagueStandingsPage}
-      playerStandingsPage={playerStandingsPage}
-      handleLeaguePaginationChange={handleLeaguePaginationChange}
-      handlePlayerPaginationChange={handlePlayerPaginationChange}
       handleCollapseClick={handleCollapseClick}
       width={width}
       loginIsOpen={loginIsOpen}
       user={user}
       schedule={schedule}
       setSchedule={setSchedule}
-    />
+    /> :
+    <Container>
+    <Row className='mt-4'>
+      <Col className='d-flex justify-content-center'>
+        <CircularProgress />
+      </Col>
+    </Row>
+  </Container>
 
   const errorBanner = message.text === null ? null : <Container><Row className='mt-2'><Alert variant={message.type}>{message.text}</Alert></Row></Container>
 

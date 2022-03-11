@@ -8,8 +8,13 @@ import MobileContext from './MobileContext'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import MobileTitle from './MobileTitle'
 import LeagueContext from './LeagueContext'
+import { useSelector, useDispatch } from 'react-redux'
+import { setTeamsActivePage } from '../reducers/paginationReducer'
 
-const TeamsLayout = ({ teamData, handlePaginationClick, teamsActivePage }) => {
+const TeamsLayout = ({ teamData }) => {
+  const teamsActivePage = useSelector(state => state.pagination.teamsActivePage)
+
+  const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
   const isMobile = useContext(MobileContext)
   const lightTheme = useContext(ThemeContext).value === 'light'
@@ -19,16 +24,18 @@ const TeamsLayout = ({ teamData, handlePaginationClick, teamsActivePage }) => {
     switch(type) {
     case 'next':
       if ( teamsActivePage < pageCount ) {
-        handlePaginationClick(teamsActivePage + 1, 'teams')
+        const pageNum = teamsActivePage + 1
+        dispatch(setTeamsActivePage(pageNum))
       }
       break
     case 'prev':
       if ( teamsActivePage > 1 ) {
-        handlePaginationClick(teamsActivePage - 1, 'teams')
+        const pageNum = teamsActivePage - 1
+        dispatch(setTeamsActivePage(pageNum))
       }
       break
     case 'num':
-      handlePaginationClick(num, 'teams')
+      dispatch(setTeamsActivePage(num))
       break
     default:
       break
@@ -62,7 +69,6 @@ const TeamsLayout = ({ teamData, handlePaginationClick, teamsActivePage }) => {
                 teamData,
                 itemsPerPage,
                 addDefaultSrc,
-                handlePaginationClick
               }}
             />
           </Col>

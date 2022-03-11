@@ -1,0 +1,501 @@
+import { v4 as uuidv4 } from 'uuid'
+
+const dashboardButtons = [
+  {
+    id: 1,
+    name: 'League Overview',
+    value: 'league',
+    active: false,
+    route: '/'
+  },{
+    id: 2,
+    name: 'Calendar',
+    value: 'calendar',
+    active: false,
+    route: '/calendar'
+  },{
+    id: 3,
+    name: 'Teams',
+    value: 'teams',
+    active: false,
+    route: '/teams'
+  },{
+    id: 4,
+    name: 'Players',
+    value: 'players',
+    active: false,
+    route: '/players'
+  }
+]
+
+const teams = [
+  { clubName: 'All',  clubId: '', name: 'All Teams', abbreviation: 'ALL', division: '', platform:'', badgeId: '', primaryColor: '', secondaryColor: '', active: true }
+  ,{ clubName: 'FBHL Boston Bruins', clubId: 4078, name: 'Boston Bruins', abbreviation: 'BOS', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(252, 181, 20)', secondaryColor: '(17, 17, 17)', active: true }
+  ,{ clubName: 'FBHL Buffalo Sabres', clubId: 26128, name: 'Buffalo Sabres', abbreviation: 'BUF', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,38,84)', secondaryColor: '(252,181,20)', active: true }
+  ,{ clubName: 'FBHL Carolina Hurricanes', clubId: 76092, name: 'Carolina Hurricanes', abbreviation: 'CAR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(226,24,54)', secondaryColor: '(35,31,32)', active: true }
+  ,{ clubName: 'FBHL CBJ', clubId: 102698, name: 'Columbus Blue Jackets', abbreviation: 'CBJ', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,38,84)', secondaryColor: '(206,17,38)', active: true }
+  ,{ clubName: 'FBHL Detroit Redwings', clubId: 49923, name: 'Detroit Redwings', abbreviation: 'DET', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(206,17,38)', secondaryColor: '(255,255,255)', active: true }
+  ,{ clubName: 'FBHL Florida Panthers', clubId: 76146, name: 'Florida Panthers', abbreviation: 'FLA', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(4,30,66)', secondaryColor: '(200,16,46)', active: true }
+  ,{ clubName: 'FBHL Montreal Canadiens', clubId: 26593, name: 'Montreal Canadiens', abbreviation: 'MTL', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(175, 30, 45)', secondaryColor: '(25, 33, 104)', active: true }
+  ,{ clubName: 'FBHL New Jersey Devils', clubId: 15667, name: 'New Jersey Devils', abbreviation: 'NJ', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(206, 17, 38)', secondaryColor: '(0, 0, 0)', active: true }
+  ,{ clubName: 'FBHL New York Islanders', clubId: 26815, name: 'New York Islanders', abbreviation: 'NYI', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(244, 125, 48)', secondaryColor: '(0,83,155)', active: true }
+  ,{ clubName: 'FBHL New York Rangers', clubId: 9286, name: 'New York Rangers', abbreviation: 'NYR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,56,168)', secondaryColor: '(206,17,38)', active: true }
+  ,{ clubName: 'FBHL OTTAWA SENATORS', clubId: 72960, name: 'Ottawa Senators', abbreviation: 'OTT', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(197, 32, 50)', secondaryColor: '(194, 145, 44)', active: true }
+  ,{ clubName: 'FBHL Philadelphia Flyers', clubId: 13405, name: 'Philadelphia Flyers', abbreviation: 'PHI', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(247, 73, 2)', secondaryColor: '(0, 0, 0)', active: true }
+  ,{ clubName: 'FBHL Pittsburgh Penguins', clubId: 5554, name: 'Pittsburgh Penguins', abbreviation: 'PIT', division: 'East', platform: 'PS5', badgeId: '', primaryColor: '(0,0,0)', secondaryColor: '(252,181,20)', active: true }
+  ,{ clubName: 'FBHL Tampa Bay Lightning', clubId: 3934, name: 'Tampa Bay Lightning', abbreviation: 'TB', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0, 40, 104)', secondaryColor: '(255, 255, 255)', active: true }
+  ,{ clubName: 'FBHL Toronto', clubId: 6343, name: 'Toronto Mapleleafs', abbreviation: 'TOR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0, 32, 91)', secondaryColor: '(255, 255, 255)', active: true }
+  ,{ clubName: 'FBHL Washington Capitals', clubId: 9583, name: 'Washington Capitals', abbreviation: 'WSH', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4, 30, 66)', secondaryColor: '(200, 16, 46)', active: true }
+  ,{ clubName: 'FBHL Anaheim Mighty Ducks', clubId: 4759, name: 'Anaheim Ducks', abbreviation: 'ANA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(252, 76, 2)', secondaryColor: '(185, 151, 91)', active: true }
+  ,{ clubName: '', clubId: 0, name: 'Arizona Coyotes', abbreviation: 'ARI', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(140,38,51)', secondaryColor: '(226,214,181)', active: false }
+  ,{ clubName: '', clubId: 0, name: 'Calgary Flames', abbreviation: 'CGY', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(200,16,46)', secondaryColor: '(241, 190, 72)', active: false }
+  ,{ clubName: 'FBHL Chicago Blackhawks', clubId: 2788, name: 'Chicago Blackhawks', abbreviation: 'CHI', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(207,10,44)', secondaryColor: '(255,209,0)', active: true }
+  ,{ clubName: 'FBHL Colorado Avs', clubId: 159586, name: 'Colorado Avalanche', abbreviation: 'COL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(111, 38, 61)', secondaryColor: '(35, 97, 146)', active: true }
+  ,{ clubName: 'FBHL Dallas Stars', clubId: 41074, name: 'Dallas Stars', abbreviation: 'DAL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 104, 71)', secondaryColor: '(143, 143, 140)', active: true }
+  ,{ clubName: 'FBHL Edmonton Oilers', clubId: 68364, name: 'Edmonton Oilers', abbreviation: 'EDM', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4, 30, 66)', secondaryColor: '(252, 76, 0)', active: true }
+  ,{ clubName: 'FBHL LA Kings1', clubId: 43438, name: 'Los Angeles Kings', abbreviation: 'LA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(17,17,17)', secondaryColor: '(162,170,173)', active: true }
+  ,{ clubName: 'FBHL Minnesota Wild', clubId: 38092, name: 'Minnestoa Wild', abbreviation: 'MIN', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(2, 73, 48)', secondaryColor: '(237, 170, 0)', active: true }
+  ,{ clubName: 'FBHL Nashville Predators', clubId: 5263, name: 'Nashville Predators', abbreviation: 'NSH', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(255,184,28)', secondaryColor: '(4,30,66)', active: true }
+  ,{ clubName: 'FBHL Seattle Kraken', clubId: 7789, name: 'Seattle Kraken', abbreviation: 'SEA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(153, 217, 217)', secondaryColor: '(0, 22, 40)', active: true }
+  ,{ clubName: 'FBHL SJ Sharks', clubId: 61641, name: 'San Jose Sharks', abbreviation: 'SJ', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 109, 117)', secondaryColor: '(234, 114, 0)', active: true }
+  ,{ clubName: 'FBHL SJ Sharks2', clubId: 140953, name: 'San Jose Sharks2', abbreviation: 'SJ', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 109, 117)', secondaryColor: '(234, 114, 0)', active: true }
+  ,{ clubName: '', clubId: 0, name: 'St. Louis Blues', abbreviation: 'STL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 47, 135)', secondaryColor: '(252, 181, 20)', active: false }
+  ,{ clubName: '', clubId: 0, name: 'Vancouver Canucks', abbreviation: 'VAN', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 32, 91)', secondaryColor: '(10,134,61)', active: false }
+  ,{ clubName: 'FBHL Vegas Golden Knights', clubId: 99855, name: 'Las Vegas Golden Knights', abbreviation: 'VGK', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(185,151,91)', secondaryColor: '(51,63,72)', active: true }
+  ,{ clubName: 'FBHL WINNIPEGJETS', clubId: 9148, name: 'Winnipeg Jets', abbreviation: 'WPG', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4,30,66)', secondaryColor: '(0,76,151)', active: true }
+]
+
+const bins = {
+  matchHistoryBinId: '61db51fd39a33573b3262564',
+  playerDataBinId: '61e238ccdbe5d1308325eede'
+}
+
+const defaultCrest = 'https://media.contentapi.ea.com/content/dam/eacom/nhl/pro-clubs/custom-crests/42.png'
+
+const sortButtons = [
+  {
+    id: 1,
+    field: 'playerName',
+    fieldName: 'Player Name',
+    descending: true,
+    active: false,
+    alpha: true
+  },{
+    id: 2,
+    field: 'skgoals',
+    fieldName: 'Goals',
+    descending: false,
+    active: false,
+    alpha: false
+  },{
+    id: 3,
+    field: 'skassists',
+    fieldName: 'Assists',
+    descending: false,
+    active: false,
+    alpha: false
+  },{
+    id: 4,
+    field: 'skpoints',
+    fieldName: 'Points',
+    descending: false,
+    active: false,
+    alpha: false
+  }
+]
+
+const skaterGoalieToggleButtons = [
+  {
+    id: 1,
+    field: 'skaters',
+    fieldName: 'Skaters',
+    active: false,
+  },{
+    id: 2,
+    field: 'goaltenders',
+    fieldName: 'Goaltenders',
+    active: false,
+  }
+]
+
+const gkStatCols = [
+  {
+    id: uuidv4(),
+    columnLabel: 'GP',
+    statName: 'gkGamesPlayed',
+    toolTip: 'Games Played'
+  },{
+    id: uuidv4(),
+    columnLabel: 'GAA',
+    statName: 'gkgaa',
+    toolTip: 'Goals Against Average'
+  },{
+    id: uuidv4(),
+    columnLabel: 'SV%',
+    statName: 'gksvpct',
+    toolTip: 'Save Percentage'
+  },{
+    id: uuidv4(),
+    columnLabel: 'SO',
+    statName: 'gkso',
+    toolTip: 'Shutouts'
+  }
+]
+
+const statCols = [
+  {
+    id: uuidv4(),
+    columnLabel: 'P',
+    statName: 'points',
+    toolTip: 'Points'
+  },{
+    id: uuidv4(),
+    columnLabel: 'G',
+    statName: 'goals',
+    toolTip: 'Goals'
+  },{
+    id: uuidv4(),
+    columnLabel: 'A',
+    statName: 'assists',
+    toolTip: 'Assists'
+  },{
+    id: uuidv4(),
+    columnLabel: '+/-',
+    statName: 'plusmin',
+    toolTip: 'Plus/Minus'
+  }
+]
+
+const teamStatCols = [
+  {
+    id: uuidv4(),
+    columnLabel: 'GP',
+    statName: 'gamesPlayed',
+    toolTip: 'Games Played'
+  },{
+    id: uuidv4(),
+    columnLabel: 'W',
+    statName: 'wins',
+    toolTip: 'Wins'
+  },{
+    id: uuidv4(),
+    columnLabel: 'L',
+    statName: 'losses',
+    toolTip: 'Losses'
+  },{
+    id: uuidv4(),
+    columnLabel: 'OTL',
+    statName: 'overtimeLosses',
+    toolTip: 'Overtime Losses'
+  },
+  {
+    id: uuidv4(),
+    columnLabel: 'GS',
+    statName: 'goalsScored',
+    toolTip: 'Goals Scored'
+  },
+  {
+    id: uuidv4(),
+    columnLabel: 'GA',
+    statName: 'goalsAllowed',
+    toolTip: 'Goals Allowed'
+  },
+]
+
+const dataPointRowSpec = [
+  {
+    id: 1
+    ,propertyName: 'shots'
+    ,fullName: 'Shots'
+    ,greaterIsBetter: true
+  },{
+    id: 2
+    ,propertyName: 'hits'
+    ,fullName: 'Hits'
+    ,greaterIsBetter: true
+  },{
+    id: 3
+    ,propertyName: 'passingPct'
+    ,fullName: 'Passing %'
+    ,greaterIsBetter: true
+  },{
+    id: 4
+    ,propertyName: 'faceoffPct'
+    ,fullName: 'Faceoff %'
+    ,greaterIsBetter: true
+  },{
+    id: 5
+    ,propertyName: 'penaltyMins'
+    ,fullName: 'Penalty Mins'
+    ,greaterIsBetter: false
+  }
+]
+
+
+const translatePositions = [
+  {
+    position: 'leftWing',
+    posSorted: '4',
+    abbreviation: 'LW',
+    fullName: 'Left Wing',
+    positionGroupTitle: 'Wing',
+    positionGroupValue: 'wing',
+    lineGroup: 'Forward',
+  },
+  {
+    position: 'rightWing',
+    posSorted: '3',
+    abbreviation: 'RW',
+    fullName: 'Right Wing',
+    positionGroupTitle: 'Wing',
+    positionGroupValue: 'wing',
+    lineGroup: 'Forward',
+  },
+  {
+    position: 'center',
+    posSorted: '5',
+    abbreviation: 'C',
+    fullName: 'Center',
+    positionGroupTitle: 'Center',
+    positionGroupValue: 'center',
+    lineGroup: 'Forward',
+  },
+  {
+    position: 'defensemen',
+    posSorted: '2',
+    abbreviation: 'LD',
+    fullName: 'Left Defenseman',
+    positionGroupTitle: 'Defense',
+    positionGroupValue: 'defense',
+    lineGroup: 'Defense',
+  },
+  {
+    position: 'defensemen',
+    posSorted: '1',
+    abbreviation: 'RD',
+    fullName: 'Right Defenseman',
+    positionGroupTitle: 'Defense',
+    positionGroupValue: 'defense',
+    lineGroup: 'Defense',
+  },
+  {
+    position: 'goaltender',
+    posSorted: '0',
+    abbreviation: 'G',
+    fullName: 'Goaltender',
+    positionGroupTitle: 'Goaltender',
+    positionGroupValue: 'goaltender',
+    lineGroup: 'Goaltender',
+  },
+]
+
+
+const leadersSpec = [
+  {
+    id: 2,
+    propName: 'goals',
+    fullStatName: 'Goal',
+    statName: 'skgoals'
+  },{
+    id: 3,
+    propName: 'assists',
+    fullStatName: 'Assist',
+    statName: 'skassists'
+  },{
+    id: 4,
+    propName: 'shots',
+    fullStatName: 'Shot',
+    statName: 'skshots'
+  },{
+    id: 5,
+    propName: 'hits',
+    fullStatName: 'Hit',
+    statName: 'skhits'
+  }
+]
+
+const topPlayers = [
+  {
+    title: 'Most Points',
+    stat: 'points',
+    sortField: { field:'skpoints', descending:true, alpha:false }
+  },{
+    title: 'Most Goals',
+    stat: 'goals',
+    sortField: { field:'skgoals', descending:true, alpha:false }
+  },{
+    title: 'Most Assists',
+    stat: 'assists',
+    sortField: { field:'skassists', descending:true, alpha:false }
+  }
+]
+
+const playerDetailStats = [
+  {
+    id: uuidv4(),
+    category: 'offense',
+    categoryTitle: 'Offensive Stats',
+    stats: [
+      {
+        id: uuidv4(),
+        statTitle: 'Points Per Game',
+        baseStatName: 'skpoints',
+        statName: 'skpointspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Goals Per Game',
+        baseStatName: 'skgoals',
+        statName: 'skgoalspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Assists Per Game',
+        baseStatName: 'skassists',
+        statName: 'skassistspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Shots Per Game',
+        baseStatName: 'skshots',
+        statName: 'skshotspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Passing Percentage',
+        baseStatName: 'skpasspct',
+        statName: 'skpasspct',
+        type: 'percentage',
+      },
+    ]
+  },
+  {
+    id: uuidv4(),
+    category: 'defense',
+    categoryTitle: 'Defensive Stats',
+    stats: [
+      {
+        id: uuidv4(),
+        statTitle: 'Hits Per Game',
+        baseStatName: 'skhits',
+        statName: 'skhitspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Interceptions Per Game',
+        baseStatName: 'skinterceptions',
+        statName: 'skinterceptionspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Takeaways Per Game',
+        baseStatName: 'sktakeaways',
+        statName: 'sktakeawayspg',
+        type: 'perGame',
+      },
+      {
+        id: uuidv4(),
+        statTitle: 'Blocked Shots Per Game',
+        baseStatName: 'skbs',
+        statName: 'skblockedshotspg',
+        type: 'perGame',
+      },
+    ]
+  },
+]
+
+const leagueStandingsColumns = [
+  {
+    title: 'RNK',
+    position: 'center',
+  },{
+    title: 'Team',
+    position: 'start',
+  },{
+    title: 'GP',
+    position: 'center',
+  },{
+    title: 'W',
+    position: 'center',
+  },{
+    title: 'L',
+    position: 'center',
+  },{
+    title: 'OTL',
+    position: 'center',
+  },{
+    title: 'PTS',
+    position: 'center',
+  },{
+    title: 'GF',
+    position: 'center',
+  },{
+    title: 'GA',
+    position: 'center',
+  },{
+    title: 'DIFF',
+    position: 'center',
+  },{
+    title: 'STRK',
+    position: 'center',
+  }
+]
+
+const playerStandingsColumns = {
+  all: [
+    {
+      title: 'RNK',
+      position: 'center',
+    },
+    {
+      title: 'Player',
+      position: 'start',
+    },
+    {
+      title: 'Team',
+      position: 'start',
+    },
+    {
+      title: 'POS',
+      position: 'center',
+    },
+  ],
+  points: [{
+    title: 'P',
+    position: 'center',
+  }],
+  goals: [{
+    title: 'G',
+    position: 'center',
+  }],
+  assists: [{
+    title: 'A',
+    position: 'center',
+  }],
+}
+
+const matchTypeButtonGroup = [
+  {
+    id: 1,
+    type: 'all',
+    display: 'All Games'
+  },{
+    id: 2,
+    type: 'scheduled',
+    display: 'Scheduled Games'
+  },{
+    id: 3,
+    type: 'played',
+    display: 'Completed Games'
+  }
+]
+
+const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup }
+
+export default obj

@@ -3,13 +3,14 @@ import { useOutletContext } from 'react-router-dom'
 import CalendarContentLayout from './CalendarContentLayout'
 import dayjs from 'dayjs'
 import 'react-calendar/dist/Calendar.css'
+import { useSelector } from 'react-redux'
 
 
 const CalendarDashboard = () => {
   const contextObj = useOutletContext()
 
   const schedule = contextObj.schedule.map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const matchWithDate = contextObj.addDateToMatches(contextObj.matches)
+  const matchWithDate = useSelector(state => state.matches)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
     const scheduledMatchWasPlayed = matchWithDate.find(m => Object.keys(m.clubs).includes(match.teams[0]) && Object.keys(m.clubs).includes(match.teams[1]) && m.matchDate === match.matchDate )

@@ -16,6 +16,8 @@ import { Container, Row, Col, Alert } from 'react-bootstrap'
 import LoginSidebar from './components/LoginSidebar'
 import loginService from './services/login'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeMatches } from './reducers/matchesReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -37,7 +39,6 @@ const App = () => {
   const [ skaterOrGoalie, setSkaterOrGoalie ] = useState({ field: 'skaters' })
 
   /* Leaguewide match data */
-  const [ matches, setMatchData ] = useState([])
   const [ schedule, setSchedule ] = useState([])
   const [ skaters, setSkaters ] = useState([])
   const [ goaltenders, setGoaltenders ] = useState([])
@@ -61,18 +62,14 @@ const App = () => {
 
   const [ message, setMessage ] = useState({ type: null, text: null })
 
+  const dispatch = useDispatch()
+  const matches = useSelector(state => state.matches)
+
   // retrieve match history from database
   useEffect(() => {
-    chelService
-      .getData('/matchHistory')
-      .then(initialData => {
-        setLoadingProgress(v => v + 1)
-        setMatchData(initialData)
-      })
-      .then(
-        () => setLoadingProgress(v => v + 1)
-      )
-  }, [])
+    dispatch(initializeMatches())
+    setLoadingProgress(v => v + 1)
+  }, [dispatch])
 
   useEffect(() => {
     chelService
@@ -322,7 +319,6 @@ const App = () => {
       </Row>
     </Container> :
     <AppDashboard
-      matches={matches}
       teamData={teamData}
       matchActivePage={matchActivePage}
       handlePaginationClick={handlePaginationClick}

@@ -13,7 +13,6 @@ import PlayersDisplayTeam from './PlayersDisplayTeam'
 
 
 const AppDashboard = ({
-  matches,
   teamData,
   matchActivePage,
   handlePaginationClick,
@@ -43,7 +42,6 @@ const AppDashboard = ({
     <Routes>
       <Route path='/' element={<>
         <LeagueDashboard
-          matches={matches}
           teamData={teamData}
           players={players}
           handleTableClick={handleTableClick}
@@ -59,7 +57,6 @@ const AppDashboard = ({
         /></>} />
       <Route path='calendar' element={
         <CalendarLayout
-          matches={matches}
           players={players}
           matchActivePage={matchActivePage}
           handlePaginationClick={handlePaginationClick}

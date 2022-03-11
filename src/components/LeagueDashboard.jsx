@@ -5,13 +5,14 @@ import LeagueStandings from './LeagueStandings'
 import PlayerStandings from './PlayerStandings'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import RecentResultsCarousel from './RecentResultsCarousel'
-import dayjs from 'dayjs'
 import LeagueContext from './LeagueContext'
+import { useSelector } from 'react-redux'
 
-const LeagueDashboard = ({ matches, teamData, players, handleTableClick, leagueStandingsPage, resultsOpen, leagueOpen, playerStandingsPage, playerOpen, handleLeaguePaginationChange, handlePlayerPaginationChange, handleCollapseClick, width }) => {
+const LeagueDashboard = ({ teamData, players, handleTableClick, leagueStandingsPage, resultsOpen, leagueOpen, playerStandingsPage, playerOpen, handleLeaguePaginationChange, handlePlayerPaginationChange, handleCollapseClick, width }) => {
   const lightTheme = useContext(ThemeContext).value === 'light'
   const numOfMatchDaysToDisplayOnHeader = 2
-  const recentMatchDates = matches.sort((a,b) => b.timestamp - a.timestamp).map(match => dayjs.unix(match.timestamp).format('MM/DD/YYYY')).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
+  const matches = useSelector(state => state.matches)
+  const recentMatchDates = matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
   const leagueName = useContext(LeagueContext)
 
   return (
@@ -23,7 +24,7 @@ const LeagueDashboard = ({ matches, teamData, players, handleTableClick, leagueS
         <Row className='mt-2 mb-2'>
           <Col>
             <RecentResultsCarousel
-              matches={matches.filter(match => recentMatchDates.includes(dayjs.unix(match.timestamp).format('MM/DD/YYYY'))).sort((a,b) => b.timestamp - a.timestamp)}
+              matches={matches.filter(match => recentMatchDates.includes(match.matchDate)).sort((a,b) => b.timestamp - a.timestamp)}
               lightTheme={lightTheme}
               resultsOpen={resultsOpen}
               handleCollapseClick={handleCollapseClick}

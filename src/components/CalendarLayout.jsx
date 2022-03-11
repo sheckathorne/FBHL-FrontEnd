@@ -5,15 +5,17 @@ import dayjs from 'dayjs'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import LeagueContext from './LeagueContext'
 import chelService from '../services/api'
+import { useSelector } from 'react-redux'
 
-const CalendarLayout = ({ matches, matchActivePage, handlePaginationClick, resetAllPagination, players, user, schedule, setSchedule }) => {
+const CalendarLayout = ({ matchActivePage, handlePaginationClick, resetAllPagination, players, user, schedule, setSchedule }) => {
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
-  const filteredMatches = teamId ? matches.filter(match => Object.keys(match.clubs).includes(teamId)) : matches
+  const matches = useSelector(state => state.matches)
+  const filteredMatches = teamId ? matches.filter(match => Object.keys(match.clubs).includes(teamId)) : [...matches]
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
 
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
-  const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day').toDate())
+  const [ selectedDate, setSelectedDate ] = useState(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day').toDate())
   const [ timestampRangeOfSelectedDay, setTimestampRangeOfSelectedDay ] = useState({})
 
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
@@ -69,8 +71,6 @@ const CalendarLayout = ({ matches, matchActivePage, handlePaginationClick, reset
       })
   }
 
-  const addDateToMatches = (matches) => matches.map(match => ({ matchDate: dayjs.unix(match.timestamp).format('M/D/YYYY'), ...match }))
-
   const handleMatchTypeChange = (type) => () => {
     setMatchTypeFilter(type)
   }
@@ -95,7 +95,6 @@ const CalendarLayout = ({ matches, matchActivePage, handlePaginationClick, reset
           updateScheduledMatch,
           matchTypeFilter,
           handleMatchTypeChange,
-          addDateToMatches,
           TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES,
           user
         }}/>

@@ -5,13 +5,15 @@ import dayjs from 'dayjs'
 import 'react-calendar/dist/Calendar.css'
 import data from '../helpers/data.js'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import { useSelector } from 'react-redux'
 
 const CalendarDashboard = () => {
   const contextObj = useOutletContext()
   const teamId = useParams().teamId.toString()
+  const matches = useSelector(state => state.matches)
 
   const filteredSchedule = contextObj.schedule.filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const filteredMatchesWithDate = contextObj.addDateToMatches(contextObj.matches.filter(match => Object.keys(match.clubs).includes(teamId)))
+  const filteredMatchesWithDate = matches.filter(match => Object.keys(match.clubs).includes(teamId))
 
   const scheduleWithoutPlayedMatches = filteredSchedule.filter(match => {
     const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => Object.keys(m.clubs).includes(match.teams[0]) && Object.keys(m.clubs).includes(match.teams[1]) && m.matchDate === match.matchDate )

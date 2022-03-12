@@ -4,7 +4,7 @@ const generateMatchData = (match, guys, clubId) => (
   {
     teamName: helperData.teams.find(team => team.clubId.toString() === clubId.toString()).name,
     abbreviation: helperData.teams.find(team => team.clubId.toString() === clubId.toString()).abbreviation,
-    goals: match.clubs[`${Object.keys(match.clubs).find(a => a === clubId)}`].goals,
+    goals: match.clubs.find(club => club.clubId === clubId).data.goals,
     shots: guys.skshots.toString(),
     hits: guys.skhits.toString(),
     passingPct: ((guys.skpasses / guys.skpassattempts) * 100).toFixed(2).toString() ,
@@ -17,9 +17,11 @@ const generatePlayerArray = (clubId, match) => {
   const playersObj = match.players
   let result = []
 
-  for (const [key] of Object.entries(playersObj)) {
-    result.push(...Object.entries(playersObj[key]).map(x => ({ ...x[1], playerId: x[0], clubId: key, homeTeam: key === clubId })))
-  }
+  playersObj.forEach(club => {
+    club.members.forEach(member => {
+      result.push({playerId: member.playerId, ...member.data, clubId: club.clubId, homeTeam: club.clubId === clubId })
+    })
+  })
 
   return result
 }

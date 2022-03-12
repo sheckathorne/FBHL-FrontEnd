@@ -13,7 +13,7 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)
-  const filteredMatches = teamId ? matches.filter(match => Object.keys(match.clubs).includes(teamId)) : [...matches]
+  const filteredMatches = teamId ? matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matches]
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
 
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')

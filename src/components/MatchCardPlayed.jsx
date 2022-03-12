@@ -22,15 +22,15 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
   const url = buttonSelected  ? '' : `?matchId=${match.matchId}`
   const buttonSelectedClass = buttonSelected ? ' card-selected' : ''
   const teamsArr = [{
-    id: Object.keys(match.clubs)[0],
-    name: data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[0].toString()).name,
-    score: match.clubs[`${Object.keys(match.clubs)[0]}`].goals,
-    winner: parseInt(match.clubs[`${Object.keys(match.clubs)[0]}`].goals) > parseInt(match.clubs[`${Object.keys(match.clubs)[1]}`].goals)
+    id: match.clubs[0].clubId,
+    name: data.teams.find(team => team.clubId.toString() === match.clubs[0].clubId.toString()).name,
+    score: match.clubs[0].data.goals,
+    winner: parseInt(match.clubs[0].data.goals) > parseInt(match.clubs[1].data.goals)
   },{
-    id: Object.keys(match.clubs)[1],
-    name: data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[1].toString()).name,
-    score: match.clubs[`${Object.keys(match.clubs)[1]}`].goals,
-    winner: parseInt(match.clubs[`${Object.keys(match.clubs)[1]}`].goals) > parseInt(match.clubs[`${Object.keys(match.clubs)[0]}`].goals)
+    id: match.clubs[1].clubId,
+    name: data.teams.find(team => team.clubId.toString() === match.clubs[1].clubId.toString()).name,
+    score: match.clubs[1].data.goals,
+    winner: parseInt(match.clubs[1].data.goals) > parseInt(match.clubs[0].data.goals)
   }]
 
   return (

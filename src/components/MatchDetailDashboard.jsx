@@ -12,14 +12,14 @@ const MatchDetailDashboard = ({ match, players }) => {
   const matchDate = dayjs.unix(match.timestamp).format('MMMM D, YYYY')
   const dataPointRowSpec = data.dataPointRowSpec
 
-  const homeTeamClubId = Object.keys(match.clubs)[0]
-  const awayTeamClubId = Object.keys(match.clubs)[1]
+  const homeTeamClubId = match.clubs[0].clubId
+  const awayTeamClubId = match.clubs[1].clubId
 
-  const homeTeam = data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[0].toString())
-  const awayTeam = data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[1].toString())
+  const homeTeam = data.teams.find(team => team.clubId.toString() === match.clubs[0].clubId.toString())
+  const awayTeam = data.teams.find(team => team.clubId.toString() === match.clubs[1].clubId.toString())
 
-  const homeTeamPlayers = match.aggregate[`${Object.keys(match.aggregate).find(a => a === homeTeamClubId)}`]
-  const awayTeamPlayers = match.aggregate[`${Object.keys(match.aggregate).find(a => a === awayTeamClubId)}`]
+  const homeTeamPlayers = match.aggregate.find(a => a.clubId === homeTeamClubId).data
+  const awayTeamPlayers = match.aggregate.find(a => a.clubId === awayTeamClubId).data
 
   const homeTeamData = matchDetails.generateMatchData(match, homeTeamPlayers, homeTeamClubId)
   const awayTeamData = matchDetails.generateMatchData(match, awayTeamPlayers, awayTeamClubId)

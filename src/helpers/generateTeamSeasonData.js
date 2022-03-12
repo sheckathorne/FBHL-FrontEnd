@@ -5,13 +5,13 @@ const generateTeamData = (teamId, matches) => {
   if ( gamesPlayed === 0 ) {
     return false
   } else {
-    const passes = matches.map(x => parseInt(x.aggregate[`${teamId}`].skpasses)).reduce((a,b) => a+b)
-    const passAttempts = matches.map(x => parseInt(x.aggregate[`${teamId}`].skpassattempts)).reduce((a,b) => a+b)
-    const shots = matches.map(x => parseInt(x.aggregate[`${teamId}`].skshots)).reduce((a,b) => a+b)
-    const hits = matches.map(x => parseInt(x.aggregate[`${teamId}`].skhits)).reduce((a,b) => a+b)
-    const pim = matches.map(x => parseInt(x.aggregate[`${teamId}`].skpim)).reduce((a,b) => a+b)
+    const passes = matches.map(x => parseInt(x.aggregate.find(team => team.clubId === teamId).data.skpasses)).reduce((a,b) => a+b)
+    const passAttempts = matches.map(x => parseInt(x.aggregate.find(team => team.clubId === teamId).data.skpassattempts)).reduce((a,b) => a+b)
+    const shots = matches.map(x => parseInt(x.aggregate.find(team => team.clubId === teamId).data.skshots)).reduce((a,b) => a+b)
+    const hits = matches.map(x => parseInt(x.aggregate.find(team => team.clubId === teamId).data.skhits)).reduce((a,b) => a+b)
+    const pim = matches.map(x => parseInt(x.aggregate.find(team => team.clubId === teamId).data.skpim)).reduce((a,b) => a+b)
     const streaks = matches.sort((a,b) => b.timestamp - a.timestamp).map(match => {
-      if ( ['2','10','6'].includes(match.clubs[`${teamId}`].result ) ) {
+      if ( ['2','10','6'].includes(match.clubs.find(club => club.clubId === teamId).data.result) ) {
         return 'L'
       } else {
         return 'W'
@@ -40,12 +40,12 @@ const generateTeamData = (teamId, matches) => {
       teamId: teamId,
       abbreviation: data.teams.find(team => team.clubId.toString() === teamId).abbreviation,
       teamName: data.teams.find(team => team.clubId.toString() === teamId).name,
-      gamesPlayed: matches.filter(match => ['1','5','16385','2','10','6'].includes(match.clubs[`${teamId}`].result)).length.toString(),
-      wins: matches.filter(match => ['1','5','16385'].includes(match.clubs[`${teamId}`].result)).length.toString(),
-      losses: matches.filter(match => ['2','10'].includes(match.clubs[`${teamId}`].result)).length.toString(),
-      overtimeLosses: matches.filter(match => match.clubs[`${teamId}`].result === '6').length.toString(),
-      goalsScored: matches.map(x => parseInt(x.clubs[`${teamId}`].goals)).reduce((a,b) => a+b).toString(),
-      goalsAllowed: matches.map(x => parseInt(x.clubs[`${teamId}`].goalsAgainst)).reduce((a,b) => a+b).toString(),
+      gamesPlayed: matches.filter(match => ['1','5','16385','2','10','6'].includes(match.clubs.find(club => club.clubId === teamId).data.result)).length.toString(),
+      wins: matches.filter(match => ['1','5','16385'].includes(match.clubs.find(club => club.clubId === teamId).data.result)).length.toString(),
+      losses: matches.filter(match => ['2','10'].includes(match.clubs.find(club => club.clubId === teamId).data.result)).length.toString(),
+      overtimeLosses: matches.filter(match => match.clubs.find(club => club.clubId === teamId).data.result === '6').length.toString(),
+      goalsScored: matches.map(x => parseInt(x.clubs.find(club => club.clubId === teamId).data.goals)).reduce((a,b) => a+b).toString(),
+      goalsAllowed: matches.map(x => parseInt(x.clubs.find(club => club.clubId === teamId).data.goalsAgainst)).reduce((a,b) => a+b).toString(),
       passPct: ((passes.toFixed(2)/passAttempts.toFixed(2)) * 100).toFixed(2).toString()+'%',
       shotsPg: (shots.toFixed(2)/gamesPlayed.toFixed(2)).toFixed(2).toString(),
       hitsPg: (hits.toFixed(2)/gamesPlayed.toFixed(2)).toFixed(2).toString(),
@@ -59,7 +59,7 @@ const generateAllTeamData = (teamList, matches) => {
   let result = []
   teamList.forEach(team => {
     const clubId = team.clubId.toString()
-    const filteredMatches = matches.filter(match => Object.keys(match.clubs).includes(clubId))
+    const filteredMatches = matches.filter(match => match.clubs.map(club => club.clubId).includes(clubId))
 
     if ( filteredMatches.length > 0 ) {
       result.push(generateTeamData(clubId,filteredMatches))

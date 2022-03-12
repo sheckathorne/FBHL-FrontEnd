@@ -14,13 +14,13 @@ const SmallMatchResultCard = ({ match, themeClass, lightTheme }) => {
   const loserClass = 'fw-light'
 
   const awayTeam = {
-    team: data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[0]),
-    score: match.clubs[`${Object.keys(match.clubs)[0]}`].goals
+    team: data.teams.find(team => team.clubId.toString() === match.clubs[0].clubId),
+    score: match.clubs[0].data.goals
   }
 
   const homeTeam = {
-    team: data.teams.find(team => team.clubId.toString() === Object.keys(match.clubs)[1]),
-    score: match.clubs[`${Object.keys(match.clubs)[1]}`].goals
+    team: data.teams.find(team => team.clubId.toString() === match.clubs[1].clubId),
+    score: match.clubs[1].data.goals
   }
 
   const teams = [{

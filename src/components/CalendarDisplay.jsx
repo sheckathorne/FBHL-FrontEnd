@@ -13,7 +13,7 @@ const CalendarDashboard = () => {
   const matchWithDate = useSelector(state => state.matches)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
-    const scheduledMatchWasPlayed = matchWithDate.find(m => Object.keys(m.clubs).includes(match.teams[0]) && Object.keys(m.clubs).includes(match.teams[1]) && m.matchDate === match.matchDate )
+    const scheduledMatchWasPlayed = matchWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
     if ( scheduledMatchWasPlayed ) {
       return false
     } else {

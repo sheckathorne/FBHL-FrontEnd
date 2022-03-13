@@ -10,10 +10,10 @@ const CalendarDashboard = () => {
   const contextObj = useOutletContext()
 
   const schedule = contextObj.schedule.map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const matchWithDate = useSelector(state => state.matches)
+  const matchWithDate = useSelector(state => state.matches.map(match => ({ ...match, matchDateString: dayjs(match.matchDate).format('M/D/YYYY') })))
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
-    const scheduledMatchWasPlayed = matchWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
+    const scheduledMatchWasPlayed = matchWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDateString === match.matchDate )
     if ( scheduledMatchWasPlayed ) {
       return false
     } else {
@@ -23,7 +23,7 @@ const CalendarDashboard = () => {
 
   const filteredMatchCards = contextObj.matchTypeFilter === 'all' ? matchWithDate.map(match => ({ matchWasPlayed: true, ...match })).concat(scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))) : contextObj.matchTypeFilter === 'played' ? matchWithDate.map(match => ({ matchWasPlayed: true, ...match })) : scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
+  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDateString).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
 
   return (
     <>

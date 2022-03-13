@@ -10,13 +10,13 @@ import { useSelector } from 'react-redux'
 const CalendarDashboard = () => {
   const contextObj = useOutletContext()
   const teamId = useParams().teamId.toString()
-  const matches = useSelector(state => state.matches)
+  const matches = useSelector(state => state.matches.map(match => ({ ...match, matchDateString: dayjs(match.matchDate).format('M/D/YYYY') })))
 
   const filteredSchedule = contextObj.schedule.filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const filteredMatchesWithDate = matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
 
   const scheduleWithoutPlayedMatches = filteredSchedule.filter(match => {
-    const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
+    const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDateString === match.matchDate )
     if ( scheduledMatchWasPlayed ) {
       return false
     } else {
@@ -26,7 +26,7 @@ const CalendarDashboard = () => {
 
   const filteredMatchCards = contextObj.matchTypeFilter === 'all' ? filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })).concat(scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))) : contextObj.matchTypeFilter === 'played' ? filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })) : scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
+  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDateString).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
   const teamName = data.teams.find(team => team.clubId.toString() === teamId).name
 
   return (

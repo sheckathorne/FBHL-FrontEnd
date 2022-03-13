@@ -12,7 +12,7 @@ import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
   const selectedDate = useSelector(state => state.calendarSelectedDate)
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
 
@@ -32,7 +32,9 @@ const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, ran
 
   const matchDetails = queriedMatch ? (
     <Col lg={8} className='mt-2'>
-      <MatchDetailDashboard match={queriedMatch} players={players} />
+      <MatchDetailDashboard
+        match={queriedMatch}
+      />
     </Col> ) : null
 
   const matchCardDashboard = (timestampRangeOfSelectedDay.begin > 0 && timestampRangeOfSelectedDay.end > 0) ? (

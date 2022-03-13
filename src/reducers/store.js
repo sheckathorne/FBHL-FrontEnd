@@ -5,6 +5,7 @@ import viewToggleReducer from './viewToggleReducer'
 import teamRankingsReducer from './teamRankingsReducer'
 import calendarReducer from './calendarReducer'
 import calenderRangeReducer from './calenderRangeReducer'
+import playersReducer from './playersReducer'
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     teamRankings: teamRankingsReducer,
     calendarSelectedDate: calendarReducer,
     timestampRangeOfSelectedDay: calenderRangeReducer,
+    players: playersReducer,
   }
 })
 

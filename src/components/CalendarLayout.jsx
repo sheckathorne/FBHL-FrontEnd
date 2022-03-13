@@ -10,7 +10,7 @@ import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
 
-const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
+const CalendarLayout = ({ user, schedule, setSchedule }) => {
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
   
   const dispatch = useDispatch()
@@ -91,7 +91,6 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
         <Outlet context={{
           onChange,
           schedule,
-          players,
           deleteScheduledMatch,
           updateScheduledMatch,
           matchTypeFilter,

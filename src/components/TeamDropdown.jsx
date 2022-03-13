@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 import TeamDropdownItem from './TeamDropdownItem'
 import ThemeContext from './ThemeContext'
 
-const TeamDropdown = ({ source, resetAllPagination }) => {
+const TeamDropdown = ({ source }) => {
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
   const lightTheme = useContext(ThemeContext).value === 'light'
   const themeVariant = lightTheme ? 'outline-dark' : 'dark'

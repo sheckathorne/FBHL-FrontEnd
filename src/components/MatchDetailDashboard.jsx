@@ -7,8 +7,7 @@ import matchDetails from '../helpers/matchDetails'
 import LeaderCard from './LeaderCard'
 import colorCompare from '../helpers/colorCompare'
 
-
-const MatchDetailDashboard = ({ match, players }) => {
+const MatchDetailDashboard = ({ match }) => {
   const matchDate = dayjs.unix(match.timestamp).format('MMMM D, YYYY')
   const dataPointRowSpec = data.dataPointRowSpec
 
@@ -50,7 +49,6 @@ const MatchDetailDashboard = ({ match, players }) => {
             leaderCategory={leader.category}
             leaderList={leader[leader.category]}
             homeTeamClubId={homeTeamClubId}
-            players={players}
           />
         )}
       </Container>

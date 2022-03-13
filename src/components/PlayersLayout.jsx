@@ -12,9 +12,13 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import MobileTitle from './MobileTitle'
 import LeagueContext from './LeagueContext'
 import generateRankNumber from '../helpers/rankFunction'
+import { useDispatch, useSelector } from 'react-redux'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoalieClick, sortField, players, handlePaginationClick, resetAllPagination, skaterOrGoalie }) => {
+const PlayersLayout = ({ handleSortClick, handleSkaterOrGoalieClick, sortField, skaterOrGoalie }) => {
   const [ playerSearch, setPlayerSearch ] = useState('')
+  const players = useSelector(state => state.players)
+  const dispatch = useDispatch()
 
   const useQuery = () => {
     const { search } = useLocation()
@@ -109,7 +113,7 @@ const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoali
   const teamTitle = queriedPlayer && teamId && teamId.length > 0 ?
     <Row className='mt-2'>
       <Col lg={4}>
-        <TeamDropdown source='players' resetAllPagination={resetAllPagination} />
+        <TeamDropdown source='players' />
       </Col>
     </Row> : null
 
@@ -124,7 +128,7 @@ const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoali
   const leftNavGroup = queriedPlayer ? null : (
     <Col lg={4} className={isMobile ? '': 'mt-2'}>
       <Row>
-        <TeamDropdown source='players' resetAllPagination={resetAllPagination} />
+        <TeamDropdown source='players' />
       </Row>
       <Row className='mt-2'>
         <Col>
@@ -139,7 +143,7 @@ const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoali
         <Col>
           <Form.Control placeholder='Player search' onChange={(e) => {
             setPlayerSearch(e.target.value)
-            handlePaginationClick(1, 'players')
+            dispatch(setPlayersActivePage(1))
           }} />
         </Col>
       </Row>
@@ -157,7 +161,6 @@ const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoali
             player={queriedPlayer}
             players={rankedFilteredPlayers}
             playerIsSkater={queriedPlayer.posSorted !== '0'}
-            handlePaginationClick={handlePaginationClick}
             itemsPerPage={itemsPerPage}
           />
         ))}
@@ -179,9 +182,7 @@ const PlayersLayout = ({ playersActivePage, handleSortClick, handleSkaterOrGoali
           <Outlet
             context={{
               playerSearch,
-              playersActivePage,
               sortField,
-              handlePaginationClick,
               itemsPerPage,
               rankedFilteredPlayers,
               delta,

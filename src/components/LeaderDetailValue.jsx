@@ -2,14 +2,14 @@ import React, { useContext } from 'react'
 import { Col } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import ThemeContext from './ThemeContext'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const LeaderDetailValue = ({ offset, position, name, playerId, teamId, value, players }) => {
+const LeaderDetailValue = ({ offset, position, name, playerId, teamId, value }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate('')
   const lightTheme = useContext(ThemeContext).value === 'light'
-  const playerIndex = players.skaters.filter(player => player.teamId === teamId).findIndex(p => p.playerId === playerId)
+  const playerIndex = useSelector(state => state.players.skaters.filter(player => player.teamId === teamId).findIndex(p => p.playerId === playerId))
   const itemsPerPage = 6
   
   const handlePlayerClick = () => {

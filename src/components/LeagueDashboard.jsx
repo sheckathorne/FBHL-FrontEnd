@@ -8,7 +8,7 @@ import RecentResultsCarousel from './RecentResultsCarousel'
 import LeagueContext from './LeagueContext'
 import { useSelector } from 'react-redux'
 
-const LeagueDashboard = ({ players, handleTableClick, sortField, width }) => {
+const LeagueDashboard = ({ handleTableClick, sortField, width }) => {
   const lightTheme = useContext(ThemeContext).value === 'light'
   const numOfMatchDaysToDisplayOnHeader = 2
   const matches = useSelector(state => state.matches)
@@ -40,7 +40,6 @@ const LeagueDashboard = ({ players, handleTableClick, sortField, width }) => {
           <Col className='mt-2' xs={12} lg={5}>
             <PlayerStandings
               lightTheme={lightTheme}
-              players={players}
               handleTableClick={handleTableClick}
               sortField={sortField}
             />

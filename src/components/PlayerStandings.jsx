@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setPlayerStandingsPage } from '../reducers/paginationReducer'
 import { setPlayerOpen } from '../reducers/viewToggleReducer.js'
 
-const PlayerStandings = ({ lightTheme, players, handleTableClick }) => {
+const PlayerStandings = ({ lightTheme, handleTableClick }) => {
+  const players = useSelector(state => state.players)
   const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
   const playerOpen = useSelector(state => state.viewToggle.playerOpen)
   const dispatch = useDispatch()

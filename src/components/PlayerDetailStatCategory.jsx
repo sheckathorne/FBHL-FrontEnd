@@ -6,7 +6,7 @@ import MobileContext from './MobileContext'
 import PlayerDetailStatCategoryTitleRow from './PlayerDetailStatCategoryTitleRow'
 import generateRankNumber from '../helpers/rankFunction'
 
-const PlayerDetailStatCategory = ({ category, player, players, handlePaginationClick, itemsPerPage }) => {
+const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
   const [ selectedStat, setSelectedStat ] = useState('')
 
   const isMobile = useContext(MobileContext)
@@ -87,7 +87,6 @@ const PlayerDetailStatCategory = ({ category, player, players, handlePaginationC
             selectedStat={selectedStat}
             statClicked={statClicked}
             playerId={player.playerId}
-            handlePaginationClick={handlePaginationClick}
             itemsPerPage={itemsPerPage}
           />
         ))}

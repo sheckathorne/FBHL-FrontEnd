@@ -2,7 +2,7 @@ import React from 'react'
 import LeaderDetailValue from './LeaderDetailValue'
 import Row from 'react-bootstrap/Row'
 
-const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosition, homeTeamObj, rowCounterpart, totalRows, rowDiff, currentRow, players, handlePaginationClick }) => {
+const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosition, homeTeamObj, rowCounterpart, totalRows, rowDiff, currentRow }) => {
   const offsetValue = currentRow > totalRows - 1 - rowDiff ? 8 : 4
   const sourceObjOffset = homeTeamObj ? 0 : offsetValue
   const counterPartOffset = homeTeamObj ? offsetValue : 0
@@ -15,7 +15,6 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
       playerId={playerId}
       teamId={teamId}
       value={playerMaxValue}
-      players={players}
     />
 
   const counterPartObj = rowCounterpart ? rowCounterpart.value === 0 ? null :
@@ -26,7 +25,6 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
       playerId={rowCounterpart.playerId}
       teamId={rowCounterpart.clubId}
       value={rowCounterpart.value}
-      players={players}
     />
     : null
 

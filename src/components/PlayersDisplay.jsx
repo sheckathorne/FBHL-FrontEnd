@@ -12,10 +12,8 @@ const PlayersDisplay = () => {
       playerIsRanked={contextObj.playerIsRankedValue}
       playerSearch={contextObj.playerSearch}
       rankedFilteredPlayers={rankedFilteredPlayers}
-      playersActivePage={contextObj.playersActivePage}
       itemsPerPage={contextObj.itemsPerPage}
       delta={contextObj.delta}
-      handlePaginationClick={contextObj.handlePaginationClick}
       queriedPlayer={contextObj.queriedPlayer}
       playerDetailStats={contextObj.playerDetailStats}
     />

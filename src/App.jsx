@@ -18,6 +18,7 @@ import CreateMatchSidebar from './components/CreateMatchSidebar'
 import { useDispatch } from 'react-redux'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
+import { intializePlayers, sortSkaters } from './reducers/playersReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
 
 const App = () => {
@@ -47,8 +48,6 @@ const App = () => {
 
   /* Leaguewide match data */
   const [ schedule, setSchedule ] = useState([])
-  const [ skaters, setSkaters ] = useState([])
-  const [ goaltenders, setGoaltenders ] = useState([])
   
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
@@ -80,36 +79,16 @@ const App = () => {
 
   // retrieve player data from database
   useEffect(() => {
-    chelService
-      .getData('/playerData')
-      .then(initialData => {
-        setSkaters([...initialData].filter(player => player.skater).sort((a, b) => b[`${sortField.field}`] - a[`${sortField.field}`]))
-        setGoaltenders([...initialData].filter(player => !player.skater))
-      })
-      .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, players: true })))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+    dispatch(intializePlayers()).then(() => {
+      dispatch(sortSkaters({ field: 'skpoints', descending: true, alpha: false }))
+      setLoadingProgress(loadingProgress => ({ ...loadingProgress, players: true }))
+    })
+  },[dispatch])
 
   useEffect(() => {
-    const sortPlayerState = (sortField) => {
-      if ( sortField.field ) {
-        if (sortField.alpha) {
-          if ( sortField.descending ) {
-            setSkaters(p => [...p].sort((b, a) => a[`${sortField.field}`].localeCompare(b[`${sortField.field}`])))
-          } else {
-            setSkaters(p => [...p].sort((a, b) => a[`${sortField.field}`].localeCompare(b[`${sortField.field}`])))
-          }
-        } else {
-          if ( sortField.descending ) {
-            setSkaters(p => [...p].sort((b, a) => a[`${sortField.field}`] - b[`${sortField.field}`]))
-          } else {
-            setSkaters(p => [...p].sort((a, b) => a[`${sortField.field}`] - b[`${sortField.field}`]))
-          }
-        }
-      }
-    }
-    sortPlayerState(sortField)
-  },[sortField])
+    dispatch(sortSkaters(sortField))
+  },[dispatch, sortField])
+
 
   useEffect(() => {
     const loggedFHBLuser = window.localStorage.getItem('loggedFHBLuser')
@@ -257,7 +236,6 @@ const App = () => {
       handleSortClick={handleSortClick}
       handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
       sortField={sortField}
-      players={{ skaters: skaters, goaltenders: goaltenders }}
       skaterOrGoalie={skaterOrGoalie}
       handleTableClick={handleTableClick}
       width={width}

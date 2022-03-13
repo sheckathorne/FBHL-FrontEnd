@@ -37,7 +37,6 @@ const CalendarDashboard = () => {
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCards}
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
-        players={contextObj.players}
         deleteScheduledMatch={contextObj.deleteScheduledMatch}
         updateScheduledMatch={contextObj.updateScheduledMatch}
         matchTypeFilter={contextObj.matchTypeFilter}

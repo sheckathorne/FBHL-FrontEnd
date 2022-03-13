@@ -12,11 +12,9 @@ import PlayersDisplay from './PlayersDisplay'
 import PlayersDisplayTeam from './PlayersDisplayTeam'
 
 const AppDashboard = ({
-  teamData,
   handleSkaterOrGoalieClick,
   handleSortClick,
   sortField,
-  players,
   skaterOrGoalie,
   handleTableClick,
   width,
@@ -28,14 +26,12 @@ const AppDashboard = ({
     <Routes>
       <Route path='/' element={<>
         <LeagueDashboard
-          players={players}
           handleTableClick={handleTableClick}
           sortField={sortField}
           width={width}
         /></>} />
       <Route path='calendar' element={
         <CalendarLayout
-          players={players}
           user={user}
           schedule={schedule}
           setSchedule={setSchedule}
@@ -48,7 +44,6 @@ const AppDashboard = ({
           handleSortClick={handleSortClick}
           handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
           sortField={sortField}
-          players={players}
           skaterOrGoalie={skaterOrGoalie}
         />}>
         <Route index element={<PlayersDisplay />} />

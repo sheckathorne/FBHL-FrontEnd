@@ -3,6 +3,7 @@ import matchesReducer from './matchesReducer'
 import paginationReducer from './paginationReducer'
 import viewToggleReducer from './viewToggleReducer'
 import teamRankingsReducer from './teamRankingsReducer'
+import calendarReducer from './calendarReducer'
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     pagination: paginationReducer,
     viewToggle: viewToggleReducer,
     teamRankings: teamRankingsReducer,
+    calendar: calendarReducer,
   }
 })
 

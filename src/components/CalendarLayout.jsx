@@ -7,9 +7,11 @@ import LeagueContext from './LeagueContext'
 import chelService from '../services/api'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
+import { setSelectedDate } from '../reducers/calendarReducer'
 
 const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
   const dispatch = useDispatch()
+  const selectedDate = useSelector(state => state.calendar)
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)
@@ -17,7 +19,6 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
 
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
-  const [ selectedDate, setSelectedDate ] = useState(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day').toDate())
   const [ timestampRangeOfSelectedDay, setTimestampRangeOfSelectedDay ] = useState({})
 
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
@@ -27,30 +28,34 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch])
 
+  useEffect(() => {
+    dispatch(setSelectedDate(dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[dispatch])
+
   // sets calendar to last date a given team (or all teams if none selected) played a game
   useEffect(() => {
     if ( matchTypeFilter === 'all' || matchTypeFilter === 'played' ) {
-      setSelectedDate(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day').toDate())
+      dispatch(setSelectedDate(dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()))
     } else {
       const scheduleFromTodayOnward = filteredSchedule.filter(match => dayjs.unix(dayjs(match.matchDate).unix()).startOf('day').toDate() >= dayjs().startOf('day').toDate())
       const minScheduledTimeStamp = scheduleFromTodayOnward.length === 0 ?
         dayjs().startOf('day').unix() :
         Math.min(...filteredSchedule.filter(match => dayjs.unix(dayjs(match.matchDate).unix()).startOf('day').toDate() >= dayjs().startOf('day').toDate()).map(match => ({ timestamp: dayjs(match.matchDate).unix(), ...match })).map(o => o.timestamp))
-
-      setSelectedDate(dayjs.unix(minScheduledTimeStamp).toDate())
+      dispatch(setSelectedDate(dayjs(dayjs.unix(minScheduledTimeStamp).startOf('day')).unix()))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[teamId, matchTypeFilter])
 
   // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
   useEffect(() => {
-    setTimestampRangeOfSelectedDay({ begin: dayjs(selectedDate).unix(), end: dayjs(selectedDate).add(1,'d').subtract(1,'s').unix() })
+    setTimestampRangeOfSelectedDay({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() })
   },[selectedDate])
 
   // handles selection of new calendar date
   const onChange = (newSelectedDate) => {
     setTimestampRangeOfSelectedDay({ begin: dayjs(newSelectedDate).unix(), end: dayjs(newSelectedDate).add(1,'d').subtract(1,'s').unix() })
-    setSelectedDate(newSelectedDate)
+    dispatch(setSelectedDate(dayjs(newSelectedDate).startOf('day').unix()))
     dispatch(setMatchActivePage(1))
   }
 
@@ -84,7 +89,6 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
       </Helmet>
       <Container>
         <Outlet context={{
-          selectedDate,
           timestampRangeOfSelectedDay,
           onChange,
           matches,

@@ -10,8 +10,11 @@ import ThemeContext from './ThemeContext'
 import MobileContext from './MobileContext'
 import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, timestampRangeOfSelectedDay, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, timestampRangeOfSelectedDay, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+  const selectedDate = useSelector(state => state.calendar)
+  
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])
@@ -24,7 +27,7 @@ const CalendarContentLayout = ({ onChange, selectedDate, tileDisabled, filteredM
 
   const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null
 
-  const calendarDate = selectedDate === 'Invalid Date' ? dayjs() : selectedDate
+  const calendarDate = selectedDate === 'Invalid Date' ? dayjs() : dayjs.unix(selectedDate).toDate()
 
   const matchDetails = queriedMatch ? (
     <Col lg={8} className='mt-2'>

@@ -10,7 +10,7 @@ const CalendarDashboard = () => {
   const contextObj = useOutletContext()
 
   const schedule = contextObj.schedule.map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const matchWithDate = useSelector(state => state.matches.map(match => ({ ...match, matchDateString: dayjs(match.matchDate).format('M/D/YYYY') })))
+  const matchWithDate = useSelector(state => state.matches)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
     const scheduledMatchWasPlayed = matchWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDateString === match.matchDate )
@@ -29,7 +29,6 @@ const CalendarDashboard = () => {
     <>
       <CalendarContentLayout
         onChange={contextObj.onChange}
-        selectedDate={contextObj.selectedDate}
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCards}
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > contextObj.timestampRangeOfSelectedDay.begin && match.timestamp < contextObj.timestampRangeOfSelectedDay.end )}

@@ -15,10 +15,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setLeagueStandingsPage } from '../reducers/paginationReducer'
 import { setLeagueOpen } from '../reducers/viewToggleReducer.js'
 
-const LeagueStandings = ({ teamData, lightTheme, handleTableClick }) => {
+const LeagueStandings = ({ lightTheme, handleTableClick }) => {
   const dispatch = useDispatch()
   const leagueStandingsPage = useSelector(state => state.pagination.leagueStandingsPage)
   const leagueOpen = useSelector(state => state.viewToggle.leagueOpen)
+  const teamData = useSelector (state => state.teamRankings)
 
   const handlePaginationChange = (e,n) => {
     dispatch(setLeagueStandingsPage(n))

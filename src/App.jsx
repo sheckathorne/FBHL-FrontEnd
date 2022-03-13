@@ -5,7 +5,6 @@ import MobileContext from './components/MobileContext'
 import LeagueContext from './components/LeagueContext'
 import AppNavbar from './components/AppNavbar'
 import chelService from './services/api'
-import teamConfig from './helpers/generateTeamSeasonData'
 import data from './helpers/data.js'
 import { useNavigate } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -16,12 +15,20 @@ import { Container, Row, Col, Alert } from 'react-bootstrap'
 import LoginSidebar from './components/LoginSidebar'
 import loginService from './services/login'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { initializeMatches } from './reducers/matchesReducer'
+import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
+  
+  const itemsToLoad = { 
+    matches: false,
+    players: false,
+    schedule: false,
+    teamRankings: false 
+  }
 
   /* app theme */
   const [ theme, setTheme ] = useState({ title: 'Light Theme', value: 'light' })
@@ -32,7 +39,7 @@ const App = () => {
   const [ user, setUser ] = useState(null)
 
   /* Administration */
-  const [ loadingProgress, setLoadingProgress ] = useState({ matches: false, players: false, schedule: false })
+  const [ loadingProgress, setLoadingProgress ] = useState(itemsToLoad)
 
   /* Sort players */
   const [ sortField, setSortField ] = useState({ field: 'skpoints', descending: true, alpha: false })
@@ -42,7 +49,6 @@ const App = () => {
   const [ schedule, setSchedule ] = useState([])
   const [ skaters, setSkaters ] = useState([])
   const [ goaltenders, setGoaltenders ] = useState([])
-  const [ teamData, setTeamData ] = useState([])
   
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
@@ -51,13 +57,17 @@ const App = () => {
   const [ message, setMessage ] = useState({ type: null, text: null })
 
   const dispatch = useDispatch()
-  const matches = useSelector(state => state.matches)
 
   // retrieve match history from database
   useEffect(() => {
     dispatch(initializeMatches())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matches: true })))
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeTeamRankings())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, teamRankings: true })))
+  },[dispatch])
 
   useEffect(() => {
     chelService
@@ -79,11 +89,6 @@ const App = () => {
       .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, players: true })))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-
-  useEffect(() => {
-    const rankTheTeams = (teams) => teams.map((team,i) => ({ rank: teamRankFunction(i, team, teams), ...team }))
-    setTeamData(rankTheTeams(sortTeamData(teamConfig.generateAllTeamData(data.teams.filter(team => team.clubId !== '' && team.active), matches))))
-  }, [matches])
 
   useEffect(() => {
     const sortPlayerState = (sortField) => {
@@ -193,15 +198,6 @@ const App = () => {
     }
   }
 
-  const sortTeamData = (teamData) => teamData.sort((a,b) => {
-    let n = (((b.wins * 2) + b.overtimeLosses) - ((a.wins * 2) + a.overtimeLosses))
-    if ( n !== 0) {
-      return n
-    } else {
-      return ((((parseFloat((b.wins * 2) + b.overtimeLosses)) / parseFloat(b.gamesPlayed))) - ((parseFloat((a.wins * 2) + a.overtimeLosses)) / parseFloat(a.gamesPlayed)))
-    }
-  })
-
   const handleSortClick = (e) => {
     setSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true') })
   }
@@ -252,27 +248,12 @@ const App = () => {
     }
   }
 
-  const teamRankFunction = ( i, team, teams ) => {
-    let n = 0
-
-    if ( i === 0 ) {
-      n = 1
-    } else if ( i > 0 && ((team.wins * 2) + team.overtimeLosses) === ((teams[i-1].wins * 2) + teams[i-1].overtimeLosses) ) {
-      n = teams.findIndex(p => (((p.wins * 2) + p.overtimeLosses) === ((team.wins * 2) + team.overtimeLosses)) ) + 1
-    } else {
-      n = i + 1
-    }
-
-    return n
-  }
-
   const isMobile = width < 768
 
   const appIsLoaded = (loadingProgress) => Object.values(loadingProgress).every(item => item === true)
 
   const appMain = appIsLoaded(loadingProgress) ?
     <AppDashboard
-      teamData={teamData}
       handleSortClick={handleSortClick}
       handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
       sortField={sortField}

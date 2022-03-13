@@ -1,5 +1,30 @@
 import data from './data.js'
 
+const teamRankFunction = ( i, team, teams ) => {
+  let n = 0
+
+  if ( i === 0 ) {
+    n = 1
+  } else if ( i > 0 && ((team.wins * 2) + team.overtimeLosses) === ((teams[i-1].wins * 2) + teams[i-1].overtimeLosses) ) {
+    n = teams.findIndex(p => (((p.wins * 2) + p.overtimeLosses) === ((team.wins * 2) + team.overtimeLosses)) ) + 1
+  } else {
+    n = i + 1
+  }
+
+  return n
+}
+
+const rankTheTeams = (teams) => teams.map((team,i) => ({ rank: teamRankFunction(i, team, teams), ...team }))
+
+const sortTeamData = (teamData) => teamData.sort((a,b) => {
+  let n = (((b.wins * 2) + b.overtimeLosses) - ((a.wins * 2) + a.overtimeLosses))
+  if ( n !== 0) {
+    return n
+  } else {
+    return ((((parseFloat((b.wins * 2) + b.overtimeLosses)) / parseFloat(b.gamesPlayed))) - ((parseFloat((a.wins * 2) + a.overtimeLosses)) / parseFloat(a.gamesPlayed)))
+  }
+})
+
 const generateTeamData = (teamId, matches) => {
   const gamesPlayed = matches.length
   if ( gamesPlayed === 0 ) {

@@ -11,8 +11,9 @@ import LeagueContext from './LeagueContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { setTeamsActivePage } from '../reducers/paginationReducer'
 
-const TeamsLayout = ({ teamData }) => {
+const TeamsLayout = () => {
   const teamsActivePage = useSelector(state => state.pagination.teamsActivePage)
+  const teamData = useSelector(state => state.teamRankings)
 
   const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest

@@ -28,7 +28,6 @@ const AppDashboard = ({
     <Routes>
       <Route path='/' element={<>
         <LeagueDashboard
-          teamData={teamData}
           players={players}
           handleTableClick={handleTableClick}
           sortField={sortField}
@@ -56,9 +55,8 @@ const AppDashboard = ({
         <Route path=':teamId' element={<PlayersDisplayTeam />} />
       </Route>
       <Route path='teams' element={<>
-        <TeamsLayout
-          teamData={teamData}
-        /></>}>
+        <TeamsLayout />
+      </>}>
         <Route index element={<TeamsDisplay />}></Route>
         <Route path=':teamId' element={<TeamDisplay />}></Route>
       </Route>

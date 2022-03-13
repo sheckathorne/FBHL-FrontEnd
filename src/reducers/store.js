@@ -4,6 +4,7 @@ import paginationReducer from './paginationReducer'
 import viewToggleReducer from './viewToggleReducer'
 import teamRankingsReducer from './teamRankingsReducer'
 import calendarReducer from './calendarReducer'
+import calenderRangeReducer from './calenderRangeReducer'
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
     pagination: paginationReducer,
     viewToggle: viewToggleReducer,
     teamRankings: teamRankingsReducer,
-    calendar: calendarReducer,
+    calendarSelectedDate: calendarReducer,
+    timestampRangeOfSelectedDay: calenderRangeReducer,
   }
 })
 

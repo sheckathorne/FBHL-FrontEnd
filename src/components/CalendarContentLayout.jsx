@@ -12,9 +12,10 @@ import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, timestampRangeOfSelectedDay, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
-  const selectedDate = useSelector(state => state.calendar)
-  
+const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, players, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+  const selectedDate = useSelector(state => state.calendarSelectedDate)
+  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
+
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])

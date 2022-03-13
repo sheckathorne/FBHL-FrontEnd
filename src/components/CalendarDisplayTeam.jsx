@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 
 const CalendarDashboard = () => {
   const contextObj = useOutletContext()
+  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const teamId = useParams().teamId.toString()
   const matches = useSelector(state => state.matches)
 
@@ -24,7 +25,12 @@ const CalendarDashboard = () => {
     }
   })
 
-  const filteredMatchCards = contextObj.matchTypeFilter === 'all' ? filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })).concat(scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))) : contextObj.matchTypeFilter === 'played' ? filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })) : scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, ...match }))
+  const filteredMatchCards =
+    contextObj.matchTypeFilter === 'all' ?
+      filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })).concat(scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))) :
+    contextObj.matchTypeFilter === 'played' ?
+      filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })) :
+      scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))
 
   const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDateString).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
   const teamName = data.teams.find(team => team.clubId.toString() === teamId).name
@@ -38,8 +44,7 @@ const CalendarDashboard = () => {
         onChange={contextObj.onChange}
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCards}
-        rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > contextObj.timestampRangeOfSelectedDay.begin && match.timestamp < contextObj.timestampRangeOfSelectedDay.end )}
-        timestampRangeOfSelectedDay={contextObj.timestampRangeOfSelectedDay}
+        rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         teamId={teamId}
         players={contextObj.players}
         deleteScheduledMatch={contextObj.deleteScheduledMatch}

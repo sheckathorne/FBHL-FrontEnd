@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 const initialState = dayjs().startOf('day').unix()
 
 const calendarSlice = createSlice({
-  name: 'calendar',
+  name: 'calendarSelectedDate',
   initialState,
   reducers: {
     setSelectedDate(state, action) {

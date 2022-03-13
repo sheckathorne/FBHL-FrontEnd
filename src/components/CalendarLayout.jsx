@@ -8,19 +8,19 @@ import chelService from '../services/api'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
+import { setTimestampRange } from '../reducers/calenderRangeReducer'
 
 const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
+  const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
+  
   const dispatch = useDispatch()
-  const selectedDate = useSelector(state => state.calendar)
+  const selectedDate = useSelector(state => state.calendarSelectedDate)
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)
   const filteredMatches = teamId ? matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matches]
+  const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
-
-  const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
-  const [ timestampRangeOfSelectedDay, setTimestampRangeOfSelectedDay ] = useState({})
-
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
 
   useEffect(() => {
@@ -29,9 +29,8 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
   },[dispatch])
 
   useEffect(() => {
-    dispatch(setSelectedDate(dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[dispatch])
+    dispatch(setSelectedDate(lastMatchTimestampForTeams))
+  },[dispatch, lastMatchTimestampForTeams])
 
   // sets calendar to last date a given team (or all teams if none selected) played a game
   useEffect(() => {
@@ -49,12 +48,12 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
 
   // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
   useEffect(() => {
-    setTimestampRangeOfSelectedDay({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() })
-  },[selectedDate])
+    dispatch(setTimestampRange({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() }))
+  },[dispatch, selectedDate])
 
   // handles selection of new calendar date
   const onChange = (newSelectedDate) => {
-    setTimestampRangeOfSelectedDay({ begin: dayjs(newSelectedDate).unix(), end: dayjs(newSelectedDate).add(1,'d').subtract(1,'s').unix() })
+    dispatch(setTimestampRange({ begin: dayjs(newSelectedDate).unix(), end: dayjs(newSelectedDate).add(1,'d').subtract(1,'s').unix() }))
     dispatch(setSelectedDate(dayjs(newSelectedDate).startOf('day').unix()))
     dispatch(setMatchActivePage(1))
   }
@@ -73,7 +72,8 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
     const changedMatch = { ...match, matchDate: newMatchDate }
 
     chelService
-      .updateScheduledMatch(id, changedMatch).then(() => {
+      .updateScheduledMatch(id, changedMatch)
+      .then(() => {
         setSchedule(schedule.map(item => item._id !== id ? item : changedMatch))
       })
   }
@@ -89,9 +89,7 @@ const CalendarLayout = ({ players, user, schedule, setSchedule }) => {
       </Helmet>
       <Container>
         <Outlet context={{
-          timestampRangeOfSelectedDay,
           onChange,
-          matches,
           schedule,
           players,
           deleteScheduledMatch,

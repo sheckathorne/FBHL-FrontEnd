@@ -8,7 +8,7 @@ const SmallMatchResultCard = ({ match, themeClass, lightTheme }) => {
   let navigate = useNavigate('')
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
 
-  const url = `/calendar?matchId=${match.matchId}`
+  const url = `/calendar?matchId=${match.matchId}&timestamp=${match.timestamp}`
   const darkCardClass = lightTheme ? '' : ' dark'
   const winnerClass = 'fw-bolder'
   const loserClass = 'fw-light'

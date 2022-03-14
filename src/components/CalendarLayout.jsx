@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet, useParams, useLocation } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import dayjs from 'dayjs'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
@@ -51,6 +51,15 @@ const CalendarLayout = ({ user, schedule, setSchedule }) => {
     dispatch(setTimestampRange({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() }))
   },[dispatch, selectedDate])
 
+  const useQuery = () => {
+    const { search } = useLocation()
+    return React.useMemo(() => new URLSearchParams(search), [search])
+  }
+
+  const query = useQuery()
+  const queriedTimestamp = query.get('timestamp')
+  const queriedMatchId = query.get('matchId')
+
   // handles selection of new calendar date
   const onChange = (newSelectedDate) => {
     dispatch(setTimestampRange({ begin: dayjs(newSelectedDate).unix(), end: dayjs(newSelectedDate).add(1,'d').subtract(1,'s').unix() }))
@@ -82,6 +91,10 @@ const CalendarLayout = ({ user, schedule, setSchedule }) => {
     setMatchTypeFilter(type)
   }
 
+  if ( queriedTimestamp ) {
+    dispatch(setSelectedDate(dayjs(dayjs.unix(queriedTimestamp).startOf('day')).unix()))
+  }
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -96,7 +109,9 @@ const CalendarLayout = ({ user, schedule, setSchedule }) => {
           matchTypeFilter,
           handleMatchTypeChange,
           TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES,
-          user
+          user,
+          selectedDate,
+          queriedMatchId
         }}/>
       </Container>
     </HelmetProvider>

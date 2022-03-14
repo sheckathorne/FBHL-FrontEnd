@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import { Row, Col } from 'react-bootstrap'
-import { useLocation } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import TeamDropdown from './TeamDropdown'
 import MatchDetailDashboard from './MatchDetailDashboard'
@@ -12,19 +11,13 @@ import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
-  const selectedDate = useSelector(state => state.calendarSelectedDate)
+const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, deleteScheduledMatch, updateScheduledMatch, matchTypeFilter, handleMatchTypeChange, user }) => {
+  
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
-
-  const useQuery = () => {
-    const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
-  }
-
+  
   const lightTheme = useContext(ThemeContext).value === 'light'
   const isMobile = useContext(MobileContext)
-  const query = useQuery()
-  const queriedMatch = filteredMatchCards.filter(match => match.matchId).find(match => match.matchId.toString() === query.get('matchId'))
+  const queriedMatch = filteredMatchCards.filter(match => match.matchId).find(match => match.matchId.toString() === queriedMatchId)
 
   const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null
 

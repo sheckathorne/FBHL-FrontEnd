@@ -14,11 +14,20 @@ const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGa
     value: perGameStat ? parseFloat(calculateValuePerGameOfStat(player,statName)) : parseFloat(player[`${statName}`]),
     playerName: player.playerName,
     playerId: player.playerId,
-    gamesPlayed: player.skGamesPlayed }))
+    gamesPlayed: player.skGamesPlayed,
+    skpasses: player.skpasses,
+  }))
 
   const numberOfGamesPlayedToBeRanked = (parseFloat(playersArr.sort((a,b) => b.gamesPlayed - a.gamesPlayed).slice(0,10).map(x => x.gamesPlayed).reduce((y,a) => y+a, 0))/parseFloat(10) * .33)
-  const rankedPlayers = rankTheStat(playersArr.filter(player => parseFloat(player.gamesPlayed) >= numberOfGamesPlayedToBeRanked).sort((a,b) => b.value - a.value))
-  const unrankedPlayers = playersArr.filter(player => parseFloat(player.gamesPlayed) < numberOfGamesPlayedToBeRanked).map(player => ({ ...player, rank: 0 }))
+  const nubmerOfPassesToBeRankedForPassPct = (parseFloat(playersArr.sort((a,b) => b.skpasses - a.skpasses).slice(0,10).map(x => x.skpasses).reduce((y,a) => y+a, 0))/parseFloat(10) * .60)
+
+  const rankedPlayers = statName === 'skpasspct' ?
+    rankTheStat(playersArr.filter(player => parseFloat(player.gamesPlayed) >= numberOfGamesPlayedToBeRanked && parseFloat(player.skpasses) >= nubmerOfPassesToBeRankedForPassPct).sort((a,b) => b.value - a.value)) :
+    rankTheStat(playersArr.filter(player => parseFloat(player.gamesPlayed) >= numberOfGamesPlayedToBeRanked).sort((a,b) => b.value - a.value))
+  const unrankedPlayers = statName === 'skpasspct' ?
+    playersArr.filter(player => parseFloat(player.gamesPlayed) < numberOfGamesPlayedToBeRanked || parseFloat(player.skpasses) < nubmerOfPassesToBeRankedForPassPct).map(player => ({ ...player, rank: 0 })) :
+    playersArr.filter(player => parseFloat(player.gamesPlayed) < numberOfGamesPlayedToBeRanked).map(player => ({ ...player, rank: 0 }))
+  
   const allPlayers = [...rankedPlayers, ...unrankedPlayers]
   const topFiveRankedPlayers = rankedPlayers.filter(player => player.rank <= 5)
   const currentPlayerRankByStat = allPlayers.find(s => s.playerId === playerId).rank

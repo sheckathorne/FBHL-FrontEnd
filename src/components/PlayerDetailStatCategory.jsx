@@ -23,8 +23,8 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
 
   const calculateValuePerGameOfStat = (player, statName) => (parseFloat(player[`${statName}`])/parseFloat(player.skGamesPlayed)).toFixed(2).toString()
 
-  const generateCustomStats = (player) => {
-    return {
+  const generateCustomStats = (player) => (
+    {
       skpointspg: calculateValuePerGameOfStat(player,'skpoints'),
       skgoalspg: calculateValuePerGameOfStat(player,'skgoals'),
       skassistspg: calculateValuePerGameOfStat(player,'skassists'),
@@ -35,7 +35,7 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
       sktakeawayspg: calculateValuePerGameOfStat(player,'sktakeaways'),
       skblockedshotspg: calculateValuePerGameOfStat(player,'skbs'),
     }
-  }
+  )
 
   const playerStats = generateCustomStats(player)
 
@@ -61,7 +61,10 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
       <Popover.Header as='h3'>Rank Criteria:</Popover.Header>
       <Popover.Body>
         To be ranked for these stats, you must have played in one-third the number of games as the average of the ten players who have played the most games.
-        <br></br><br></br>For example, if the average of number of games played by the top 10 is 33, then you must play in at least 11 games to be ranked.
+        <br></br><br></br>
+        For example, if the average of number of games played by the top 10 is 33, then you must play in at least 11 games to be ranked.
+        <br></br><br></br>
+        For passing percentage, you must have attempted 60% of the average of the top ten passing attempts to be ranked.
       </Popover.Body>
     </Popover>
   )

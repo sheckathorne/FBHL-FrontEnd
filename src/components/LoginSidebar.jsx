@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Offcanvas, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
-const LoginSidebar = ({ handleSidebarAction, username, password, handleUsernameChange, handlePasswordChange, handleLogin }) => {
+const LoginSidebar = ({ username, password, handleSidebarAction, handleUsernameChange, handlePasswordChange, handleLogin }) => {
   const loginIsOpen = useSelector(state => state.viewToggle.loginIsOpen)
   
   return (

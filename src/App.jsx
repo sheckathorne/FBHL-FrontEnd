@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import AppDashboard from './components/AppDashboard'
-import ThemeContext from './components/ThemeContext'
-import MobileContext from './components/MobileContext'
-import LeagueContext from './components/LeagueContext'
-import AppNavbar from './components/AppNavbar'
-import chelService from './services/api'
-import data from './helpers/data.js'
-import { useNavigate } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './App.css'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import CircularProgress from '@mui/material/CircularProgress'
-import { Container, Row, Col, Alert } from 'react-bootstrap'
-import LoginSidebar from './components/LoginSidebar'
-import loginService from './services/login'
-import CreateMatchSidebar from './components/CreateMatchSidebar'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { initializeSchedule, createSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
+import { Container, Row, Col, Alert } from 'react-bootstrap'
+import AppDashboard from './components/AppDashboard'
+import ThemeContext from './components/ThemeContext'
+import MobileContext from './components/MobileContext'
+import LeagueContext from './components/LeagueContext'
+import AppNavbar from './components/AppNavbar'
+import LoginSidebar from './components/LoginSidebar'
+import CreateMatchSidebar from './components/CreateMatchSidebar'
+import chelService from './services/api'
+import loginService from './services/login'
+import data from './helpers/data.js'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './App.css'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -254,10 +254,9 @@ const App = () => {
               <AppNavbar
                 handleSwitch={handleSwitch}
                 theme={theme}
-                handleSidebarAction={handleSidebarAction}
                 user={user}
+                handleSidebarAction={handleSidebarAction}
                 handleLogout={handleLogout}
-                handleCreateMatchSubmit={handleCreateMatchSubmit}
               />
               <LoginSidebar
                 username={username}

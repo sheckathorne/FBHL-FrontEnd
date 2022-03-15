@@ -8,7 +8,6 @@ const PlayersDisplay = () => {
 
   return (
     <PlayersAndPaginationDisplay
-      sortField={contextObj.sortField}
       playerIsRanked={contextObj.playerIsRankedValue}
       playerSearch={contextObj.playerSearch}
       rankedFilteredPlayers={rankedFilteredPlayers}

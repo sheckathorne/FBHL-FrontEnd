@@ -6,7 +6,7 @@ import paginationFunction from '../helpers/paginationFunction.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayersAndPaginationDisplay = ({ sortField, playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats }) => {
+const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats }) => {
   const dispatch = useDispatch()
   const playersActivePage = useSelector(state => state.pagination.playersActivePage)
 
@@ -51,7 +51,6 @@ const PlayersAndPaginationDisplay = ({ sortField, playerIsRanked, playerSearch, 
         <Row>
           <PlayerCardDashboard
             players={displayedPlayers}
-            sortField={sortField}
             playerIsRanked={playerIsRanked}
             playerDetailStats={playerDetailStats}
             playerCardWidth={playerCardWidth}

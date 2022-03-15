@@ -17,7 +17,6 @@ const PlayersDisplayTeam = () => {
         <title>Players - {teamName}</title>
       </Helmet>
       <PlayersAndPaginationDisplay
-        sortField={contextObj.sortField}
         playerIsRanked={contextObj.playerIsRankedValue}
         playerSearch={contextObj.playerSearch}
         rankedFilteredPlayers={rankedFilteredPlayers}

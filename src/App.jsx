@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule, createSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
+import { setSortField } from './reducers/playerSortReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
 import AppDashboard from './components/AppDashboard'
@@ -32,6 +33,8 @@ const App = () => {
     teamRankings: false 
   }
 
+  const sortField = useSelector(state => state.sortField)
+
   /* app theme */
   const [ theme, setTheme ] = useState({ title: 'Light Theme', value: 'light' })
 
@@ -44,7 +47,6 @@ const App = () => {
   const [ loadingProgress, setLoadingProgress ] = useState(itemsToLoad)
 
   /* Sort players */
-  const [ sortField, setSortField ] = useState({ field: 'skpoints', descending: true, alpha: false })
   const [ skaterOrGoalie, setSkaterOrGoalie ] = useState({ field: 'skaters' })
   
   /* Detect mobile viewport */
@@ -168,12 +170,8 @@ const App = () => {
     }
   }
 
-  const handleSortClick = (e) => {
-    setSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true') })
-  }
-
   const handleTopPlayerClick = (sortField, url) => () => {
-    setSortField({ field: sortField.field, descending: true, alpha: false })
+    dispatch(setSortField({ field: sortField.field, descending: true, alpha: false }))
     setSkaterOrGoalie({ field: 'skaters' })
     navigate(url)
   }
@@ -224,9 +222,7 @@ const App = () => {
 
   const appMain = appIsLoaded(loadingProgress) ?
     <AppDashboard
-      handleSortClick={handleSortClick}
       handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
-      sortField={sortField}
       skaterOrGoalie={skaterOrGoalie}
       handleTableClick={handleTableClick}
       width={width}

@@ -4,7 +4,7 @@ import PlayerCard from './PlayerCard'
 import { useLocation } from 'react-router-dom'
 
 
-const PlayerCardDashboard = ({ players, sortField, playerIsRanked, playerDetailStats, playerCardWidth }) => {
+const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playerCardWidth }) => {
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])
@@ -51,7 +51,6 @@ const PlayerCardDashboard = ({ players, sortField, playerIsRanked, playerDetailS
               marginClass={lastPlayerIndex === i + 1 ? 'mb-4' : 'mb-2'}
               rank={player.rank}
               playerIsRanked={player.posSorted === '0' ? player.playerIsRanked : playerIsRanked}
-              sortField={sortField}
               posSorted={player.posSorted}
               playerCardClickSource='players'
               playerDetailStats={queriedPlayerId === player.playerId ? playerDetailStats : null}

@@ -15,9 +15,11 @@ import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayersLayout = ({ handleSortClick, handleSkaterOrGoalieClick, sortField, skaterOrGoalie }) => {
+const PlayersLayout = ({ handleSkaterOrGoalieClick, skaterOrGoalie }) => {
   const [ playerSearch, setPlayerSearch ] = useState('')
   const players = useSelector(state => state.players)
+  const sortField = useSelector(state => state.sortField)
+
   const dispatch = useDispatch()
 
   const useQuery = () => {
@@ -119,10 +121,7 @@ const PlayersLayout = ({ handleSortClick, handleSkaterOrGoalieClick, sortField, 
 
   const sortButtonGroup = showingSkaters ? (
     <Row className='mt-2'>
-      <SortButtonGroup
-        handleSortClick={handleSortClick}
-        sortField={sortField}
-      />
+      <SortButtonGroup />
     </Row>) : null
 
   const leftNavGroup = queriedPlayer ? null : (
@@ -182,7 +181,6 @@ const PlayersLayout = ({ handleSortClick, handleSkaterOrGoalieClick, sortField, 
           <Outlet
             context={{
               playerSearch,
-              sortField,
               itemsPerPage,
               rankedFilteredPlayers,
               delta,

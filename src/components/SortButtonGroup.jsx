@@ -3,12 +3,21 @@ import SortDropdownItem from './SortDropdownItem'
 import { DropdownButton } from 'react-bootstrap'
 import dataHelper from '../helpers/data'
 import ThemeContext from './ThemeContext'
+import { setSortField } from '../reducers/playerSortReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
-const SortButtonGroup = ({ sortField, handleSortClick }) => {
+const SortButtonGroup = () => {
+  const dispatch = useDispatch()
+  const sortField = useSelector(state => state.sortField)
+  
   const activeItem = {
     field: sortField.field,
     descending: sortField.descending,
     active: true
+  }
+
+  const handleSortClick = (e) => {
+    dispatch(setSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true') }))
   }
 
   const buttonsList = dataHelper.sortButtons.map(button => button.field !== activeItem.field ? button : { ...button, active: true, descending: activeItem.descending } )

@@ -13,8 +13,6 @@ import PlayersDisplayTeam from './PlayersDisplayTeam'
 
 const AppDashboard = ({
   handleSkaterOrGoalieClick,
-  handleSortClick,
-  sortField,
   skaterOrGoalie,
   handleTableClick,
   width,
@@ -25,7 +23,6 @@ const AppDashboard = ({
       <Route path='/' element={<>
         <LeagueDashboard
           handleTableClick={handleTableClick}
-          sortField={sortField}
           width={width}
         /></>} />
       <Route path='calendar' element={
@@ -37,9 +34,7 @@ const AppDashboard = ({
       </Route>
       <Route path='players' element={
         <PlayersLayout
-          handleSortClick={handleSortClick}
           handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
-          sortField={sortField}
           skaterOrGoalie={skaterOrGoalie}
         />}>
         <Route index element={<PlayersDisplay />} />

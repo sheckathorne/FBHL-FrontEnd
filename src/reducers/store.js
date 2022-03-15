@@ -7,6 +7,7 @@ import calendarReducer from './calendarReducer'
 import calenderRangeReducer from './calenderRangeReducer'
 import playersReducer from './playersReducer'
 import scheduleReducer from './scheduleReducer'
+import playerSortReducer from './playerSortReducer'
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     timestampRangeOfSelectedDay: calenderRangeReducer,
     players: playersReducer,
     schedule: scheduleReducer,
+    sortField: playerSortReducer,
   }
 })
 

@@ -20,6 +20,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const players = useSelector(state => state.players)
   const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
   const playerOpen = useSelector(state => state.viewToggle.playerOpen)
+
   const dispatch = useDispatch()
 
   const isMobile = useContext(MobileContext)

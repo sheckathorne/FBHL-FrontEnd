@@ -17,12 +17,10 @@ import { setPlayerStandingsPage } from '../reducers/paginationReducer'
 import { setPlayerOpen } from '../reducers/viewToggleReducer.js'
 
 const PlayerStandings = ({ lightTheme, handleTableClick }) => {
+  const dispatch = useDispatch()
   const players = useSelector(state => state.players)
   const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
   const playerOpen = useSelector(state => state.viewToggle.playerOpen)
-
-  const dispatch = useDispatch()
-
   const isMobile = useContext(MobileContext)
   const caret = playerOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const themeClass = lightTheme ? '' : 'dark-theme-text'

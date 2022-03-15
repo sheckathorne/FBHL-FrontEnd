@@ -6,6 +6,7 @@ import teamRankingsReducer from './teamRankingsReducer'
 import calendarReducer from './calendarReducer'
 import calenderRangeReducer from './calenderRangeReducer'
 import playersReducer from './playersReducer'
+import scheduleReducer from './scheduleReducer'
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     calendarSelectedDate: calendarReducer,
     timestampRangeOfSelectedDay: calenderRangeReducer,
     players: playersReducer,
+    schedule: scheduleReducer,
   }
 })
 

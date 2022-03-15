@@ -4,17 +4,17 @@ import { Container } from 'react-bootstrap'
 import dayjs from 'dayjs'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import LeagueContext from './LeagueContext'
-import chelService from '../services/api'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
 
-const CalendarLayout = ({ user, schedule, setSchedule }) => {
+const CalendarLayout = ({ user }) => {
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
   
   const dispatch = useDispatch()
   const selectedDate = useSelector(state => state.calendarSelectedDate)
+  const schedule = useSelector(state => state.schedule)  
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)
@@ -67,26 +67,6 @@ const CalendarLayout = ({ user, schedule, setSchedule }) => {
     dispatch(setMatchActivePage(1))
   }
 
-  const deleteScheduledMatch = (id) => {
-    const newSchedule = schedule.filter(match => match._id !== id)
-    setSchedule(newSchedule)
-
-    chelService
-      .deleteScheduledMatch(id)
-      //.then(response => console.log(response))
-  }
-
-  const updateScheduledMatch = (id, newMatchDate) => {
-    const match = schedule.find(s => s._id === id)
-    const changedMatch = { ...match, matchDate: newMatchDate }
-
-    chelService
-      .updateScheduledMatch(id, changedMatch)
-      .then(() => {
-        setSchedule(schedule.map(item => item._id !== id ? item : changedMatch))
-      })
-  }
-
   const handleMatchTypeChange = (type) => () => {
     setMatchTypeFilter(type)
   }
@@ -103,9 +83,6 @@ const CalendarLayout = ({ user, schedule, setSchedule }) => {
       <Container>
         <Outlet context={{
           onChange,
-          schedule,
-          deleteScheduledMatch,
-          updateScheduledMatch,
           matchTypeFilter,
           handleMatchTypeChange,
           TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES,

@@ -13,7 +13,7 @@ const CalendarDashboard = () => {
   const teamId = useParams().teamId.toString()
   const matches = useSelector(state => state.matches)
 
-  const filteredSchedule = contextObj.schedule.filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
+  const filteredSchedule = useSelector(state => state.schedule).filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const filteredMatchesWithDate = matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
 
   const scheduleWithoutPlayedMatches = filteredSchedule.filter(match => {
@@ -46,8 +46,6 @@ const CalendarDashboard = () => {
         filteredMatchCards={filteredMatchCards}
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         teamId={teamId}
-        deleteScheduledMatch={contextObj.deleteScheduledMatch}
-        updateScheduledMatch={contextObj.updateScheduledMatch}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
         user={contextObj.user}

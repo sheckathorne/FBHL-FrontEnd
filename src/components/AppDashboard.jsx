@@ -18,9 +18,7 @@ const AppDashboard = ({
   skaterOrGoalie,
   handleTableClick,
   width,
-  user,
-  schedule,
-  setSchedule
+  user
 }) => {
   return (
     <Routes>
@@ -33,8 +31,6 @@ const AppDashboard = ({
       <Route path='calendar' element={
         <CalendarLayout
           user={user}
-          schedule={schedule}
-          setSchedule={setSchedule}
         />}>
         <Route index element={<><CalendarDisplay /></>} />
         <Route path=':teamId' element={<><CalendarDisplayTeam /></>} />

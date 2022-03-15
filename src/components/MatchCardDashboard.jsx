@@ -11,7 +11,7 @@ import MobileContext from './MobileContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer.js'
 
-const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, deleteScheduledMatch, updateScheduledMatch, user }) => {
+const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) => {
   const [ alertMessage, setAlertMessage ] = useState({ message: null, type: null })
   
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
@@ -111,8 +111,6 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, deleteSc
               id={match._id}
               match={match}
               addDefaultSrc={addDefaultSrc}
-              deleteScheduledMatch={deleteScheduledMatch}
-              updateScheduledMatch={updateScheduledMatch}
               displayAlert={displayAlert}
               goToLastPaginationPage={goToLastPaginationPage}
               user={user}

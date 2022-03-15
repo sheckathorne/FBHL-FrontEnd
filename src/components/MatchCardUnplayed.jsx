@@ -5,11 +5,15 @@ import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import Calendar from 'react-calendar'
+import { useDispatch } from 'react-redux'
+import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
 
-const MatchCardUnplayed = ({ id, match, addDefaultSrc, deleteScheduledMatch, updateScheduledMatch, displayAlert, goToLastPaginationPage, user }) => {
+const MatchCardUnplayed = ({ id, match, addDefaultSrc, updateScheduledMatch, displayAlert, goToLastPaginationPage, user }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
+
+  const dispatch = useDispatch()
 
   const onChange = (newSelectedDate) => {
     setSelectedDate(newSelectedDate)
@@ -33,14 +37,14 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, deleteScheduledMatch, upd
   const handleDeleteClick = (id) => () => {
     setDeleteConfirmIsOpen(false)
     setEditIsOpen(false)
-    deleteScheduledMatch(id)
+    dispatch(deleteSchedule(id))
     goToLastPaginationPage()
     displayAlert('Scheduled game was removed','danger')
   }
 
   const handleSubmitClick = (id, selectedDate) => () => {
     goToLastPaginationPage()
-    updateScheduledMatch(id,dayjs(selectedDate).format('M/D/YYYY'))
+    dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY') }))
     displayAlert(`Game was moved to ${dayjs(selectedDate).format('MMM D, YYYY')}`,'success')
   }
 

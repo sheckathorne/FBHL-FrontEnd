@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 const CalendarDashboard = () => {
   const contextObj = useOutletContext()
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
-  const schedule = contextObj.schedule.map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
+  const schedule = useSelector(state => state.schedule).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const matchWithDate = useSelector(state => state.matches)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
@@ -37,8 +37,6 @@ const CalendarDashboard = () => {
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCards}
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
-        deleteScheduledMatch={contextObj.deleteScheduledMatch}
-        updateScheduledMatch={contextObj.updateScheduledMatch}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
         user={contextObj.user}

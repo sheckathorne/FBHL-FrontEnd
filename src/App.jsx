@@ -16,6 +16,7 @@ import LoginSidebar from './components/LoginSidebar'
 import loginService from './services/login'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
 import { useDispatch } from 'react-redux'
+import { initializeSchedule, createSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
@@ -45,9 +46,6 @@ const App = () => {
   /* Sort players */
   const [ sortField, setSortField ] = useState({ field: 'skpoints', descending: true, alpha: false })
   const [ skaterOrGoalie, setSkaterOrGoalie ] = useState({ field: 'skaters' })
-
-  /* Leaguewide match data */
-  const [ schedule, setSchedule ] = useState([])
   
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
@@ -69,13 +67,9 @@ const App = () => {
   },[dispatch])
 
   useEffect(() => {
-    chelService
-      .getData('/schedule')
-      .then(initialData => {
-        setSchedule(initialData)        
-      })
-      .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, schedule: true })))
-  }, [])
+    dispatch(initializeSchedule())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, schedule: true })))
+  },[dispatch])
 
   // retrieve player data from database
   useEffect(() => {
@@ -88,7 +82,6 @@ const App = () => {
   useEffect(() => {
     dispatch(sortSkaters(sortField))
   },[dispatch, sortField])
-
 
   useEffect(() => {
     const loggedFHBLuser = window.localStorage.getItem('loggedFHBLuser')
@@ -134,16 +127,14 @@ const App = () => {
 
   const handleCreateMatchSubmit = async (e, awayTeamId, homeTeamId, matchDate) => {
     e.preventDefault()
+    const newScheduledMatch = {
+      matchDate: matchDate,
+      teams: [ awayTeamId.toString(), homeTeamId.toString() ]
+    }
 
     try {
-      const newScheduledMatch = await chelService.createSchedueldMatch (
-        {
-          matchDate: matchDate,
-          teams: [ awayTeamId.toString(), homeTeamId.toString() ]
-        }
-      )
+      dispatch(createSchedule(newScheduledMatch))
 
-      setSchedule(matches => [...matches].concat(newScheduledMatch))
       const awayTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[0]).abbreviation
       const homeTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[1]).abbreviation
 
@@ -240,8 +231,6 @@ const App = () => {
       handleTableClick={handleTableClick}
       width={width}
       user={user}
-      schedule={schedule}
-      setSchedule={setSchedule}
     /> :
     <Container>
     <Row className='mt-4'>

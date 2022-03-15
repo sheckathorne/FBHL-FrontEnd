@@ -18,7 +18,7 @@ const LoggedInNavItem = ({ username }) => {
   }
   return (
     <NavDropdown title={username}>
-      <NavDropdown.Item onClick={() => dispatch(setCreateMatchIsOpen(true))}>Create Future Match</NavDropdown.Item>
+      <NavDropdown.Item onClick={() => dispatch(setCreateMatchIsOpen(true))}>Create Scheduled Game</NavDropdown.Item>
       <NavDropdown.Item onClick={handleLogout}>Log Out</NavDropdown.Item>
     </NavDropdown>
   )

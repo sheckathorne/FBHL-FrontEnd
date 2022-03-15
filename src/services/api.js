@@ -27,7 +27,7 @@ const updateScheduledMatch = async (id, newMatch) => {
   }
 
   const res = await axios.put(`${baseUrl}/schedule/${id.toString()}`, newMatch, config)
-  return res.data
+  return res
 }
 
 const createSchedueldMatch = async (newMatch) => {

@@ -8,6 +8,7 @@ import calenderRangeReducer from './calenderRangeReducer'
 import playersReducer from './playersReducer'
 import scheduleReducer from './scheduleReducer'
 import playerSortReducer from './playerSortReducer'
+import notificationReducer from './notificationReducer'
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     players: playersReducer,
     schedule: scheduleReducer,
     sortField: playerSortReducer,
+    notification: notificationReducer,
   }
 })
 

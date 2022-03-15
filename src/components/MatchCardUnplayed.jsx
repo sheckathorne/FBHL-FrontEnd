@@ -8,7 +8,7 @@ import Calendar from 'react-calendar'
 import { useDispatch } from 'react-redux'
 import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
 
-const MatchCardUnplayed = ({ id, match, addDefaultSrc, updateScheduledMatch, displayAlert, goToLastPaginationPage, user }) => {
+const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, user }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
@@ -39,13 +39,11 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, updateScheduledMatch, dis
     setEditIsOpen(false)
     dispatch(deleteSchedule(id))
     goToLastPaginationPage()
-    displayAlert('Scheduled game was removed','danger')
   }
 
   const handleSubmitClick = (id, selectedDate) => () => {
     goToLastPaginationPage()
     dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY') }))
-    displayAlert(`Game was moved to ${dayjs(selectedDate).format('MMM D, YYYY')}`,'success')
   }
 
   const editButtonText = editIsOpen ? 'Cancel Change' : 'Change Date'

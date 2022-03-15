@@ -8,6 +8,7 @@ import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
 import { setSortField } from './reducers/playerSortReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
+import { setNotification, clearNotification } from './reducers/notificationReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
 import AppDashboard from './components/AppDashboard'
 import ThemeContext from './components/ThemeContext'
@@ -23,6 +24,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 
+
 const App = () => {
   const leagueName = 'FBHL'
   
@@ -34,6 +36,7 @@ const App = () => {
   }
 
   const sortField = useSelector(state => state.sortField)
+  const notification = useSelector(state => state.notification)
 
   /* app theme */
   const [ theme, setTheme ] = useState({ title: 'Light Theme', value: 'light' })
@@ -51,9 +54,6 @@ const App = () => {
   
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
-
-  /* Fail/Success banner */
-  const [ message, setMessage ] = useState({ type: null, text: null })
 
   const dispatch = useDispatch()
 
@@ -112,17 +112,17 @@ const App = () => {
       chelService.setToken(user.token)
       setUser(user)
       dispatch(setLoginIsOpen(false))
-      setMessage({ type: 'success', text: `Logged in as ${username}` })
+      dispatch(setNotification({ type: 'success', text: `Logged in as ${username}`, scope: 'app' }))
       setUsername('')
       setPassword('')
       setTimeout(() => {
-        setMessage({ type: null, text: null })
+        dispatch(clearNotification())
       }, 3000)
     } catch (exception) {
       dispatch(setLoginIsOpen(false))
-      setMessage({ type: 'danger', text: 'Login failed - Bad credentials' })
+      dispatch(setNotification({ type: 'danger', text: 'Login failed - Bad credentials', scope: 'app' }))
       setTimeout(() => {
-        setMessage({ type: null, text: null })
+        dispatch(clearNotification())
       }, 3000)
     }
   }
@@ -141,23 +141,23 @@ const App = () => {
       const homeTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[1]).abbreviation
 
       dispatch(setCreateMatchIsOpen(false))
-      setMessage({ type: 'success', text: `Game bewteen ${awayTeamAbbreviation} and ${homeTeamAbbreviation} added for ${newScheduledMatch.matchDate}` })
+      dispatch(setNotification({ type: 'success', text: `Game bewteen ${awayTeamAbbreviation} and ${homeTeamAbbreviation} added for ${newScheduledMatch.matchDate}`, scope: 'app' }))
       setTimeout(() => {
-        setMessage({ type: null, text: null })
+        dispatch(clearNotification())
       }, 5000)
     } catch (exception) {
-      setMessage({ type: 'danger', text: 'Failed to add game to schedule' })
+      dispatch(setNotification({ type: 'danger', text: 'Failed to add game to schedule', scope: 'app' }))
       setTimeout(() => {
-        setMessage({ type: null, text: null })
+        dispatch(clearNotification())
       },3000)
     }
   }
 
   const handleLogout = () => {
-    setMessage({ type: 'success', text: 'You have successfully logged out' })
+    dispatch(setNotification({ type: 'success', text: 'You have successfully logged out', scope: 'app' }))
     window.localStorage.removeItem('loggedFHBLuser')
     setTimeout(() => {
-      setMessage({ type: null, text: null })
+      dispatch(clearNotification())
     }, 3000)
     setUser(null)
   }
@@ -236,7 +236,7 @@ const App = () => {
     </Row>
   </Container>
 
-  const errorBanner = message.text === null ? null : <Container><Row className='mt-2'><Alert variant={message.type}>{message.text}</Alert></Row></Container>
+  const errorBanner = notification.text !== null && notification.scope === 'app' ? <Container><Row className='mt-2'><Alert variant={notification.type}>{notification.text}</Alert></Row></Container> : null
 
   return (
     <>

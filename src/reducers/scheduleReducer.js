@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import chelService from '../services/api'
+import { setNotification, clearNotification } from './notificationReducer'
+import dayjs from 'dayjs'
 
 const initialState = []
 
@@ -38,7 +40,20 @@ export const initializeSchedule = () => {
 export const deleteSchedule = (id) => {
   return async dispatch => {
     const response = await chelService.deleteScheduledMatch(id)
-    dispatch(deleteScheduledMatch(id))
+    console.log(response)
+    if ( response === 401 ) {
+      dispatch(setNotification({ type: 'danger', text: 'Failed to delete game, please log in again', scope: 'MatchCardDashboard' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+    } else if ( response === 204 ) {
+      dispatch(deleteScheduledMatch(id))
+      dispatch(setNotification({ type: 'success', text: 'Game was successfully deleted', scope: 'MatchCardDashboard' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+    }
+
     return response.status
   }
 }
@@ -46,8 +61,19 @@ export const deleteSchedule = (id) => {
 export const modifySchedule = (id, newMatch) => {
   return async dispatch => {
     const response = await chelService.updateScheduledMatch(id, newMatch)
-    dispatch(changeDateOfMatch({ id, newMatch }))
-    return response.status
+    if ( response.status === 401 ) {
+      dispatch(setNotification({ type: 'danger', text: 'Schedule change failed, please log in again', scope: 'MatchCardDashboard' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+    } else if ( response.status === 200) {
+      dispatch(setNotification({ type: 'success', text: `Game was moved to ${dayjs(newMatch.matchDate).format('MMM D, YYYY')}`, scope: 'MatchCardDashboard' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+
+      dispatch(changeDateOfMatch({ id, newMatch }))
+    }
   }
 }
 

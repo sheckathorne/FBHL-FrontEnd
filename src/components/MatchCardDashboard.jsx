@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import paginationFunction from '../helpers/paginationFunction.js'
 import PaginationRow from './PaginationRow'
 import MatchCardPlayed from './MatchCardPlayed'
@@ -10,13 +10,13 @@ import ThemeContext from './ThemeContext'
 import MobileContext from './MobileContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer.js'
+import { setNotification, clearNotification } from '../reducers/notificationReducer.js'
 
 const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) => {
-  const [ alertMessage, setAlertMessage ] = useState({ message: null, type: null })
-  
+  const notification = useSelector(state => state.notification)
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
 
   const isMobile = useContext(MobileContext)
@@ -27,10 +27,10 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) 
   const itemsPerPage = 3
 
   const displayAlert = (message, type) => {
-    setAlertMessage({ message: message, type: type })
+    dispatch(setNotification({ message: message, type: type, scope: 'MatchCardDashboard' }))
     setTimeout(() => {
-      setAlertMessage({ message: null, type: null })
-    }, 3000)
+      dispatch(clearNotification())
+    }, 4000)
   }
 
   const pageCount = Math.ceil(filteredMatchCards.length/itemsPerPage)
@@ -82,7 +82,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) 
       </Col>
     </Row> ) : null
 
-  const alertBanner = ( alertMessage.message !== null ) ? <Alert variant={alertMessage.type} onClose={() => setAlertMessage({ message: null, type: null })} dismissible>{alertMessage.message}</Alert> : null
+  const alertBanner = ( notification.message !== null && notification.scope === 'MatchCardDashboard' ) ? <Alert variant={notification.type} onClose={() => dispatch(clearNotification())} dismissible>{notification.text}</Alert> : null
 
   return (
     <>

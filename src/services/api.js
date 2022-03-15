@@ -17,6 +17,8 @@ const deleteScheduledMatch = async (id) => {
     headers: { Authorization: token },
   }
 
+  console.log(token)
+
   const res = await axios.delete(`${baseUrl}/schedule/${id.toString()}`, config)
   return res.status
 }

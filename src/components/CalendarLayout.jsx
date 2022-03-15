@@ -9,7 +9,7 @@ import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
 
-const CalendarLayout = ({ user }) => {
+const CalendarLayout = () => {
   const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
   
   const dispatch = useDispatch()
@@ -86,7 +86,6 @@ const CalendarLayout = ({ user }) => {
           matchTypeFilter,
           handleMatchTypeChange,
           TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES,
-          user,
           selectedDate,
           queriedMatchId
         }}/>

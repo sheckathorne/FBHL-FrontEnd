@@ -9,6 +9,7 @@ import playersReducer from './playersReducer'
 import scheduleReducer from './scheduleReducer'
 import playerSortReducer from './playerSortReducer'
 import notificationReducer from './notificationReducer'
+import userReducer from './userReducer'
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     schedule: scheduleReducer,
     sortField: playerSortReducer,
     notification: notificationReducer,
+    user: userReducer,
   }
 })
 

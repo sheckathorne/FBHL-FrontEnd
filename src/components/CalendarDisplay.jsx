@@ -39,7 +39,6 @@ const CalendarDashboard = () => {
         rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
-        user={contextObj.user}
         selectedDate={contextObj.selectedDate}
         queriedMatchId={contextObj.queriedMatchId}
       />

@@ -1,12 +1,35 @@
 import React from 'react'
 import { Form, Offcanvas, Button } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setUsername, setPassword, loginUser } from '../reducers/userReducer'
+import { setLoginIsOpen } from '../reducers/viewToggleReducer'
+import { clearNotification, setNotification } from '../reducers/notificationReducer'
 
-const LoginSidebar = ({ username, password, handleSidebarAction, handleUsernameChange, handlePasswordChange, handleLogin }) => {
+
+const LoginSidebar = () => {
   const loginIsOpen = useSelector(state => state.viewToggle.loginIsOpen)
+  const username = useSelector(state => state.user.username)
+  const password = useSelector(state => state.user.password)
+  const dispatch = useDispatch()
+
+  const handleLogin = (e, username, password) => {
+    e.preventDefault()
+    try {
+      dispatch(loginUser(username, password))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 3000)
+    } catch (exception) {
+      dispatch(setLoginIsOpen(false))
+      dispatch(setNotification({ type: 'danger', text: 'Login failed - Bad credentials', scope: 'app' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 3000)
+    }
+  }
   
   return (
-    <Offcanvas show={loginIsOpen} onHide={handleSidebarAction('close')}>
+    <Offcanvas show={loginIsOpen} onHide={() => dispatch(setLoginIsOpen(false))}>
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>
           User Login
@@ -19,7 +42,7 @@ const LoginSidebar = ({ username, password, handleSidebarAction, handleUsernameC
             <Form.Control
               type='text'
               placeholder='Enter user name'
-              onChange={({ target }) => handleUsernameChange(target.value)}
+              onChange={({ target }) => dispatch(setUsername(target.value))}
             />
           </Form.Group>
           <Form.Group className='mb-3' controlId='formBasicPassword'>
@@ -27,7 +50,7 @@ const LoginSidebar = ({ username, password, handleSidebarAction, handleUsernameC
             <Form.Control
               type='password'
               placeholder='Password'
-              onChange={({ target }) => handlePasswordChange(target.value)}
+              onChange={({ target }) => dispatch(setPassword(target.value))}
             />
           </Form.Group>
           <Button type='submit' variant='primary'>

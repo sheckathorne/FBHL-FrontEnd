@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import chelService from '../services/api'
 import { setNotification, clearNotification } from './notificationReducer'
+import { setUser } from './userReducer'
 import dayjs from 'dayjs'
 
 const initialState = []
@@ -40,9 +41,11 @@ export const initializeSchedule = () => {
 export const deleteSchedule = (id) => {
   return async dispatch => {
     const response = await chelService.deleteScheduledMatch(id)
-    console.log(response)
+
     if ( response === 401 ) {
       dispatch(setNotification({ type: 'danger', text: 'Failed to delete game, please log in again', scope: 'MatchCardDashboard' }))
+      window.localStorage.removeItem('loggedFHBLuser')
+      dispatch(setUser(null))
       setTimeout(() => {
         dispatch(clearNotification())
       }, 5000)
@@ -63,6 +66,8 @@ export const modifySchedule = (id, newMatch) => {
     const response = await chelService.updateScheduledMatch(id, newMatch)
     if ( response.status === 401 ) {
       dispatch(setNotification({ type: 'danger', text: 'Schedule change failed, please log in again', scope: 'MatchCardDashboard' }))
+      window.localStorage.removeItem('loggedFHBLuser')
+      dispatch(setUser(null))
       setTimeout(() => {
         dispatch(clearNotification())
       }, 5000)

@@ -3,7 +3,7 @@ import { Navbar, Container, Nav, Image } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import AppNavGroup from './AppNavGroup'
 
-const AppNavbar = ({ handleSwitch, theme, user, handleSidebarAction, handleLogout }) => {
+const AppNavbar = ({ handleSwitch, theme }) => {
   return (
     <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
       <Container>
@@ -16,9 +16,6 @@ const AppNavbar = ({ handleSwitch, theme, user, handleSidebarAction, handleLogou
             <AppNavGroup
               handleSwitch={handleSwitch}
               theme={theme}
-              user={user}
-              handleSidebarAction={handleSidebarAction}
-              handleLogout={handleLogout}
             />
           </Nav>
         </Navbar.Collapse>

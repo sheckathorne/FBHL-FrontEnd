@@ -48,7 +48,6 @@ const CalendarDashboard = () => {
         teamId={teamId}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
-        user={contextObj.user}
         selectedDate={contextObj.selectedDate}
         queriedMatchId={contextObj.queriedMatchId}
       />

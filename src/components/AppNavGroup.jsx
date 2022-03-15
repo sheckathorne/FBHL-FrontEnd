@@ -4,14 +4,18 @@ import LoggedInNavItem from './LoggedInNavItem'
 import Nav from 'react-bootstrap/Nav'
 import data from '../helpers/data.js'
 import Switch from '@mui/material/Switch'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoginIsOpen } from '../reducers/viewToggleReducer'
 
 
-const AppNavGroup = ({ handleSwitch, theme, user, handleSidebarAction, handleLogout }) => {
+const AppNavGroup = ({ handleSwitch, theme }) => {
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user.user)
+
   const loginForm = user === null ?
-    <Nav.Item><Nav.Link onClick={handleSidebarAction('open')}>Login</Nav.Link></Nav.Item> :
+    <Nav.Item><Nav.Link onClick={() => dispatch(setLoginIsOpen(true))}>Login</Nav.Link></Nav.Item> :
     <LoggedInNavItem 
-      username={user.username}
-      handleLogout={handleLogout}
+      username={user.username}                
     />
 
   return (

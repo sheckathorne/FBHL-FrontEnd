@@ -7,8 +7,9 @@ import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
 import { setSortField } from './reducers/playerSortReducer'
-import { setResultsOpen, setLeagueOpen, setPlayerOpen, setLoginIsOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
+import { setResultsOpen, setLeagueOpen, setPlayerOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
 import { setNotification, clearNotification } from './reducers/notificationReducer'
+import { setUser } from './reducers/userReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
 import AppDashboard from './components/AppDashboard'
 import ThemeContext from './components/ThemeContext'
@@ -18,7 +19,6 @@ import AppNavbar from './components/AppNavbar'
 import LoginSidebar from './components/LoginSidebar'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
 import chelService from './services/api'
-import loginService from './services/login'
 import data from './helpers/data.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
@@ -41,11 +41,6 @@ const App = () => {
   /* app theme */
   const [ theme, setTheme ] = useState({ title: 'Light Theme', value: 'light' })
 
-  /* Login */
-  const [ username, setUsername ] = useState('')
-  const [ password, setPassword ] = useState('')
-  const [ user, setUser ] = useState(null)
-
   /* Administration */
   const [ loadingProgress, setLoadingProgress ] = useState(itemsToLoad)
 
@@ -56,6 +51,7 @@ const App = () => {
   const [ width, setWidth ] = useState(window.innerWidth)
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // retrieve match history from database
   useEffect(() => {
@@ -89,43 +85,10 @@ const App = () => {
     const loggedFHBLuser = window.localStorage.getItem('loggedFHBLuser')
     if ( loggedFHBLuser ) {
       const user = JSON.parse(loggedFHBLuser)
-      setUser(user)
+      dispatch(setUser(user))
       chelService.setToken(user.token)
     }
-  },[])
-
-  let navigate = useNavigate()
-
-  const handleUsernameChange = (name) => setUsername(name)
-  const handlePasswordChange = (password) => setPassword(password)
-
-  const handleLogin = async (e, username, password) => {
-    e.preventDefault()
-    try {
-      const user = await loginService.login({
-        username: username.toLowerCase(), password,
-      })
-
-      window.localStorage.setItem(
-        'loggedFHBLuser', JSON.stringify(user)
-      )
-      chelService.setToken(user.token)
-      setUser(user)
-      dispatch(setLoginIsOpen(false))
-      dispatch(setNotification({ type: 'success', text: `Logged in as ${username}`, scope: 'app' }))
-      setUsername('')
-      setPassword('')
-      setTimeout(() => {
-        dispatch(clearNotification())
-      }, 3000)
-    } catch (exception) {
-      dispatch(setLoginIsOpen(false))
-      dispatch(setNotification({ type: 'danger', text: 'Login failed - Bad credentials', scope: 'app' }))
-      setTimeout(() => {
-        dispatch(clearNotification())
-      }, 3000)
-    }
-  }
+  },[dispatch])
 
   const handleCreateMatchSubmit = async (e, awayTeamId, homeTeamId, matchDate) => {
     e.preventDefault()
@@ -150,23 +113,6 @@ const App = () => {
       setTimeout(() => {
         dispatch(clearNotification())
       },3000)
-    }
-  }
-
-  const handleLogout = () => {
-    dispatch(setNotification({ type: 'success', text: 'You have successfully logged out', scope: 'app' }))
-    window.localStorage.removeItem('loggedFHBLuser')
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 3000)
-    setUser(null)
-  }
-
-  const handleSidebarAction = (action) => () => {
-    if ( action === 'open' ) {
-      dispatch(setLoginIsOpen(true))
-    } else if ( action === 'close' ) {
-      dispatch(setLoginIsOpen(false))
     }
   }
 
@@ -226,7 +172,6 @@ const App = () => {
       skaterOrGoalie={skaterOrGoalie}
       handleTableClick={handleTableClick}
       width={width}
-      user={user}
     /> :
     <Container>
     <Row className='mt-4'>
@@ -250,18 +195,8 @@ const App = () => {
               <AppNavbar
                 handleSwitch={handleSwitch}
                 theme={theme}
-                user={user}
-                handleSidebarAction={handleSidebarAction}
-                handleLogout={handleLogout}
               />
-              <LoginSidebar
-                username={username}
-                password={password}
-                handleSidebarAction={handleSidebarAction}
-                handleUsernameChange={handleUsernameChange}
-                handlePasswordChange={handlePasswordChange}
-                handleLogin={handleLogin}
-              />
+              <LoginSidebar />
               <CreateMatchSidebar
                 handleCreateMatchSubmit={handleCreateMatchSubmit}
               />

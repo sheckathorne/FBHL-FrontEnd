@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer.js'
 import { setNotification, clearNotification } from '../reducers/notificationReducer.js'
 
-const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) => {
+const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
   const notification = useSelector(state => state.notification)
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
 
@@ -113,7 +113,6 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId, user }) 
               addDefaultSrc={addDefaultSrc}
               displayAlert={displayAlert}
               goToLastPaginationPage={goToLastPaginationPage}
-              user={user}
             />
           )
         }

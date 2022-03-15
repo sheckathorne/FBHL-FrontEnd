@@ -5,13 +5,15 @@ import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import Calendar from 'react-calendar'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
 
-const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, user }) => {
+const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
+
+  const user = useSelector(state => state.user.user)
 
   const dispatch = useDispatch()
 

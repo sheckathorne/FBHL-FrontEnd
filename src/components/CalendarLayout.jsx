@@ -25,7 +25,6 @@ const CalendarLayout = () => {
 
   useEffect(() => {
     dispatch(setMatchActivePage(1))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch])
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const CalendarLayout = () => {
       dispatch(setSelectedDate(dayjs(dayjs.unix(minScheduledTimeStamp).startOf('day')).unix()))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[teamId, matchTypeFilter])
+  },[teamId, matchTypeFilter, dispatch])
 
   // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
   useEffect(() => {

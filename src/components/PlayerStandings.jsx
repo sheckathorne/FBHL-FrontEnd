@@ -68,7 +68,8 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
 
   if ( players.skaters ) {
     const playersCopy = [...players.skaters].sort((a,b) => b[`${top.sortField.field}`] - a[`${top.sortField.field}`])
-    const rankedFilteredPlayers = rankThePlayers(playersCopy, top.sortField).filter(player => player.rank <= numberOfPlayers)
+    const rankedPlayers = rankThePlayers(playersCopy, top.sortField)
+    const rankedFilteredPlayers = rankedPlayers.filter(player => player.rank <= numberOfPlayers)
     const reducedPlayers = showTenPlayersOrLess(rankedFilteredPlayers)
     const maxReducedRank = Math.max(...reducedPlayers.map(player => player.rank))
     const nextPlayersRank = Math.min(...rankedFilteredPlayers.filter(player => player.rank > maxReducedRank).map(player => player.rank))
@@ -97,6 +98,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
               handleTableClick={handleTableClick}
               type='players'
               summaryObj={summaryObj}
+              rankedPlayers={rankedPlayers}
             />
           </div>
         </Collapse>

@@ -1,9 +1,13 @@
 import React from 'react'
 import { Table, Row, Col } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import { setSortField } from '../reducers/playerSortReducer'
+import { useNavigate } from 'react-router-dom'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, borderless, size, variant, className, sortField, type, handleTableClick, summaryObj }) => {
+const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, borderless, size, variant, className, sortField, type, handleTableClick, summaryObj, rankedPlayers }) => {
   const summaryRow = summaryObj ?
-  <SummaryRow summaryObj={summaryObj} />
+  <SummaryRow summaryObj={summaryObj} columns={columns} sortField={sortField} rankedPlayers={rankedPlayers} />
   : null
   
   return (
@@ -67,7 +71,14 @@ const TableRows = ({ data, type, sortField, handleTableClick }) => {
   )
 }
 
-const SummaryRow = ({ summaryObj }) => {
+const SummaryRow = ({ summaryObj, columns, sortField, rankedPlayers }) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate('')
+  
+  const itemsPerPage = 6
+  const indexOfNextRank = rankedPlayers.findIndex(player => player.rank === summaryObj.nextRank)
+  const page = Math.ceil(parseFloat(indexOfNextRank)/parseFloat(itemsPerPage))
+
   const ordinal_suffix_of = (i) => {
     let j = i % 10,
       k = i % 100
@@ -83,9 +94,15 @@ const SummaryRow = ({ summaryObj }) => {
     return i + 'th'
   }
 
+  const handleSummaryClick = () => {
+    dispatch(setSortField(sortField))
+    dispatch(setPlayersActivePage(page))    
+    navigate('/players')
+  }
+
   return (
-    <tr className='pointer-cursor table-row'>
-      <td colSpan={5} className='text-center'> 
+    <tr className='pointer-cursor table-row' onClick={handleSummaryClick}>
+      <td colSpan={columns.length} className='text-center'> 
         {`${summaryObj.additionalPlayers} more players ranked ${ordinal_suffix_of(summaryObj.nextRank)}`}
       </td>
     </tr>

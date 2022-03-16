@@ -55,11 +55,29 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       return { rank: generateRankNumber(i, allPlayersStatValue, currentPlayerStatValue), ...player }
     })
 
+  const showTenPlayersOrLess = (players) => {
+    for ( let i = numberOfPlayers; i > 0; i-- ) {
+      const filteredPlayers = players.filter(player => player.rank <= i)
+      if ( filteredPlayers.length <= i ) {
+        return filteredPlayers
+      }
+    }
+  }
+
   const classes = useStyles()
 
   if ( players.skaters ) {
     const playersCopy = [...players.skaters].sort((a,b) => b[`${top.sortField.field}`] - a[`${top.sortField.field}`])
     const rankedFilteredPlayers = rankThePlayers(playersCopy, top.sortField).filter(player => player.rank <= numberOfPlayers)
+    const reducedPlayers = showTenPlayersOrLess(rankedFilteredPlayers)
+    const maxReducedRank = Math.max(...reducedPlayers.map(player => player.rank))
+    const nextPlayersRank = Math.min(...rankedFilteredPlayers.filter(player => player.rank > maxReducedRank).map(player => player.rank))
+    
+    const summaryObj = reducedPlayers < rankedFilteredPlayers && reducedPlayers.length < 10 ?
+    {
+      additionalPlayers: rankedFilteredPlayers.filter(player => player.rank === nextPlayersRank).length,
+      nextRank: nextPlayersRank
+    } : null
 
     table = (
       <>
@@ -68,7 +86,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
             <BootstrapTable
               title={top.title}
               columns={functions.generateStandingsColumns(data.playerStandingsColumns, top.stat, themeClass)}
-              data={functions.generatePlayerStandingData(rankedFilteredPlayers, top.sortField.field, themeClass)}
+              data={functions.generatePlayerStandingData(reducedPlayers, top.sortField.field, themeClass)}
               hover={true}
               responsive={true}
               striped={false}
@@ -78,6 +96,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
               sortField={top.sortField}
               handleTableClick={handleTableClick}
               type='players'
+              summaryObj={summaryObj}
             />
           </div>
         </Collapse>

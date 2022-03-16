@@ -24,6 +24,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import jwt_decode from 'jwt-decode'
+import { setPlayersActivePage } from './reducers/paginationReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -145,6 +146,7 @@ const App = () => {
 
   const handleSkaterOrGoalieClick = (e) => {
     setSkaterOrGoalie({ field: e.currentTarget.getAttribute('item-value') })
+    dispatch(setPlayersActivePage(1))
   }
 
   const handleTableClick = {

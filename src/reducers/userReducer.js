@@ -31,10 +31,8 @@ export const loginUser = (username, password) => {
       username: username.toLowerCase(), password,
     })
 
-    console.log(user)
-
     window.localStorage.setItem(
-      'loggedFHBLuser', JSON.stringify(user)
+      'loggedFBHLuser', JSON.stringify(user)
     )
     
     chelService.setToken(user.token)

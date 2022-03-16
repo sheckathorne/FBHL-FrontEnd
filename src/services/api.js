@@ -17,8 +17,6 @@ const deleteScheduledMatch = async (id) => {
     headers: { Authorization: token },
   }
 
-  console.log(token)
-
   const res = await axios.delete(`${baseUrl}/schedule/${id.toString()}`, config)
   return res.status
 }
@@ -36,6 +34,8 @@ const createSchedueldMatch = async (newMatch) => {
   const config = {
     headers: { Authorization: token },
   }
+
+  console.log(token)
 
   const res = await axios.post(`${baseUrl}/schedule/`, newMatch, config)
   return res.data

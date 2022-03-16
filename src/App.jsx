@@ -23,7 +23,7 @@ import data from './helpers/data.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
-
+import jwt_decode from 'jwt-decode'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -82,11 +82,28 @@ const App = () => {
   },[dispatch, sortField])
 
   useEffect(() => {
-    const loggedFHBLuser = window.localStorage.getItem('loggedFHBLuser')
-    if ( loggedFHBLuser ) {
-      const user = JSON.parse(loggedFHBLuser)
+    const loggedFBHLuser = window.localStorage.getItem('loggedFBHLuser')
+    
+    if ( loggedFBHLuser ) {
+      const user = JSON.parse(loggedFBHLuser)
       dispatch(setUser(user))
       chelService.setToken(user.token)
+
+    }
+  },[dispatch])
+
+  useEffect(() => {
+    const loggedFBHLuser = window.localStorage.getItem('loggedFBHLuser')
+
+    if ( loggedFBHLuser ) {
+      const currentDate = new Date()
+      const token = JSON.parse(loggedFBHLuser).token
+      const decodedToken = jwt_decode(token)
+      
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        window.localStorage.removeItem('loggedFBHLuser')
+        dispatch(setUser(null))
+      }
     }
   },[dispatch])
 

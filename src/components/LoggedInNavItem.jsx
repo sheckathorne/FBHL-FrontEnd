@@ -10,7 +10,7 @@ const LoggedInNavItem = ({ username }) => {
 
   const handleLogout = () => {
     dispatch(setNotification({ type: 'success', text: 'You have successfully logged out', scope: 'app' }))
-    window.localStorage.removeItem('loggedFHBLuser')
+    window.localStorage.removeItem('loggedFBHLuser')
     setTimeout(() => {
       dispatch(clearNotification())
     }, 3000)

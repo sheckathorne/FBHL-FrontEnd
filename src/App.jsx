@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeSchedule, createSchedule } from './reducers/scheduleReducer'
+import { initializeSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
-import { setSortField } from './reducers/playerSortReducer'
-import { setResultsOpen, setLeagueOpen, setPlayerOpen, setCreateMatchIsOpen } from './reducers/viewToggleReducer'
-import { setNotification, clearNotification } from './reducers/notificationReducer'
+import { setResultsOpen, setLeagueOpen, setPlayerOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
 import AppDashboard from './components/AppDashboard'
@@ -19,17 +16,15 @@ import AppNavbar from './components/AppNavbar'
 import LoginSidebar from './components/LoginSidebar'
 import CreateMatchSidebar from './components/CreateMatchSidebar'
 import chelService from './services/api'
-import data from './helpers/data.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import jwt_decode from 'jwt-decode'
-import { setPlayersActivePage } from './reducers/paginationReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
   
-  const itemsToLoad = { 
+  const appLoadChecklist = { 
     matches: false,
     players: false,
     schedule: false,
@@ -43,16 +38,12 @@ const App = () => {
   const [ theme, setTheme ] = useState({ title: 'Light Theme', value: 'light' })
 
   /* Administration */
-  const [ loadingProgress, setLoadingProgress ] = useState(itemsToLoad)
-
-  /* Sort players */
-  const [ skaterOrGoalie, setSkaterOrGoalie ] = useState({ field: 'skaters' })
+  const [ loadingProgress, setLoadingProgress ] = useState(appLoadChecklist)
   
   /* Detect mobile viewport */
   const [ width, setWidth ] = useState(window.innerWidth)
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   // retrieve match history from database
   useEffect(() => {
@@ -108,52 +99,6 @@ const App = () => {
     }
   },[dispatch])
 
-  const handleCreateMatchSubmit = async (e, awayTeamId, homeTeamId, matchDate) => {
-    e.preventDefault()
-    const newScheduledMatch = {
-      matchDate: matchDate,
-      teams: [ awayTeamId.toString(), homeTeamId.toString() ]
-    }
-
-    try {
-      dispatch(createSchedule(newScheduledMatch))
-
-      const awayTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[0]).abbreviation
-      const homeTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[1]).abbreviation
-
-      dispatch(setCreateMatchIsOpen(false))
-      dispatch(setNotification({ type: 'success', text: `Game bewteen ${awayTeamAbbreviation} and ${homeTeamAbbreviation} added for ${newScheduledMatch.matchDate}`, scope: 'app' }))
-      setTimeout(() => {
-        dispatch(clearNotification())
-      }, 5000)
-    } catch (exception) {
-      dispatch(setNotification({ type: 'danger', text: 'Failed to add game to schedule', scope: 'app' }))
-      setTimeout(() => {
-        dispatch(clearNotification())
-      },3000)
-    }
-  }
-
-  const handleTopPlayerClick = (sortField, url) => () => {
-    dispatch(setSortField({ field: sortField.field, descending: true, alpha: false }))
-    setSkaterOrGoalie({ field: 'skaters' })
-    navigate(url)
-  }
-
-  const handleLeagueRowClick = (url) => () => {
-    navigate(url)
-  }
-
-  const handleSkaterOrGoalieClick = (e) => {
-    setSkaterOrGoalie({ field: e.currentTarget.getAttribute('item-value') })
-    dispatch(setPlayersActivePage(1))
-  }
-
-  const handleTableClick = {
-    players: handleTopPlayerClick,
-    league: handleLeagueRowClick
-  }
-
   //determine device/window size
   useEffect(() => {
     const handleWindowSizeChange = () => {
@@ -187,9 +132,6 @@ const App = () => {
 
   const appMain = appIsLoaded(loadingProgress) ?
     <AppDashboard
-      handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
-      skaterOrGoalie={skaterOrGoalie}
-      handleTableClick={handleTableClick}
       width={width}
     /> :
     <Container>
@@ -200,7 +142,8 @@ const App = () => {
     </Row>
   </Container>
 
-  const errorBanner = notification.text !== null && notification.scope === 'app' ? <Container><Row className='mt-2'><Alert variant={notification.type}>{notification.text}</Alert></Row></Container> : null
+  const errorBanner = notification.text !== null && notification.scope === 'app' ?
+    <Container><Row className='mt-2'><Alert variant={notification.type}>{notification.text}</Alert></Row></Container> : null
 
   return (
     <>
@@ -216,9 +159,7 @@ const App = () => {
                 theme={theme}
               />
               <LoginSidebar />
-              <CreateMatchSidebar
-                handleCreateMatchSubmit={handleCreateMatchSubmit}
-              />
+              <CreateMatchSidebar />
               {errorBanner}
               {appMain}
             </HelmetProvider>

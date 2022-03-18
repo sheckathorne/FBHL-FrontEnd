@@ -15,10 +15,11 @@ import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const PlayersLayout = ({ handleSkaterOrGoalieClick, skaterOrGoalie }) => {
+const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
   const players = useSelector(state => state.players)
   const sortField = useSelector(state => state.sortField)
+  const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
 
   const dispatch = useDispatch()
 
@@ -131,10 +132,7 @@ const PlayersLayout = ({ handleSkaterOrGoalieClick, skaterOrGoalie }) => {
       </Row>
       <Row className='mt-2'>
         <Col>
-          <SkaterGoalieToggleDropdown
-            handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
-            skaterOrGoalie={skaterOrGoalie}
-          />
+          <SkaterGoalieToggleDropdown />
         </Col>
       </Row>
       {sortButtonGroup}

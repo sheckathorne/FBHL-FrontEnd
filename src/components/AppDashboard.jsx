@@ -12,16 +12,12 @@ import PlayersDisplay from './PlayersDisplay'
 import PlayersDisplayTeam from './PlayersDisplayTeam'
 
 const AppDashboard = ({
-  handleSkaterOrGoalieClick,
-  skaterOrGoalie,
-  handleTableClick,
   width
 }) => {
   return (
     <Routes>
       <Route path='/' element={<>
         <LeagueDashboard
-          handleTableClick={handleTableClick}
           width={width}
         /></>} />
       <Route path='calendar' element={
@@ -30,10 +26,7 @@ const AppDashboard = ({
         <Route path=':teamId' element={<><CalendarDisplayTeam /></>} />
       </Route>
       <Route path='players' element={
-        <PlayersLayout
-          handleSkaterOrGoalieClick={handleSkaterOrGoalieClick}
-          skaterOrGoalie={skaterOrGoalie}
-        />}>
+        <PlayersLayout />}>
         <Route index element={<PlayersDisplay />} />
         <Route path=':teamId' element={<PlayersDisplayTeam />} />
       </Route>

@@ -5,8 +5,11 @@ import MatchCreateTeamDropdown from './MatchCreateTeamDropdown'
 import dayjs from 'dayjs'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCreateMatchIsOpen } from '../reducers/viewToggleReducer'
+import { createSchedule } from '../reducers/scheduleReducer'
+import data from '../helpers/data'
+import { setNotification, clearNotification } from '../reducers/notificationReducer'
 
-const CreateMatchSidebar = ({ handleCreateMatchSubmit }) => {
+const CreateMatchSidebar = () => {
   const [ value, setValue ] = useState(new Date())
   const [ awayTeamId, setAwayTeamId ] = useState('')
   const [ homeTeamId, setHomeTeamId ] = useState('')
@@ -24,7 +27,31 @@ const CreateMatchSidebar = ({ handleCreateMatchSubmit }) => {
     }
   }
 
-  const buttonDiabled = awayTeamId === '' || homeTeamId === ''
+  const handleCreateMatchSubmit = async (e, awayTeamId, homeTeamId, matchDate) => {
+    e.preventDefault()
+    const newScheduledMatch = {
+      matchDate: matchDate,
+      teams: [ awayTeamId.toString(), homeTeamId.toString() ]
+    }
+
+    try {
+      dispatch(createSchedule(newScheduledMatch))
+
+      const awayTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[0]).abbreviation
+      const homeTeamAbbreviation = data.teams.find(team => team.clubId.toString() === newScheduledMatch.teams[1]).abbreviation
+
+      dispatch(setCreateMatchIsOpen(false))
+      dispatch(setNotification({ type: 'success', text: `Game bewteen ${awayTeamAbbreviation} and ${homeTeamAbbreviation} added for ${newScheduledMatch.matchDate}`, scope: 'app' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+    } catch (exception) {
+      dispatch(setNotification({ type: 'danger', text: 'Failed to add game to schedule', scope: 'app' }))
+      setTimeout(() => {
+        dispatch(clearNotification())
+      },3000)
+    }
+  }
 
   return (
     <Offcanvas show={createMatchIsOpen} placement='end' onHide={() => dispatch(setCreateMatchIsOpen(false))}>
@@ -53,7 +80,7 @@ const CreateMatchSidebar = ({ handleCreateMatchSubmit }) => {
               />
             </Col>
           </Form.Group>
-          <Button type='submit' variant='primary' disabled={buttonDiabled}>
+          <Button type='submit' variant='primary' disabled={awayTeamId === '' || homeTeamId === ''}>
             Submit
           </Button>
         </Form>

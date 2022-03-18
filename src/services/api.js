@@ -35,8 +35,6 @@ const createSchedueldMatch = async (newMatch) => {
     headers: { Authorization: token },
   }
 
-  console.log(token)
-
   const res = await axios.post(`${baseUrl}/schedule/`, newMatch, config)
   return res.data
 }

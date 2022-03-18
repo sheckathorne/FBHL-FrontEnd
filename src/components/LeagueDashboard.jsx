@@ -6,14 +6,35 @@ import PlayerStandings from './PlayerStandings'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import RecentResultsCarousel from './RecentResultsCarousel'
 import LeagueContext from './LeagueContext'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer'
+import { setSortField } from '../reducers/playerSortReducer'
 
-const LeagueDashboard = ({ handleTableClick, width }) => {
+const LeagueDashboard = ({ width }) => {
+  const navigate = useNavigate('')
+  const dispatch = useDispatch()
+
   const lightTheme = useContext(ThemeContext).value === 'light'
   const numOfMatchDaysToDisplayOnHeader = 2
   const matches = useSelector(state => state.matches)
   const recentMatchDates = matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
   const leagueName = useContext(LeagueContext)
+
+  const handleTopPlayerClick = (sortField, url) => () => {
+    dispatch(setSortField({ field: sortField.field, descending: true, alpha: false }))
+    dispatch(setSkaterOrGoalie({ field: 'skaters' }))
+    navigate(url)
+  }
+
+  const handleLeagueRowClick = (url) => () => {
+    navigate(url)
+  }
+
+  const handleTableClick = {
+    players: handleTopPlayerClick,
+    league: handleLeagueRowClick
+  }
 
   return (
     <HelmetProvider>

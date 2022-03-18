@@ -2,8 +2,19 @@ import React, { useContext } from 'react'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
 import dataHelper from '../helpers/data'
 import ThemeContext from './ThemeContext'
+import { useSelector, useDispatch } from 'react-redux'
+import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const SkaterGoalieToggleDropdown = ({ handleSkaterOrGoalieClick, skaterOrGoalie }) => {
+const SkaterGoalieToggleDropdown = () => {
+  const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
+  const dispatch = useDispatch()
+
+  const handleSkaterOrGoalieClick = (e) => {
+    dispatch(setSkaterOrGoalie({ field: e.currentTarget.getAttribute('item-value') }))
+    dispatch(setPlayersActivePage(1))
+  }
+  
   const activeItem = {
     field: skaterOrGoalie.field,
     active: true

@@ -17,7 +17,7 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
       value={playerMaxValue}
     />
 
-  const counterPartObj = rowCounterpart ? rowCounterpart.value === 0 ? null :
+  const counterpartObj = rowCounterpart ? rowCounterpart.value === 0 ? null :
     <LeaderDetailValue
       offset={counterPartOffset}
       position={rowCounterpart.positionAbbreviation}
@@ -29,9 +29,9 @@ const LeaderDetail = ({ playerName, playerId, teamId, playerMaxValue, playerPosi
     : null
 
   const detail = homeTeamObj ? (
-    <>{sourceObj}{counterPartObj}</>
+    <>{sourceObj}{counterpartObj}</>
   ) : (
-    <>{counterPartObj}{sourceObj}</>
+    <>{counterpartObj}{sourceObj}</>
   )
 
   return (

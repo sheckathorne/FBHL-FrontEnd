@@ -10,7 +10,7 @@ const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
   reducers: {
-    setSchedule(state, action) {
+    setSchedule(_state, action) {
       return action.payload
     },
     deleteScheduledMatch(state, action) {

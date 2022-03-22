@@ -7,11 +7,13 @@ import dayjs from 'dayjs'
 import Calendar from 'react-calendar'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
+import TimePickerForm from './TimePickerForm'
 
 const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
+  const [ selectedTime, setSelectedTime ] = useState(dayjs(`1/1/2020 ${match.timeString}`, 'M/D/YYYY h:mm A', 'en'))
 
   const user = useSelector(state => state.user.user)
 
@@ -45,10 +47,11 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
 
   const handleSubmitClick = (id, selectedDate) => () => {
     goToLastPaginationPage()
-    dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY') }))
+    dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY'), timeString: dayjs(selectedTime).format('h:mm A') }))
+    setEditIsOpen(false)
   }
 
-  const editButtonText = editIsOpen ? 'Cancel Change' : 'Change Date'
+  const editButtonText = editIsOpen ? 'Cancel Change' : 'Change Date/Time'
 
   const modifyBtnGroup = user !== null && user.role === 'admin' ?
     <Row className='mb-3 d-flex justify-content-center'>
@@ -77,7 +80,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
               )}
               <Row>
                 <Col className='my-auto text-center d-grid gap-2 fluid'>
-                  <h6 className={themeClass}><small>* Scheduled for {dayjs.unix(match.timestamp).format('MMMM D, YYYY')}</small></h6>
+                  <h6 className={themeClass}><small>* Scheduled for {dayjs.unix(match.timestamp).format('MMMM D, YYYY')} at {match.timeString}</small></h6>
                 </Col>
               </Row>
               {modifyBtnGroup}
@@ -109,6 +112,17 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
                 />
               </Col>
             </Row>
+            <Container>
+              <Row className='mb-2 justify-content-center'>
+                <Col className='d-grid fluid'>
+                  <TimePickerForm
+                    timePick={selectedTime}
+                    setTimePick={setSelectedTime}
+                    themeMode={lightTheme ? 'light' : 'dark'}
+                  />
+                </Col>
+              </Row>
+            </Container>
             <Container>
               <Row className='mb-2'>
                 <Col className='d-grid fluid'>

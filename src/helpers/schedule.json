@@ -1,44 +1,58 @@
 [
   { "matchDate": "3/15/2022",
-    "teams": ["4078","76092"]
+    "teams": ["4078","76092"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/15/2022",
-    "teams": ["76092","102698"]
+    "teams": ["76092","102698"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/16/2022",
-    "teams": ["49923","76146"]
+    "teams": ["49923","76146"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/16/2022",
-    "teams": ["26593","15667"]
+    "teams": ["26593","15667"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/18/2022",
-    "teams": ["26815","9286"]
+    "teams": ["26815","9286"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/18/2022",
-    "teams": ["72960","13405"]
+    "teams": ["72960","13405"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/19/2022",
-    "teams": ["5554","3934"]
+    "teams": ["5554","3934"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/19/2022",
-    "teams": ["6343","9583"]
+    "teams": ["6343","9583"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "3/20/2022",
-    "teams": ["4759","2788"]
+    "teams": ["4759","2788"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "2/15/2022",
-    "teams": ["3934","2788"]
+    "teams": ["3934","2788"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "2/15/2022",
-    "teams": ["3934","4759"]
+    "teams": ["3934","4759"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "2/15/2022",
-    "teams": ["4759","2788"]
+    "teams": ["4759","2788"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "2/10/2022",
-    "teams": ["3934","4759"]
+    "teams": ["3934","4759"],
+    "timeString": "9:30 PM"
   },
   { "matchDate": "2/10/2022",
-    "teams": ["4759","2788"]
+    "teams": ["4759","2788"],
+    "timeString": "9:30 PM"
   }
 ]

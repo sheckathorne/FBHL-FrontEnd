@@ -12,7 +12,6 @@ import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
 const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, matchTypeFilter, handleMatchTypeChange }) => {
-  
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   
   const lightTheme = useContext(ThemeContext).value === 'light'

@@ -8,9 +8,12 @@ import { setCreateMatchIsOpen } from '../reducers/viewToggleReducer'
 import { createSchedule } from '../reducers/scheduleReducer'
 import data from '../helpers/data'
 import { setNotification, clearNotification } from '../reducers/notificationReducer'
+import TimePickerForm from './TimePickerForm'
+import { StyledEngineProvider } from '@mui/material/styles'
 
 const CreateMatchSidebar = () => {
   const [ value, setValue ] = useState(new Date())
+  const [ timePick, setTimePick ] = useState(null)
   const [ awayTeamId, setAwayTeamId ] = useState('')
   const [ homeTeamId, setHomeTeamId ] = useState('')
   const createMatchIsOpen = useSelector(state => state.viewToggle.createMatchIsOpen)
@@ -31,7 +34,8 @@ const CreateMatchSidebar = () => {
     e.preventDefault()
     const newScheduledMatch = {
       matchDate: matchDate,
-      teams: [ awayTeamId.toString(), homeTeamId.toString() ]
+      teams: [ awayTeamId.toString(), homeTeamId.toString() ],
+      timeString: dayjs(timePick).format('h:mm A')
     }
 
     try {
@@ -80,7 +84,18 @@ const CreateMatchSidebar = () => {
               />
             </Col>
           </Form.Group>
-          <Button type='submit' variant='primary' disabled={awayTeamId === '' || homeTeamId === ''}>
+          <Form.Group>
+            <Form.Label>Game Time</Form.Label>
+            <Col className='d-flex align-items-center mb-2'>
+            <StyledEngineProvider injectFirst>
+              <TimePickerForm
+                timePick={timePick}
+                setTimePick={setTimePick}
+              />
+            </StyledEngineProvider>
+            </Col>
+          </Form.Group>
+          <Button type='submit' variant='primary' disabled={awayTeamId === '' || homeTeamId === '' || timePick === null}>
             Submit
           </Button>
         </Form>

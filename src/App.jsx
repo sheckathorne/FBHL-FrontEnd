@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule } from './reducers/scheduleReducer'

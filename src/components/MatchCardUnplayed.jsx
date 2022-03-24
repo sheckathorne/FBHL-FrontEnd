@@ -61,7 +61,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
 
   return(
     <div className='mb-2 d-grid'>
-      <div className={`small-match-result-card${darkCardClass}`} value={match.matchId}>
+      <div className={`no-hover small-match-result-card${darkCardClass}`} value={match.matchId}>
         <Container>
           <Row className='mt-2'>
             <Col className='d-grid fluid'>
@@ -113,7 +113,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
               </Col>
             </Row>
             <Container>
-              <Row className='mb-2 justify-content-center'>
+              <Row className='mb-4 mt-4 justify-content-center'>
                 <Col className='d-grid fluid'>
                   <TimePickerForm
                     timePick={selectedTime}

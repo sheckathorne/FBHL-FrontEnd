@@ -3,12 +3,11 @@ import AppNavItem from './AppNavItem'
 import LoggedInNavItem from './LoggedInNavItem'
 import Nav from 'react-bootstrap/Nav'
 import data from '../helpers/data.js'
-import Switch from '@mui/material/Switch'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoginIsOpen } from '../reducers/viewToggleReducer'
 
 
-const AppNavGroup = ({ handleSwitch, theme }) => {
+const AppNavGroup = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.user)
 
@@ -30,12 +29,6 @@ const AppNavGroup = ({ handleSwitch, theme }) => {
         />
       )}
       {loginForm}
-      <Nav.Item>
-        <Switch
-          defaultChecked
-          onChange={() => handleSwitch(theme.value)}
-        />
-      </Nav.Item>
     </>
   )
 }

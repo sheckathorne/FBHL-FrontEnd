@@ -143,7 +143,7 @@ const App = () => {
   </Container>
 
   const errorBanner = notification.text !== null && notification.scope === 'app' ?
-    <Container><Row className='mt-2'><Alert variant={notification.type}>{notification.text}</Alert></Row></Container> : null
+    <Container><Row className='mt-2'><Container><Alert variant={notification.type}>{notification.text}</Alert></Container></Row></Container> : null
 
   return (
     <>

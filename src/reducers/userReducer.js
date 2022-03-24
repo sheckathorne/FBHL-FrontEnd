@@ -26,7 +26,6 @@ export const { setUsername, setPassword, setUser } = userSlice.actions
 
 export const loginUser = (username, password) => {
   return async dispatch => {
-        
     const user = await loginService.login({
       username: username.toLowerCase(), password,
     })

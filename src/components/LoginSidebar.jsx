@@ -14,8 +14,9 @@ const LoginSidebar = () => {
 
   const handleLogin = (e, username, password) => {
     e.preventDefault()
+    
     try {
-      dispatch(loginUser(username, password))
+      dispatch(loginUser(username, password)).unwrap()
       setTimeout(() => {
         dispatch(clearNotification())
       }, 3000)

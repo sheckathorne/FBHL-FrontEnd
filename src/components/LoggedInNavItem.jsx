@@ -17,7 +17,7 @@ const LoggedInNavItem = ({ username }) => {
     dispatch(setUser(null))
   }
   return (
-    <NavDropdown title={username}>
+    <NavDropdown menuVariant='dark' title={username}>
       <NavDropdown.Item onClick={() => dispatch(setCreateMatchIsOpen(true))}>Create Scheduled Game</NavDropdown.Item>
       <NavDropdown.Item onClick={handleLogout}>Log Out</NavDropdown.Item>
     </NavDropdown>

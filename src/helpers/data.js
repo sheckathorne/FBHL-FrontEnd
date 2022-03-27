@@ -30,40 +30,39 @@ const dashboardButtons = [
 
 const teams = [
   { clubName: 'All',  clubId: '', name: 'All Teams', abbreviation: 'ALL', division: '', platform:'', badgeId: '', primaryColor: '', secondaryColor: '', active: true }
-  ,{ clubName: 'FBHL Boston Bruins', clubId: 4078, name: 'Boston Bruins', abbreviation: 'BOS', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(252, 181, 20)', secondaryColor: '(17, 17, 17)', active: true }
-  ,{ clubName: 'FBHL Buffalo Sabres', clubId: 26128, name: 'Buffalo Sabres', abbreviation: 'BUF', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,38,84)', secondaryColor: '(252,181,20)', active: true }
-  ,{ clubName: 'FBHL Carolina Hurricanes', clubId: 76092, name: 'Carolina Hurricanes', abbreviation: 'CAR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(226,24,54)', secondaryColor: '(35,31,32)', active: true }
-  ,{ clubName: 'FBHL CBJ', clubId: 102698, name: 'Columbus Blue Jackets', abbreviation: 'CBJ', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,38,84)', secondaryColor: '(206,17,38)', active: true }
-  ,{ clubName: 'FBHL Detroit Redwings', clubId: 49923, name: 'Detroit Redwings', abbreviation: 'DET', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(206,17,38)', secondaryColor: '(255,255,255)', active: true }
-  ,{ clubName: 'FBHL Florida Panthers', clubId: 76146, name: 'Florida Panthers', abbreviation: 'FLA', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(4,30,66)', secondaryColor: '(200,16,46)', active: true }
-  ,{ clubName: 'FBHL Montreal Canadiens', clubId: 26593, name: 'Montreal Canadiens', abbreviation: 'MTL', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(175, 30, 45)', secondaryColor: '(25, 33, 104)', active: true }
-  ,{ clubName: 'FBHL New Jersey Devils', clubId: 15667, name: 'New Jersey Devils', abbreviation: 'NJ', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(206, 17, 38)', secondaryColor: '(0, 0, 0)', active: true }
-  ,{ clubName: 'FBHL New York Islanders', clubId: 26815, name: 'New York Islanders', abbreviation: 'NYI', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(244, 125, 48)', secondaryColor: '(0,83,155)', active: true }
-  ,{ clubName: 'FBHL New York Rangers', clubId: 9286, name: 'New York Rangers', abbreviation: 'NYR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0,56,168)', secondaryColor: '(206,17,38)', active: true }
-  ,{ clubName: 'FBHL OTTAWA SENATORS', clubId: 72960, name: 'Ottawa Senators', abbreviation: 'OTT', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(197, 32, 50)', secondaryColor: '(194, 145, 44)', active: true }
-  ,{ clubName: 'FBHL Philadelphia Flyers', clubId: 13405, name: 'Philadelphia Flyers', abbreviation: 'PHI', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(247, 73, 2)', secondaryColor: '(0, 0, 0)', active: true }
-  ,{ clubName: 'FBHL Pittsburgh Penguins', clubId: 5554, name: 'Pittsburgh Penguins', abbreviation: 'PIT', division: 'East', platform: 'PS5', badgeId: '', primaryColor: '(0,0,0)', secondaryColor: '(252,181,20)', active: true }
-  ,{ clubName: 'FBHL Tampa Bay Lightning', clubId: 3934, name: 'Tampa Bay Lightning', abbreviation: 'TB', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0, 40, 104)', secondaryColor: '(255, 255, 255)', active: true }
-  ,{ clubName: 'FBHL Toronto', clubId: 6343, name: 'Toronto Mapleleafs', abbreviation: 'TOR', division: 'East', platform: 'PS4', badgeId: '', primaryColor: '(0, 32, 91)', secondaryColor: '(255, 255, 255)', active: true }
-  ,{ clubName: 'FBHL Washington Capitals', clubId: 9583, name: 'Washington Capitals', abbreviation: 'WSH', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4, 30, 66)', secondaryColor: '(200, 16, 46)', active: true }
-  ,{ clubName: 'FBHL Anaheim Mighty Ducks', clubId: 4759, name: 'Anaheim Ducks', abbreviation: 'ANA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(252, 76, 2)', secondaryColor: '(185, 151, 91)', active: true }
-  ,{ clubName: '', clubId: 0, name: 'Arizona Coyotes', abbreviation: 'ARI', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(140,38,51)', secondaryColor: '(226,214,181)', active: false }
-  ,{ clubName: '', clubId: 0, name: 'Calgary Flames', abbreviation: 'CGY', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(200,16,46)', secondaryColor: '(241, 190, 72)', active: false }
-  ,{ clubName: 'FBHL Chicago Blackhawks', clubId: 2788, name: 'Chicago Blackhawks', abbreviation: 'CHI', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(207,10,44)', secondaryColor: '(255,209,0)', active: true }
-  ,{ clubName: 'FBHL Colorado Avs', clubId: 159586, name: 'Colorado Avalanche', abbreviation: 'COL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(111, 38, 61)', secondaryColor: '(35, 97, 146)', active: true }
-  ,{ clubName: 'FBHL Dallas Stars', clubId: 41074, name: 'Dallas Stars', abbreviation: 'DAL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 104, 71)', secondaryColor: '(143, 143, 140)', active: true }
-  ,{ clubName: 'FBHL Edmonton Oilers', clubId: 68364, name: 'Edmonton Oilers', abbreviation: 'EDM', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4, 30, 66)', secondaryColor: '(252, 76, 0)', active: true }
-  ,{ clubName: 'FBHL LA Kings1', clubId: 43438, name: 'Los Angeles Kings', abbreviation: 'LA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(17,17,17)', secondaryColor: '(162,170,173)', active: true }
-  ,{ clubName: 'FBHL Minnesota Wild', clubId: 38092, name: 'Minnestoa Wild', abbreviation: 'MIN', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(2, 73, 48)', secondaryColor: '(237, 170, 0)', active: true }
-  ,{ clubName: 'FBHL Nashville Predators', clubId: 5263, name: 'Nashville Predators', abbreviation: 'NSH', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(255,184,28)', secondaryColor: '(4,30,66)', active: true }
-  ,{ clubName: 'FBHL Seattle Kraken', clubId: 7789, name: 'Seattle Kraken', abbreviation: 'SEA', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(153, 217, 217)', secondaryColor: '(0, 22, 40)', active: true }
-  ,{ clubName: 'FBHL SJ Sharks', clubId: 61641, name: 'San Jose Sharks', abbreviation: 'SJ', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 109, 117)', secondaryColor: '(234, 114, 0)', active: true }
-  ,{ clubName: 'FBHL SJ Sharks2', clubId: 140953, name: 'San Jose Sharks2', abbreviation: 'SJ', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 109, 117)', secondaryColor: '(234, 114, 0)', active: true }
-  ,{ clubName: '', clubId: 0, name: 'St. Louis Blues', abbreviation: 'STL', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 47, 135)', secondaryColor: '(252, 181, 20)', active: false }
-  ,{ clubName: '', clubId: 0, name: 'Vancouver Canucks', abbreviation: 'VAN', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(0, 32, 91)', secondaryColor: '(10,134,61)', active: false }
-  ,{ clubName: 'FBHL Vegas Golden Knights', clubId: 99855, name: 'Las Vegas Golden Knights', abbreviation: 'VGK', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(185,151,91)', secondaryColor: '(51,63,72)', active: true }
-  ,{ clubName: 'FBHL WINNIPEGJETS', clubId: 9148, name: 'Winnipeg Jets', abbreviation: 'WPG', division: 'West', platform: 'PS4', badgeId: '', primaryColor: '(4,30,66)', secondaryColor: '(0,76,151)', active: true }
-]
+  ,{ clubName: 'Fbhl Anaheim mighty ducks', clubId: 4759, name: 'Anaheim Ducks', abbreviation: 'ANA', division: 'West', platform: 'PS4', primaryColor: '(252, 76, 2)', secondaryColor: '(185, 151, 91)', active: true }
+  ,{ clubName: 'FB ARIZONA COYOTES', clubId: 43162, name: 'Arizona Coyotes', abbreviation: 'ARI', division: 'West', platform: 'PS4', primaryColor: '(140, 38, 51)', secondaryColor: '(266, 214, 181)', active: true }
+  ,{ clubName: 'FBHL Boston Bruins', clubId: 316233, name: 'Boston Bruins', abbreviation: 'BOS', division: 'East', platform: 'PS4', primaryColor: '(252, 181, 20)', secondaryColor: '(17, 17, 17)', active: true }
+  ,{ clubName: 'Fbhl Buffalo Sabres', clubId: 26128, name: 'Buffalo Sabres', abbreviation: 'BUF', division: 'East', platform: 'PS4', primaryColor: '(0, 38, 84)', secondaryColor: '(252, 181, 20)', active: true }
+  ,{ clubName: 'FB Calgary Flames', clubId: 6289, name: 'Calgary Flames', abbreviation: 'CGY', division: 'West', platform: 'PS4', primaryColor: '(200, 16, 46)', secondaryColor: '(241, 190, 72)', active: true }
+  ,{ clubName: 'FBHL Carolina Hurricanes', clubId: 76092, name: 'Carolina Hurricanes', abbreviation: 'CAR', division: 'East', platform: 'PS4', primaryColor: '(226,24,54)', secondaryColor: '(35,31,32)', active: true }
+  ,{ clubName: 'FB CHICAGO BLACKHAWKS', clubId: 319602, name: 'Chicago Blackhawks', abbreviation: 'CHI', division: 'West', platform: 'PS4', primaryColor: '(207, 10, 44)', secondaryColor: '(255, 209, 0)', active: true }
+  ,{ clubName: 'FBHL Colorado Avs', clubId: 159586, name: 'Colorado Avalanche', abbreviation: 'COL', division: 'West', platform: 'PS4', primaryColor: '(111, 38, 61)', secondaryColor: '(35, 97, 146)', active: true }
+  ,{ clubName: 'FBHL CBJ', clubId: 102698, name: 'Columbus Blue Jackets', abbreviation: 'CBJ', division: 'East', platform: 'PS4', primaryColor: '(0,38,84)', secondaryColor: '(206,17,38)', active: true }
+  ,{ clubName: 'FBHL Dallas Stars', clubId: 41074, name: 'Dallas Stars', abbreviation: 'DAL', division: 'West', platform: 'PS4', primaryColor: '(0, 104, 71)', secondaryColor: '(143, 143, 140)', active: true }
+  ,{ clubName: 'FBHL Detroit Red Wings', clubId: 316134, name: 'Detroit Redwings', abbreviation: 'DET', division: 'East', platform: 'PS4', primaryColor: '(206, 17, 38)', secondaryColor: '(255, 255, 255)', active: true }
+  ,{ clubName: 'FBHL Edmonton Oilers', clubId: 68364, name: 'Edmonton Oilers', abbreviation: 'EDM', division: 'West', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(252, 76, 0', active: true }
+  ,{ clubName: 'FBHL Florida Panthers', clubId: 76146, name: 'Florida Panthers', abbreviation: 'FLA', division: 'East', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(200, 16, 46)', active: true }
+  ,{ clubName: 'FB Vegas Golden Knights', clubId: 312378, name: 'Las Vegas Golden Knights', abbreviation: 'VGK', division: 'West', platform: 'PS4', primaryColor: '(185, 151, 91)', secondaryColor: '(51, 63, 72)', active: true }
+  ,{ clubName: 'FBHL LA KINGS1', clubId: 43438, name: 'Los Angeles Kings', abbreviation: 'LA', division: 'West', platform: 'PS4', primaryColor: '(17, 17, 17)', secondaryColor: '(162, 170, 173)', active: true }
+  ,{ clubName: 'F B H L Minnesota Wild', clubId: 315276, name: 'Minnesota Wild', abbreviation: 'MIN', division: 'West', platform: 'PS4', primaryColor: '(2, 73, 48)', secondaryColor: '(237, 170, 0)', active: true }
+  ,{ clubName: 'FBHL Montreal Canadiens', clubId: 26593, name: 'Montreal Canadiens', abbreviation: 'MTL', division: 'East', platform: 'PS4', primaryColor: '(175, 30, 45)', secondaryColor: '(25, 33, 104)', active: true }
+  ,{ clubName: 'FBHL NASHVILLE PREDTORS', clubId: 5263, name: 'Nashville Predators', abbreviation: 'NSH', division: 'West', platform: 'PS4', primaryColor: '(255,184,28)', secondaryColor: '(4, 30, 66)', active: true }
+  ,{ clubName: 'Fb New Jersey Devils', clubId: 123113, name: 'New Jersey Devils', abbreviation: 'NJ', division: 'East', platform: 'PS4', primaryColor: '(206, 17, 38)', secondaryColor: '(0, 0, 0)', active: true }
+  ,{ clubName: 'FBHL New York Islanders', clubId: 26815, name: 'New York Islanders', abbreviation: 'NYI', division: 'East', platform: 'PS4', primaryColor: '(244, 125, 48)', secondaryColor: '(0, 83, 155)', active: true }
+  ,{ clubName: 'FBHL New York Rangers', clubId: 9286, name: 'New York Rangers', abbreviation: 'NYR', division: 'East', platform: 'PS4', primaryColor: '(0, 56, 168)', secondaryColor: '(206, 17, 38)', active: true }
+  ,{ clubName: 'FBHL Ottawa Senators', clubId: 72960, name: 'Ottawa Senators', abbreviation: 'OTT', division: 'East', platform: 'PS4', primaryColor: '(197, 32, 50)', secondaryColor: '(194, 145, 44)', active: true }
+  ,{ clubName: 'FBHL Philadelphia Flyers', clubId: 13405, name: 'Philadelphia Flyers', abbreviation: 'PHI', division: 'East', platform: 'PS4', primaryColor: '(247, 73, 2)', secondaryColor: '(0, 0, 0)', active: true }
+  ,{ clubName: 'FBHL Pittsburgh Penguins', clubId: 6472, name: 'Pittsburgh Penguins', abbreviation: 'PIT', division: 'East', platform: 'PS4', primaryColor: '(0, 0, 0)', secondaryColor: '(252,181,20)', active: true }
+  ,{ clubName: 'FBHL SJ Sharks', clubId: 140953, name: 'San Jose Sharks', abbreviation: 'SJ', division: 'West', platform: 'PS4', primaryColor: '(0, 109, 117)', secondaryColor: '(234, 114, 0)', active: true }
+  ,{ clubName: 'FBHL Seattle Kraken', clubId: 7789, name: 'Seattle Kraken', abbreviation: 'SEA', division: 'West', platform: 'PS4', primaryColor: '(153, 217, 217)', secondaryColor: '(0, 22, 40)', active: true }
+  ,{ clubName: 'FB Blues', clubId: 475, name: 'St. Louis Blues', abbreviation: 'STL', division: 'West', platform: 'PS4', primaryColor: '(0, 47, 135)', secondaryColor: '(252, 181, 20)', active: true }
+  ,{ clubName: 'FBHL Tampa Bay Lightning', clubId: 3934, name: 'Tampa Bay Lightning', abbreviation: 'TB', division: 'East', platform: 'PS4', primaryColor: '(0, 40, 104)', secondaryColor: '(255, 255, 255)', active: true }
+  ,{ clubName: 'FBHL Toronto', clubId: 6343, name: 'Toronto Mapleleafs', abbreviation: 'TOR', division: 'East', platform: 'PS4', primaryColor: '(0, 32, 91)', secondaryColor: '(255, 255, 255)', active: true }
+  ,{ clubName: 'FBHL Vancouver Canucks', clubId: 314010, name: 'Vancouver Canucks', abbreviation: 'VAN', division: 'West', platform: 'PS4', primaryColor: '(0, 32, 91)', secondaryColor: '(10, 134, 61)', active: true }
+  ,{ clubName: 'FBHL Washington Capitals', clubId: 9583, name: 'Washington Capitals', abbreviation: 'WSH', division: 'East', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(200, 16, 46)', active: true }
+  ,{ clubName: 'FBHL WINNIPEGJETS', clubId: 9148, name: 'Winnipeg Jets', abbreviation: 'WPG', division: 'West', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(0, 76, 151)', active: true }
+ ]
 
 const bins = {
   matchHistoryBinId: '61db51fd39a33573b3262564',

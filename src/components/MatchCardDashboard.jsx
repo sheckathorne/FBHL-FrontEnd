@@ -34,7 +34,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
     }, 4000)
   }
 
-    const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? filteredMatchCards : filteredMatchCards.filter(match => !match.invalid)
+  const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? filteredMatchCards : filteredMatchCards.filter(match => !match.invalid)
 
   const pageCount = Math.ceil(filteredMatchCardsByInvalid.length/itemsPerPage)
 

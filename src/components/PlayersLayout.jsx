@@ -76,7 +76,7 @@ const PlayersLayout = () => {
       }
     }
 
-    switch(playerType) {
+  switch(playerType) {
     case 'skaters':
       return rankThePlayers(createPlayerArray(playerType).players, sortField)
     case 'goaltenders':

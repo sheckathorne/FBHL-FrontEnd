@@ -17,7 +17,7 @@ const CalendarDashboard = () => {
   const filteredMatchesWithDate = matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
 
   const scheduleWithoutPlayedMatches = filteredSchedule.filter(match => {
-    const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDateString === match.matchDate )
+    const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
     return !scheduledMatchWasPlayed
   })
 

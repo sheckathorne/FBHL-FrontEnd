@@ -14,7 +14,8 @@ const CalendarLayout = () => {
   
   const dispatch = useDispatch()
   const selectedDate = useSelector(state => state.calendarSelectedDate)
-  const schedule = useSelector(state => state.schedule)  
+  const schedule = useSelector(state => state.schedule)
+
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
   const matches = useSelector(state => state.matches)

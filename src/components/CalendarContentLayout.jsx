@@ -16,6 +16,7 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
   
   const lightTheme = useContext(ThemeContext).value === 'light'
   const isMobile = useContext(MobileContext)
+
   const queriedMatch = filteredMatchCards.filter(match => match.matchId).find(match => match.matchId.toString() === queriedMatchId)
 
   const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null

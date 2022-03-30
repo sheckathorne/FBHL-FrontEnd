@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import data from '../helpers/data.js'
 
-const SmallMatchResultCard = ({ match, themeClass, lightTheme }) => {
+const SmallMatchResultCard = ({ match, themeClass, lightTheme, carouselItem }) => {
   let navigate = useNavigate('')
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
 
@@ -12,6 +12,7 @@ const SmallMatchResultCard = ({ match, themeClass, lightTheme }) => {
   const darkCardClass = lightTheme ? '' : ' dark'
   const winnerClass = 'fw-bolder'
   const loserClass = 'fw-light'
+  const carouselClass = carouselItem ? ' league-carousel' : ''
 
   const awayTeam = {
     team: data.teams.find(team => team.clubId.toString() === match.clubs[0].clubId),
@@ -54,7 +55,7 @@ const SmallMatchResultCard = ({ match, themeClass, lightTheme }) => {
   )
 
   return (
-    <div className={`small-match-result-card pointer-cursor${darkCardClass}`} onClick={() => navigate(url)}>
+    <div className={`small-match-result-card pointer-cursor${darkCardClass}${carouselClass}`} onClick={() => navigate(url)}>
       <Col className='pt-3 pb-3' xs={{ span: 11, offset: 1 }}>
         <Row>
           <Col>

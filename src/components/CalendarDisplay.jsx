@@ -24,7 +24,7 @@ const CalendarDashboard = () => {
       matchWithDate.map(match => ({ matchWasPlayed: true, ...match })) :
       scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDateString).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
+  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
 
   return (
     <>

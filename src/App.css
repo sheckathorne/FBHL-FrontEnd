@@ -378,7 +378,7 @@ thead > tr {
   line-height: 30px;
 }
 
-.small-match-result-card {
+.small-match-result-card.league-carousel {
   height: 165px;
 }
 
@@ -408,6 +408,22 @@ thead > tr {
 .small-match-result-card.dark:hover:not(.no-hover), .btn-dark:hover, .clickable-card.dark:hover {
   border-left: 4px solid #eb9834FF !important;
   background-color: rgba(0,0,0, 0.075) !important;
+}
+
+.invalid-match-card.small-match-result-card.dark{
+  background-color: #ff6b6b !important;
+}
+
+.invalid-match-card.small-match-result-card{
+  background-color: #ff6b6b !important;
+}
+
+.invalid-match-card.small-match-result-card.dark:hover{
+  background-color: #ff6b6b !important;
+}
+
+.invalid-match-card.small-match-result-card:hover{
+  background-color: #ff6b6b !important;
 }
 
 .table-row {

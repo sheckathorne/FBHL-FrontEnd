@@ -11,6 +11,7 @@ import playerSortReducer from './playerSortReducer'
 import notificationReducer from './notificationReducer'
 import userReducer from './userReducer'
 import skaterOrGoalieReducer from './skaterOrGoalieReducer'
+import invalidMatchesReducer from './invalidMatchReducer'
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     notification: notificationReducer,
     user: userReducer,
     skaterOrGoalie: skaterOrGoalieReducer,
+    invalidMatches: invalidMatchesReducer
   }
 })
 

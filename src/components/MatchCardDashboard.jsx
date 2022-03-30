@@ -15,6 +15,7 @@ import { setNotification, clearNotification } from '../reducers/notificationRedu
 const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
   const notification = useSelector(state => state.notification)
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
+  const user = useSelector(state => state.user.user)
 
   const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
@@ -33,9 +34,11 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
     }, 4000)
   }
 
-  const pageCount = Math.ceil(filteredMatchCards.length/itemsPerPage)
+    const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? filteredMatchCards : filteredMatchCards.filter(match => !match.invalid)
 
-  const displayedMatches = filteredMatchCards.sort((a,b) => a.timestamp - b.timestamp).slice((matchActivePage - 1) * itemsPerPage, ((matchActivePage - 1) * itemsPerPage) + itemsPerPage)
+  const pageCount = Math.ceil(filteredMatchCardsByInvalid.length/itemsPerPage)
+
+  const displayedMatches = filteredMatchCardsByInvalid.sort((a,b) => a.timestamp - b.timestamp).slice((matchActivePage - 1) * itemsPerPage, ((matchActivePage - 1) * itemsPerPage) + itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(matchActivePage, pageCount, delta, paginationClick)
 
   function paginationClick (type, num) {
@@ -64,7 +67,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
 
   // if deleting a scheduled match card results in current pagination page being greater than number of pages, roll back one page
   const goToLastPaginationPage = () => {
-    const pageCount = Math.ceil((filteredMatchCards.length - 1)/itemsPerPage)
+    const pageCount = Math.ceil((filteredMatchCardsByInvalid.length - 1)/itemsPerPage)
     if ( matchActivePage > pageCount ) {
       dispatch(setMatchActivePage(pageCount))
     }

@@ -5,6 +5,7 @@ import { initializeSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
+import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
@@ -28,7 +29,8 @@ const App = () => {
     matches: false,
     players: false,
     schedule: false,
-    teamRankings: false 
+    teamRankings: false,
+    invalidMatches: false
   }
 
   const sortField = useSelector(state => state.sortField)
@@ -49,6 +51,11 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeMatches())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matches: true })))
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeInvalidMatches())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, invalidMatches: true })))
   }, [dispatch])
 
   useEffect(() => {

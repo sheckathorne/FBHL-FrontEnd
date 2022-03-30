@@ -21,8 +21,6 @@ const RecentResultsCarousel = ({ matches, lightTheme, handleCollapseClick, width
   const themeClass = lightTheme ? '' : 'dark-theme-text'
   const caret = resultsOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const carouselDelay = isMobile ? 3000 : isTablet ? 5000 : 7500
-  
-  
 
   const clickableTitle = isMobile ? (
     <Col className='mt-1' onClick={() => dispatch(setResultsOpen(!resultsOpen))}>
@@ -40,6 +38,7 @@ const RecentResultsCarousel = ({ matches, lightTheme, handleCollapseClick, width
         match={match}
         themeClass={themeClass}
         lightTheme={lightTheme}
+        carouselItem={true}
       />
     </SwiperSlide>
   )

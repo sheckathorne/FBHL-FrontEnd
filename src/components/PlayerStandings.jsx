@@ -82,37 +82,33 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
 
     table = (
       <>
-        <Collapse in={playerOpen}>
-          <div>
-            <BootstrapTable
-              title={top.title}
-              columns={functions.generateStandingsColumns(data.playerStandingsColumns, top.stat, themeClass)}
-              data={functions.generatePlayerStandingData(reducedPlayers, top.sortField.field, themeClass)}
-              hover={true}
-              responsive={true}
-              striped={false}
-              variant={lightTheme ? 'light' : 'dark'}
-              themeClass={themeClass}
-              size={isMobile ? 'sm' : ''}
-              sortField={top.sortField}
-              handleTableClick={handleTableClick}
-              type='players'
-              summaryObj={summaryObj}
-              rankedPlayers={rankedPlayers}
-            />
-          </div>
-        </Collapse>
+        <BootstrapTable
+          title={top.title}
+          columns={functions.generateStandingsColumns(data.playerStandingsColumns, top.stat, themeClass)}
+          data={functions.generatePlayerStandingData(reducedPlayers, top.sortField.field, themeClass)}
+          hover={true}
+          responsive={true}
+          striped={false}
+          variant={lightTheme ? 'light' : 'dark'}
+          themeClass={themeClass}
+          size={isMobile ? 'sm' : ''}
+          sortField={top.sortField}
+          handleTableClick={handleTableClick}
+          type='players'
+          summaryObj={summaryObj}
+          rankedPlayers={rankedPlayers}
+        />
       </>
     )
   }
 
   const clickableTitle = isMobile ? (
-    <Col className='mt-1' onClick={() => dispatch(setPlayerOpen(!playerOpen))}>
-      <h5 className={themeClass + ' tiny-caps section-title'}>{top.title} {caret}</h5>
+    <Col className='' onClick={() => dispatch(setPlayerOpen(!playerOpen))}>
+      <h5 className={themeClass + ' tiny-caps section-title'}>Top Players {caret}</h5>
     </Col>
   ) : (
-    <Col className='mt-1'>
-      <h5 className={themeClass + ' tiny-caps section-title'}>{top.title}</h5>
+    <Col className=''>
+      <h5 className={themeClass + ' tiny-caps section-title'}>Top Players</h5>
     </Col>
   )
 
@@ -151,9 +147,18 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
     <>
       <Row className='table-title d-flex align-items-center'>
         {clickableTitle}
-        {pagination}
       </Row>
-      {table}
+      <Collapse in={playerOpen}>
+        <div>
+          <Row>
+            <Col className='mt-1'>
+              <h5 className={themeClass + ' tiny-caps section-title'}>{top.title}</h5>
+            </Col>
+            {pagination}
+          </Row>
+          {table}
+        </div>
+      </Collapse>
     </>
   )
 }

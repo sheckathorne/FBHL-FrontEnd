@@ -378,6 +378,10 @@ thead > tr {
   line-height: 30px;
 }
 
+.small-match-result-card {
+  height: 165px;
+}
+
 .small-match-result-card, .btn-outline-dark, .clickable-card {
   background-color: #ecedee !important;
   color: black !important;

@@ -4,7 +4,10 @@ const initialState = {
   matchActivePage: 1,
   playersActivePage: 1,
   teamsActivePage: 1,
-  leagueStandingsPage: 1,
+  leagueStandingsPage: {
+    west: 1,
+    east: 1
+  },
   playerStandingsPage: 1
 }
 
@@ -22,19 +25,21 @@ const paginationSlice = createSlice({
       return { ...state, teamsActivePage: action.payload }
     },
     setLeagueStandingsPage(state, action) {
-      return { ...state, leagueStandingsPage: action.payload }
+      const division = action.payload.division
+
+      if ( division === 'West' )
+        return { ...state, leagueStandingsPage: {...state.leagueStandingsPage, west: action.payload.page } }
+      else if ( division === 'East' ) {
+        return { ...state, leagueStandingsPage: {...state.leagueStandingsPage, east: action.payload.page } }
+      } else {
+        return state
+      }
     },
     setPlayerStandingsPage(state, action) {
       return { ...state, playerStandingsPage: action.payload }
     },
-    resetPagination(state, action) {
-      return {
-        matchActivePage: 1,
-        playersActivePage: 1,
-        teamsActivePage: 1,
-        leagueStandingsPage: 1,
-        playerStandingsPage: 1
-      }
+    resetPagination(_state, _action) {
+      return initialState
     }
   },
 })

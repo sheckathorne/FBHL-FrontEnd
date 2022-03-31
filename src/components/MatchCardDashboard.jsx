@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import paginationFunction from '../helpers/paginationFunction.js'
 import PaginationRow from './PaginationRow'
 import MatchCardPlayed from './MatchCardPlayed'
@@ -37,8 +37,17 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
 
   const matchCardsWithInvalidFlag = filteredMatchCards.map(match => ({invalid: invalidMatches.includes(match.matchId), ...match }))
   const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? matchCardsWithInvalidFlag : matchCardsWithInvalidFlag.filter(match => !match.invalid)
-
   const pageCount = Math.ceil(filteredMatchCardsByInvalid.length/itemsPerPage)
+
+  // When clicking on the match card carousel on league dashboard, change the match card dashboard pagination to the page which contains the clicked match
+  useEffect(() => {
+    if ( queriedMatch ) {
+      const matchIndex = filteredMatchCardsByInvalid.findIndex(match => match.matchId === queriedMatch.matchId)
+      const pageNum = Math.ceil(parseFloat((matchIndex + 1))/parseFloat(itemsPerPage))
+      dispatch(setMatchActivePage(pageNum))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[queriedMatch, dispatch])
 
   const displayedMatches = filteredMatchCardsByInvalid.sort((a,b) => a.timestamp - b.timestamp).slice((matchActivePage - 1) * itemsPerPage, ((matchActivePage - 1) * itemsPerPage) + itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(matchActivePage, pageCount, delta, paginationClick)

@@ -15,8 +15,8 @@ const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId }) => {
   }
 
   const leaders = {
-    homeTeamLeaders: leaderList.filter(player => player.value === maxValue.homeMax && player.clubId === homeTeamClubId).map(x => ({ ...x, maxValue: maxValue.homeMax })),
-    awayTeamLeaders: leaderList.filter(player => player.value === maxValue.awayMax && player.clubId !== homeTeamClubId).map(x => ({ ...x, maxValue: maxValue.awayMax }))
+    homeTeamLeaders: leaderList.filter(player => player.value > 0 && player.clubId === homeTeamClubId).map(x => ({ ...x, maxValue: maxValue.homeMax })).sort((a,b) => b.value - a.value),
+    awayTeamLeaders: leaderList.filter(player => player.value > 0 && player.clubId !== homeTeamClubId).map(x => ({ ...x, maxValue: maxValue.awayMax })).sort((a,b) => b.value - a.value)
   }
 
   const homeTeamLeaders = leaders.homeTeamLeaders.filter(player => player.value > 0)
@@ -43,7 +43,7 @@ const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId }) => {
           playerName={leader.playerName}
           playerId={leader.playerId}
           teamId={leader.clubId}
-          playerMaxValue={leader.maxValue}
+          playerValue={leader.value}
           playerPosition={leader.positionAbbreviation}
           homeTeamObj={leader.homeTeam}
           rowCounterpart={leader.counterPart}

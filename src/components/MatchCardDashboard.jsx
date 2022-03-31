@@ -16,6 +16,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
   const notification = useSelector(state => state.notification)
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
   const user = useSelector(state => state.user.user)
+  const invalidMatches = useSelector(state => state.invalidMatches)
 
   const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
@@ -34,7 +35,8 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
     }, 4000)
   }
 
-  const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? filteredMatchCards : filteredMatchCards.filter(match => !match.invalid)
+  const matchCardsWithInvalidFlag = filteredMatchCards.map(match => ({invalid: invalidMatches.includes(match.matchId), ...match }))
+  const filteredMatchCardsByInvalid = user !== null && user.role === 'admin' ? matchCardsWithInvalidFlag : matchCardsWithInvalidFlag.filter(match => !match.invalid)
 
   const pageCount = Math.ceil(filteredMatchCardsByInvalid.length/itemsPerPage)
 

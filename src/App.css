@@ -395,6 +395,7 @@ thead > tr {
 .small-match-result-card:hover:not(.no-hover), .btn-outline-dark:hover, .clickable-card:hover {
   background-color: #e5e6e7 !important;
   border-left: 4px solid #eb9834FF !important;
+  background-color: #eb983480 !important;
 }
 
 .small-match-result-card.dark, .btn-dark, .clickable-card.dark {
@@ -407,7 +408,7 @@ thead > tr {
 
 .small-match-result-card.dark:hover:not(.no-hover), .btn-dark:hover, .clickable-card.dark:hover {
   border-left: 4px solid #eb9834FF !important;
-  background-color: rgba(0,0,0, 0.075) !important;
+  background-color: #eb983480 !important;
 }
 
 .invalid-match-card.small-match-result-card.dark{
@@ -466,11 +467,11 @@ thead > tr {
   background-color: rgba(0,0,0, 0.075) !important;
 }
 
-.card-selected {
+.card-selected, .card-selected.dark {
   background-color: #eb983440 !important;
 }
 
-.card-selected:hover, .clickable-card-dark.card-selected:hover {
+.card-selected:hover, .card-selected.dark:hover, .clickable-card-dark.card-selected:hover {
   background-color: #eb983480 !important;
 }
 

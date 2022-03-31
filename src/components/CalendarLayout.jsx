@@ -18,10 +18,13 @@ const CalendarLayout = () => {
 
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
-  const matches = useSelector(state => state.matches)
-  const filteredMatches = teamId ? matches.filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matches]
-  const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()
+
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
+
+  const matchSkeletons = useSelector(state => state.matchSkeletons)
+  const filteredMatchSkeletons = teamId ? matchSkeletons.filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matchSkeletons]
+  const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...filteredMatchSkeletons.map(o => o.timestamp), 0)).startOf('day')).unix()
+
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const CalendarLayout = () => {
   // sets calendar to last date a given team (or all teams if none selected) played a game
   useEffect(() => {
     if ( matchTypeFilter === 'all' || matchTypeFilter === 'played' ) {
-      dispatch(setSelectedDate(dayjs(dayjs.unix(Math.max(...filteredMatches.map(o => o.timestamp), 0)).startOf('day')).unix()))
+      dispatch(setSelectedDate(dayjs(dayjs.unix(Math.max(...filteredMatchSkeletons.map(o => o.timestamp), 0)).startOf('day')).unix()))
     } else {
       const scheduleFromTodayOnward = filteredSchedule.filter(match => dayjs.unix(dayjs(match.matchDate).unix()).startOf('day').toDate() >= dayjs().startOf('day').toDate())
       const minScheduledTimeStamp = scheduleFromTodayOnward.length === 0 ?

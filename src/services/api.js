@@ -54,10 +54,15 @@ const reinstateMatch = async (matchId) => {
   }
 
   const res = await axios.post(`${baseUrl}/invalidMatches/`, { matchId }, config)
+  return res.status
+}
+
+const getMatch = async (matchId) => {
+  const res = await axios.get(`${baseUrl}/matchHistory/${matchId}`)
   return res.data
 }
 
 
-const obj = { getData, deleteScheduledMatch, updateScheduledMatch, createSchedueldMatch, setToken, reinstateMatch, invalidateMatch }
+const obj = { getData, deleteScheduledMatch, updateScheduledMatch, createSchedueldMatch, setToken, reinstateMatch, invalidateMatch, getMatch }
 
 export default obj

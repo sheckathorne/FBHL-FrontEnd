@@ -1,13 +1,42 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import MatchDetail from './MatchDetail'
-import { Container, Col } from 'react-bootstrap'
+import { Container, Col, Row } from 'react-bootstrap'
 import dayjs from 'dayjs'
 import data from '../helpers/data'
 import matchDetails from '../helpers/matchDetails'
 import LeaderCard from './LeaderCard'
 import colorCompare from '../helpers/colorCompare'
+import api from '../services/api'
+import CircularProgress from '@mui/material/CircularProgress'
 
-const MatchDetailDashboard = ({ match }) => {
+const MatchDetailDashboard = ({ queriedMatchId }) => {
+  const [ match, setMatch ] = useState({})
+  const [ loading, setLoading ] = useState(true)
+
+  useEffect(() => {
+    api
+      .getMatch(queriedMatchId)
+      .then(returnedMatch => {
+        const fetchedMatch = returnedMatch.find(match => match)
+        setMatch(fetchedMatch)
+        setLoading(false)
+    })
+  },[queriedMatchId])
+
+  const display = loading ?
+    <Container>
+      <Row className='mt-4'>
+        <Col className='d-flex justify-content-center'>
+          <CircularProgress />
+        </Col>
+      </Row>
+    </Container> :
+    <LoadedMatchDetailDashboard match={match} />
+
+    return display
+}
+
+const LoadedMatchDetailDashboard = ({ match }) => {
   const matchDate = dayjs.unix(match.timestamp).format('MMMM D, YYYY')
   const dataPointRowSpec = data.dataPointRowSpec
 
@@ -32,7 +61,7 @@ const MatchDetailDashboard = ({ match }) => {
 
   const addDefaultSrc = (e) => e.target.src = 'https://media.contentapi.ea.com/content/dam/eacom/nhl/pro-clubs/custom-crests/42.png'
 
-  const display = ( match ) ? (
+  return (
     <Col xs={12} className='match-detail-card'>
       <Container>
         <MatchDetail
@@ -53,9 +82,7 @@ const MatchDetailDashboard = ({ match }) => {
         )}
       </Container>
     </Col>
-  ) : null
-
-  return (display)
+  )
 }
 
 export default MatchDetailDashboard

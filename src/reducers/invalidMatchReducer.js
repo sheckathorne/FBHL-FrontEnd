@@ -13,12 +13,11 @@ const invalidMatchesSlice = createSlice({
       return action.payload
     },
     invalidateOneMatch(state, action) {
-      const matchId = action.payload
-      return state.filter(invalidMatch => invalidMatch.matchId !== matchId)
+      return state.concat(action.payload)
     },
     reinstateOneMatch(state, action) {
-      const newInvalidMatch = action.payload
-      state.push(newInvalidMatch)
+      const matchId = action.payload
+      return state.filter(invalidMatch => invalidMatch !== matchId)
     },
   },
 })
@@ -28,7 +27,8 @@ export const { setInvalidMatches, invalidateOneMatch, reinstateOneMatch } = inva
 export const initializeInvalidMatches = () => {
   return async dispatch => {
     const invalidMatches = await chelService.getData('/invalidMatches')
-    dispatch(setInvalidMatches(invalidMatches))
+    const invalidMatchIds = invalidMatches.map(match => match.matchId)
+    dispatch(setInvalidMatches(invalidMatchIds))
   }
 }
 
@@ -43,7 +43,7 @@ export const invalidateMatch = (matchId) => {
       setTimeout(() => {
         dispatch(clearNotification())
       }, 5000)
-    } else if ( response === 204 ) {
+    } else if ( response === 200 ) {
       dispatch(invalidateOneMatch(matchId))
       dispatch(setNotification({ type: 'success', text: 'Game was successfully invalidatd', scope: 'MatchCardDashboard' }))
       setTimeout(() => {

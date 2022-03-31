@@ -23,10 +23,10 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
 
   const calendarDate = selectedDate === 'Invalid Date' ? dayjs() : dayjs.unix(selectedDate).toDate()
 
-  const matchDetails = queriedMatch ? (
+  const matchDetails = queriedMatchId ? (
     <Col lg={8} className='mt-2'>
       <MatchDetailDashboard
-        match={queriedMatch}
+        queriedMatchId={queriedMatchId}
       />
     </Col> ) : null
 
@@ -40,7 +40,7 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
       />
     </Col>) : null
 
-  const calendar = queriedMatch ? null : (
+  const calendar = queriedMatchId ? null : (
     <Col lg={4} className='mt-2 '>
       {mobileTitle}
       <Row><Col><TeamDropdown source='calendar' /></Col></Row>

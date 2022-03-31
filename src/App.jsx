@@ -3,6 +3,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule } from './reducers/scheduleReducer'
 import { initializeMatches } from './reducers/matchesReducer'
+import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
 import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
@@ -30,7 +31,8 @@ const App = () => {
     players: false,
     schedule: false,
     teamRankings: false,
-    invalidMatches: false
+    invalidMatches: false,
+    matchSkeletons: false,
   }
 
   const sortField = useSelector(state => state.sortField)
@@ -52,6 +54,12 @@ const App = () => {
     dispatch(initializeMatches())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matches: true })))
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeMatchSkeletons())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matchSkeletons: true })))
+  }, [dispatch])
+
 
   useEffect(() => {
     dispatch(initializeInvalidMatches())
@@ -87,7 +95,6 @@ const App = () => {
       const user = JSON.parse(loggedFBHLuser)
       dispatch(setUser(user))
       chelService.setToken(user.token)
-
     }
   },[dispatch])
 
@@ -142,12 +149,12 @@ const App = () => {
       width={width}
     /> :
     <Container>
-    <Row className='mt-4'>
-      <Col className='d-flex justify-content-center'>
-        <CircularProgress />
-      </Col>
-    </Row>
-  </Container>
+      <Row className='mt-4'>
+        <Col className='d-flex justify-content-center'>
+          <CircularProgress />
+        </Col>
+      </Row>
+    </Container>
 
   const errorBanner = notification.text !== null && notification.scope === 'app' ?
     <Container><Row className='mt-2'><Container><Alert variant={notification.type}>{notification.text}</Alert></Container></Row></Container> : null

@@ -12,6 +12,7 @@ import notificationReducer from './notificationReducer'
 import userReducer from './userReducer'
 import skaterOrGoalieReducer from './skaterOrGoalieReducer'
 import invalidMatchesReducer from './invalidMatchReducer'
+import matchSkeletonsReducer from './matchSkeletonsReducer'
 
 const store = configureStore({
   reducer: {
@@ -27,7 +28,8 @@ const store = configureStore({
     notification: notificationReducer,
     user: userReducer,
     skaterOrGoalie: skaterOrGoalieReducer,
-    invalidMatches: invalidMatchesReducer
+    invalidMatches: invalidMatchesReducer,
+    matchSkeletons: matchSkeletonsReducer
   }
 })
 

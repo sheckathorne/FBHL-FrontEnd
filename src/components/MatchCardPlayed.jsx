@@ -6,7 +6,6 @@ import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleMatchValidation } from '../reducers/matchesReducer'
 import { invalidateMatch, reinstateMatch } from '../reducers/invalidMatchReducer'
 
 const MatchCardPlayed = ({ match, addDefaultSrc }) => {
@@ -29,16 +28,6 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
   const buttonSelectedClass = buttonSelected ? ' card-selected' : ''
   const matchIsInvalid = match.invalid
 
-  const handleInvalidateClick = (matchId) => () => {
-    dispatch(invalidateMatch(matchId))
-    dispatch(toggleMatchValidation(matchId))
-  }
-
-  const handleReinstateClick = (matchId) => () => {
-    dispatch(reinstateMatch(matchId))
-    dispatch(toggleMatchValidation(matchId))
-  }
-
   const teamsArr = [{
     id: match.clubs[0].clubId,
     name: data.teams.find(team => team.clubId.toString() === match.clubs[0].clubId.toString()).name,
@@ -56,14 +45,14 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
   <>
     <Row className='mb-2'>
       <Col className='d-grid fluid'>
-        <Button variant='success' onClick={handleReinstateClick(match.matchId)} >Re-enable this game</Button>
+        <Button variant='success' onClick={() => dispatch(reinstateMatch(match.matchId))} >Re-enable this game</Button>
       </Col>
     </Row>
   </> : 
     <>
     <Row className='mb-2'>
       <Col className='d-grid fluid'>
-        <Button variant='danger' onClick={handleInvalidateClick(match.matchId)}>Invalidate this game</Button>
+        <Button variant='danger' onClick={() => dispatch(invalidateMatch(match.matchId))}>Invalidate this game</Button>
       </Col>
     </Row>
   </> : null

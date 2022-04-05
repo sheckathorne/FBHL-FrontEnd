@@ -12,9 +12,26 @@ const CalendarDashboard = () => {
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const teamId = useParams().teamId.toString()
   const matcheSkeletons = useSelector(state => state.matchSkeletons)
+  const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
+    { 
+      matchDate: match.matchDate,
+      _id: match._id,
+      matchId: match.matchId,
+      timestamp: match.timestamp,
+      forfeit: true,
+      clubs: [{
+        clubId: match.winningClub,
+        data: { goals: '1'}
+      },{
+        clubId: match.losingClub,
+        data: { goals: '0' }}]
+    }
+  ))
+
+  const matchesWithForfeits = matcheSkeletons.concat(forfeitedMatches)
 
   const filteredSchedule = useSelector(state => state.schedule).filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const filteredMatchesWithDate = matcheSkeletons.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
+  const filteredMatchesWithDate = matchesWithForfeits.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
 
   const scheduleWithoutPlayedMatches = filteredSchedule.filter(match => {
     const scheduledMatchWasPlayed = filteredMatchesWithDate.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )

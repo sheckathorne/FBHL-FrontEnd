@@ -39,6 +39,15 @@ const createSchedueldMatch = async (newMatch) => {
   return res.data
 }
 
+const createForfeitedMatch = async (forfeitedMatch) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const res = await axios.post(`${baseUrl}/forfeits`, forfeitedMatch, config)
+  return res.data
+}
+
 const reinstateMatch = async (matchId) => {
   const config = {
     headers: { Authorization: token },
@@ -63,6 +72,6 @@ const getMatch = async (matchId) => {
 }
 
 
-const obj = { getData, deleteScheduledMatch, updateScheduledMatch, createSchedueldMatch, setToken, reinstateMatch, invalidateMatch, getMatch }
+const obj = { getData, deleteScheduledMatch, updateScheduledMatch, createSchedueldMatch, setToken, reinstateMatch, invalidateMatch, getMatch, createForfeitedMatch }
 
 export default obj

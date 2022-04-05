@@ -1,19 +1,28 @@
 import React, { useContext, useState } from 'react'
 import MatchCardTeamRow from './MatchCardTeamRow'
-import { Container, Row, Col, Button, Collapse } from 'react-bootstrap'
+import { Container, Row, Col, Button, Collapse, DropdownButton, Dropdown, Form } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import Calendar from 'react-calendar'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
+import { createForfeit } from '../reducers/forfeitReducer'
 import TimePickerForm from './TimePickerForm'
+import ForfeitTeam from './ForfeitTeam'
+import { RiDeleteBin5Line } from 'react-icons/ri'
+import { HiOutlinePencil } from 'react-icons/hi'
+import { MdDoneOutline } from 'react-icons/md'
+import { v4 as uuidv4 } from 'uuid'
 
 const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
+  const [ forfeitIsOpen, setForfeitIsOpen ] = useState(false)
+  const [ finishedCollapsing, setFinishedCollapsing ] = useState(true)
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
   const [ selectedTime, setSelectedTime ] = useState(dayjs(`1/1/2020 ${match.timeString}`, 'M/D/YYYY h:mm A', 'en'))
+  const [ winningTeam, setWinningTeam ] = useState('')
 
   const user = useSelector(state => state.user.user)
 
@@ -51,12 +60,48 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
     setEditIsOpen(false)
   }
 
-  const editButtonText = editIsOpen ? 'Cancel Change' : 'Change Date/Time'
+  const handleOpenEditClick = () => {
+    setEditIsOpen(!editIsOpen)
+    setFinishedCollapsing(false)
+  }
 
-  const modifyBtnGroup = user !== null && user.role === 'admin' ?
+  const handleOpenDeleteClick = () => {
+    setDeleteConfirmIsOpen(true)
+    setFinishedCollapsing(false)
+  }
+
+  const handleForfeitOpenClick = () => {
+    setForfeitIsOpen(true)
+    setFinishedCollapsing(false)
+  }
+
+  const handleForfeitSubmit = (winnerId) => () => {
+    const newForfeit = {
+      matchId: uuidv4(),
+      timestamp: match.timestamp,
+      matchDate: match.matchDate,
+      winningClub: winnerId,
+      losingClub: teamsArr.find(team => team.id !== winnerId).id
+    }
+
+    dispatch(createForfeit(newForfeit))
+    handleCancelForfeit()
+  }
+
+  const handleCancelForfeit = () => {
+    setForfeitIsOpen(false)
+    setWinningTeam('')
+  }
+
+  const optionsButton = user !== null && user.role === 'admin' && finishedCollapsing ?
     <Row className='mb-3 d-flex justify-content-center'>
-      <Col xs={6} className='d-grid gap-2 fluid'><Button variant='warning' onClick={() => setDeleteConfirmIsOpen(true)} disabled={deleteConfirmIsOpen}>Delete</Button></Col>
-      <Col xs={6} className='d-grid gap-2 fluid'><Button variant='primary' onClick={() => setEditIsOpen(!editIsOpen)} disabled={deleteConfirmIsOpen}>{editButtonText}</Button></Col>
+      <Col xs={12} className='d-grid gap-2 fluid'>
+        <DropdownButton className='d-grid gap-2 fluid align-items-center' variant='primary' menuVariant='dark' title='Options'>
+          <Dropdown.Item onClick={handleOpenEditClick}><Row className='d-flex justify-content-center'><Col xs={1}><HiOutlinePencil color='DodgerBlue'/></Col><Col>Change Date</Col></Row></Dropdown.Item>
+          <Dropdown.Item onClick={handleOpenDeleteClick}><Row className='d-flex justify-content-center'><Col xs={1}><RiDeleteBin5Line color='FireBrick'/></Col><Col>Delete</Col></Row></Dropdown.Item>
+          <Dropdown.Item onClick={handleForfeitOpenClick}><Row className='d-flex justify-content-center'><Col xs={1}><MdDoneOutline color='ForestGreen'/></Col><Col>Forfeit</Col></Row></Dropdown.Item>
+        </DropdownButton>
+      </Col>
     </Row> : null
 
   return(
@@ -83,15 +128,15 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
                   <h6 className={themeClass}><small>* Scheduled for {dayjs.unix(match.timestamp).format('MMMM D, YYYY')} at {match.timeString}</small></h6>
                 </Col>
               </Row>
-              {modifyBtnGroup}
+              {optionsButton}
             </Col>
           </Row>
         </Container>
-        <Collapse in={deleteConfirmIsOpen}>
+        <Collapse in={deleteConfirmIsOpen} onExited={() => setFinishedCollapsing(true)}>
           <Container>
           <Row className='mb-3 d-flex justify-content-center'>
               <Col className='d-grid gap-2 fluid'>
-                <Button variant='primary' onClick={() => setDeleteConfirmIsOpen(false)}>Cancel Deletion</Button>
+                <Button variant='warning' onClick={() => setDeleteConfirmIsOpen(false)}>Cancel Deletion</Button>
               </Col>
             </Row>
             <Row className='mb-3 d-flex justify-content-center'>
@@ -101,7 +146,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
             </Row>
           </Container>
         </Collapse>
-        <Collapse in={editIsOpen}>
+        <Collapse in={editIsOpen} onExited={() => setFinishedCollapsing(true)}>
           <div>
             <Row className='mb-2'>
               <Col className='d-flex justify-content-center mt-2'>
@@ -124,11 +169,49 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
               </Row>
             </Container>
             <Container>
+            <Row className='mb-2'>
+                <Col className='d-grid fluid'>
+                  <Button variant='warning' onClick={() => setEditIsOpen(!editIsOpen)}>Cancel Change</Button>
+                </Col>
+              </Row>
               <Row className='mb-2'>
                 <Col className='d-grid fluid'>
                   <Button variant='success' onClick={handleSubmitClick(id,selectedDate)}>Submit Change</Button>
                 </Col>
               </Row>
+            </Container>
+          </div>
+        </Collapse>
+        <Collapse in={forfeitIsOpen} onExited={() => setFinishedCollapsing(true)}>
+          <div>
+            <Container>
+              <Form>
+                <Form.Label className='mt-4 fw-bold'>Select the winning team</Form.Label>
+                  {teamsArr.map((team, i) =>
+                    <ForfeitTeam 
+                      key={team.id}
+                      team={team}
+                      textClass='fw-light'
+                      rowClass={i===0 ? 'mt-2' : 'mb-2'}
+                      themeClass={themeClass}
+                      addDefaultSrc={addDefaultSrc}
+                      winningTeam={winningTeam}
+                      setWinningTeam={setWinningTeam}
+                    />
+                  )}
+                <Container>
+                  <Row className='mb-3 d-flex justify-content-center'>
+                    <Col className='d-grid gap-2 fluid'>
+                      <Button variant='warning' onClick={handleCancelForfeit}>Cancel Forfeit</Button>
+                    </Col>
+                  </Row>
+                  <Row className='mb-3 d-flex justify-content-center'>
+                    <Col className='d-grid gap-2 fluid'>
+                      <Button variant='success' onClick={handleForfeitSubmit(winningTeam)} disabled={winningTeam === ''}>Submit</Button>
+                    </Col>
+                  </Row>
+                </Container>
+              </Form>
             </Container>
           </div>
         </Collapse>

@@ -22,6 +22,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import jwt_decode from 'jwt-decode'
+import { initializeForfeits } from './reducers/forfeitReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -33,6 +34,7 @@ const App = () => {
     teamRankings: false,
     invalidMatches: false,
     matchSkeletons: false,
+    forfeits: false,
   }
 
   const sortField = useSelector(state => state.sortField)
@@ -74,6 +76,11 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeSchedule())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, schedule: true })))
+  },[dispatch])
+
+  useEffect(() => {
+    dispatch(initializeForfeits())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, forfeits: true })))
   },[dispatch])
 
   // retrieve player data from database

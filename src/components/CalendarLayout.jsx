@@ -22,7 +22,22 @@ const CalendarLayout = () => {
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
 
   const matchSkeletons = useSelector(state => state.matchSkeletons)
-  const filteredMatchSkeletons = teamId ? matchSkeletons.filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matchSkeletons]
+  const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
+    { 
+      matchDate: match.matchDate,
+      _id: match._id,
+      matchId: match.matchId,
+      timestamp: match.timestamp,
+      clubs: [{
+        clubId: match.winningClub,
+        data: { goals: '1'}
+      },{
+        clubId: match.losingClub,
+        data: { goals: '0' }}]
+    }
+  ))
+
+  const filteredMatchSkeletons = teamId ? matchSkeletons.concat(forfeitedMatches).filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matchSkeletons.concat(forfeitedMatches)]
   const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...filteredMatchSkeletons.map(o => o.timestamp), 0)).startOf('day')).unix()
 
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule

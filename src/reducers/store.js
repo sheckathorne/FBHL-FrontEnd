@@ -14,6 +14,7 @@ import skaterOrGoalieReducer from './skaterOrGoalieReducer'
 import invalidMatchesReducer from './invalidMatchReducer'
 import matchSkeletonsReducer from './matchSkeletonsReducer'
 import forfeitReducer from './forfeitReducer'
+import teamRankingsAndForfeitsReducer from './teamRankingsAndForfeitsReducer'
 
 const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
     invalidMatches: invalidMatchesReducer,
     matchSkeletons: matchSkeletonsReducer,
     forfeits: forfeitReducer,
+    teamRankingsAndForfeits: teamRankingsAndForfeitsReducer,
   }
 })
 

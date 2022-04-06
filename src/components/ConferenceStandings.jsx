@@ -14,7 +14,7 @@ import { Row, Col, Container } from 'react-bootstrap'
 import { setTeamRankingsAndForfeits } from '../reducers/teamRankingsAndForfeitsReducer'
 import CircularProgress from '@mui/material/CircularProgress'
 
-const ConferenceStandings = ({ division, handleTableClick, lightTheme, isMobile }) => {
+const ConferenceStandings = ({ conference, handleTableClick, lightTheme, isMobile }) => {
   const [ loaded, setLoaded ] = useState(false)
   
   const teamData = useSelector(state => state.teamRankings)
@@ -78,28 +78,36 @@ const ConferenceStandings = ({ division, handleTableClick, lightTheme, isMobile 
     
     const newTeamData = addForfeitDataToTeamData()
     const sortedNewTeamData = sortTeamData(newTeamData)
-    
-    const rankedWestTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'West'))
-    const rankedEastTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'East'))
 
+    const rankedWestTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'West'))
+    const rankedEastTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'East'))
 
     dispatch(setTeamRankingsAndForfeits([...rankedWestTeams, ...rankedEastTeams]))
+
+    /*
+    const rankedMetroTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Metropolitan'))
+    const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
+    const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
+    const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
+    */
+
+    //dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
     setLoaded(true)
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch, forfeits])
 
-  return loaded ? <LoadedTable division={division} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
+  return loaded ? <LoadedTable conference={conference} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
 }
 
-const LoadedTable = ({ division, handleTableClick, lightTheme, isMobile }) => {
+const LoadedTable = ({ conference, handleTableClick, lightTheme, isMobile }) => {
   const pages  = useSelector(state => state.pagination.leagueStandingsPage)
   const teamRankingsAndForfeits = useSelector(state => state.teamRankingsAndForfeits)
 
   const dispatch = useDispatch()
 
-  const leagueStandingsPage = division === 'West' ? pages.west : pages.east
-  const leagueStandingData = functions.generateLeagueStandingData(teamRankingsAndForfeits.filter(team => team.division === division), lightTheme)
+  const leagueStandingsPage = conference === 'West' ? pages.west : pages.east
+  const leagueStandingData = functions.generateLeagueStandingData(teamRankingsAndForfeits.filter(team => team.conference === conference), lightTheme)
 
   const itemsPerPage = 4
   const numberOfPages = Math.ceil(parseFloat(leagueStandingData.length/itemsPerPage))
@@ -107,7 +115,7 @@ const LoadedTable = ({ division, handleTableClick, lightTheme, isMobile }) => {
   const themeClass = lightTheme ? '' : 'dark-theme-text'
 
   const handlePaginationChange = (_e,n) => {
-    dispatch(setLeagueStandingsPage({ division, page: n }))
+    dispatch(setLeagueStandingsPage({ conference, page: n }))
   }
   
   const useStyles = makeStyles(() => {
@@ -151,12 +159,12 @@ const LoadedTable = ({ division, handleTableClick, lightTheme, isMobile }) => {
     <>
       <Row>
         <Col className='mt-1'>
-          <h5 className={themeClass + ' tiny-caps section-title'}>{division}ern Conference</h5>
+          <h5 className={themeClass + ' tiny-caps section-title'}>{conference}ern Conference</h5>
         </Col>
         {pagination}
       </Row>
       <BootstrapTable
-        title={`${division} Division Standings`}
+        title={`${conference} Conference Standings`}
         columns={functions.generateColumns(data.leagueStandingsColumns, themeClass)}
         data={leagueStandingData.slice((leagueStandingsPage - 1) * itemsPerPage, ((leagueStandingsPage - 1) * itemsPerPage) + itemsPerPage)}
         hover={true}

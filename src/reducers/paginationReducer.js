@@ -25,11 +25,11 @@ const paginationSlice = createSlice({
       return { ...state, teamsActivePage: action.payload }
     },
     setLeagueStandingsPage(state, action) {
-      const division = action.payload.division
+      const conference = action.payload.conference
 
-      if ( division === 'West' )
+      if ( conference === 'West' )
         return { ...state, leagueStandingsPage: {...state.leagueStandingsPage, west: action.payload.page } }
-      else if ( division === 'East' ) {
+      else if ( conference === 'East' ) {
         return { ...state, leagueStandingsPage: {...state.leagueStandingsPage, east: action.payload.page } }
       } else {
         return state

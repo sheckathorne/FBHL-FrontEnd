@@ -8,7 +8,7 @@ const generateLeagueStandingData = (teams, themeClass) => teams.map(team => {
 
   return ({
     rowUrl: `calendar/${team.teamId}`,
-    division: team.division,
+    conference: team.conference,
     columns: {
       rank: {
         value: team.rank,

@@ -26,7 +26,7 @@ const LeagueStandings = ({ lightTheme, handleTableClick }) => {
     </Col>
   )
 
-  const divisions = [...new Set(data.teams.map(team => team.division).filter(division => division !== ''))]
+  const conferences = [...new Set(data.teams.map(team => team.conference).filter(conference => conference !== ''))]
 
   return (
     <>
@@ -35,10 +35,10 @@ const LeagueStandings = ({ lightTheme, handleTableClick }) => {
       </Row>
       <Collapse in={leagueOpen}>
         <div>
-          {divisions.map((division, i) => 
+          {conferences.map((conference, i) => 
             <ConferenceStandings
               key={i}
-              division={division}
+              conference={conference}
               handleTableClick={handleTableClick}
               lightTheme={lightTheme}
               isMobile={isMobile}

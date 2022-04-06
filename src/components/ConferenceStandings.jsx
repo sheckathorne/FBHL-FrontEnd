@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 import Pagination from '@mui/material/Pagination'
 import PaginationItem from '@mui/material/PaginationItem'
 import Stack from '@mui/material/Stack'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import BootstrapTable from './BootstrapTable'
 import data from '../helpers/data.js'
-import { setLeagueStandingsPage } from '../reducers/paginationReducer'
+import { setConferencePage, setDivisionPage } from '../reducers/paginationReducer'
 import functions from '../helpers/tableGenerator.js'
 import { makeStyles } from '@mui/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,9 +12,9 @@ import { Row, Col, Container } from 'react-bootstrap'
 import { setTeamRankingsAndForfeits } from '../reducers/teamRankingsAndForfeitsReducer'
 import CircularProgress from '@mui/material/CircularProgress'
 
-const ConferenceStandings = ({ conference, handleTableClick, lightTheme, isMobile }) => {
+const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => { 
   const [ loaded, setLoaded ] = useState(false)
-  
+
   const teamData = useSelector(state => state.teamRankings)
   const forfeits = useSelector(state => state.forfeits)
   const dispatch = useDispatch()
@@ -79,43 +77,38 @@ const ConferenceStandings = ({ conference, handleTableClick, lightTheme, isMobil
     const newTeamData = addForfeitDataToTeamData()
     const sortedNewTeamData = sortTeamData(newTeamData)
 
-    const rankedWestTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'West'))
-    const rankedEastTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'East'))
-
-    dispatch(setTeamRankingsAndForfeits([...rankedWestTeams, ...rankedEastTeams]))
-
-    /*
     const rankedMetroTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Metropolitan'))
     const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
     const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
     const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
-    */
 
-    //dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
+    dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
     setLoaded(true)
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch, forfeits])
 
-  return loaded ? <LoadedTable conference={conference} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
+  return loaded ? <LoadedTable conference={'West'} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
 }
 
 const LoadedTable = ({ conference, handleTableClick, lightTheme, isMobile }) => {
-  const pages  = useSelector(state => state.pagination.leagueStandingsPage)
   const teamRankingsAndForfeits = useSelector(state => state.teamRankingsAndForfeits)
+  const divisionTable = data.divisions
+  const conferencePage = useSelector(state => state.pagination.conferencePage)
+  const divisionPage = useSelector(state => state.pagination.divisionPage)
 
   const dispatch = useDispatch()
 
-  const leagueStandingsPage = conference === 'West' ? pages.west : pages.east
-  const leagueStandingData = functions.generateLeagueStandingData(teamRankingsAndForfeits.filter(team => team.conference === conference), lightTheme)
-
-  const itemsPerPage = 4
-  const numberOfPages = Math.ceil(parseFloat(leagueStandingData.length/itemsPerPage))
   const paginationSize = isMobile ? 'small' : 'medium'
   const themeClass = lightTheme ? '' : 'dark-theme-text'
 
-  const handlePaginationChange = (_e,n) => {
-    dispatch(setLeagueStandingsPage({ conference, page: n }))
+  const handleConferencePaginationChange = (e,n) => {
+    dispatch(setConferencePage(n))
+    dispatch(setDivisionPage(1))
+  }
+
+  const handleDivisionPaginationChange = (e,n) => {
+    dispatch(setDivisionPage(n))
   }
   
   const useStyles = makeStyles(() => {
@@ -134,23 +127,64 @@ const LoadedTable = ({ conference, handleTableClick, lightTheme, isMobile }) => 
 
   const classes = useStyles()
 
-  const pagination =
+  const selectedConference = divisionTable.find(conference => conference.conferenceId === conferencePage)
+  const selectedDivision = selectedConference.divisions.find(division => division.divisionId === divisionPage)
+  const leagueStandingData = functions.generateLeagueStandingData(teamRankingsAndForfeits.filter(team => team.conference === selectedConference.conferenceName && team.division === selectedDivision.divisionName), lightTheme)
+
+  const conferencePagination = 
+    <Col className='mt-1'>
+      <Stack spacing={2}>
+        <Pagination
+          classes={{ ul: classes.ul }}
+          count={divisionTable.length}
+          color='primary'
+          size={paginationSize}
+          variant='outlined'
+          onChange={handleConferencePaginationChange}
+          page={conferencePage}
+          hidePrevButton
+          hideNextButton
+          renderItem={(item) => {
+            if ( item.page === 1 ) {
+              item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 1).conferenceDisplayName }
+            } else if ( item.page === 2 ) {
+              item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 2).conferenceDisplayName }
+            }
+
+            return (
+              <PaginationItem
+                {...item}
+              />
+            )}}
+        />
+      </Stack>
+    </Col>
+  
+  const divisionPagination =
     <Col className='d-flex justify-content-end'>
       <Stack spacing={2}>
         <Pagination
           classes={{ ul: classes.ul }}
-          count={numberOfPages}
+          count={divisionTable.length}
           color='primary'
           size={paginationSize}
           variant='outlined'
-          onChange={handlePaginationChange}
-          page={leagueStandingsPage}
-          renderItem={(item) => (
-            <PaginationItem
-              components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-              {...item}
-            />
-          )}
+          onChange={handleDivisionPaginationChange}
+          page={divisionPage}
+          hidePrevButton
+          hideNextButton
+          renderItem={(item) => {
+            if ( item.page === 1 ) {
+              item = { ...item, page: selectedConference.divisions.find(division => division.divisionId === 1).divisionDisplayName }
+            } else if ( item.page === 2 ) {
+              item = { ...item, page: selectedConference.divisions.find(division => division.divisionId === 2).divisionDisplayName }
+            }
+
+            return (
+              <PaginationItem
+                {...item}
+              />
+            )}}
         />
       </Stack>
     </Col>
@@ -158,15 +192,12 @@ const LoadedTable = ({ conference, handleTableClick, lightTheme, isMobile }) => 
   return (
     <>
       <Row>
-        <Col className='mt-1'>
-          <h5 className={themeClass + ' tiny-caps section-title'}>{conference}ern Conference</h5>
-        </Col>
-        {pagination}
+        {conferencePagination}
+        {divisionPagination}
       </Row>
       <BootstrapTable
-        title={`${conference} Conference Standings`}
         columns={functions.generateColumns(data.leagueStandingsColumns, themeClass)}
-        data={leagueStandingData.slice((leagueStandingsPage - 1) * itemsPerPage, ((leagueStandingsPage - 1) * itemsPerPage) + itemsPerPage)}
+        data={leagueStandingData}
         hover={true}
         size={isMobile ? 'sm' : ''}
         striped={false}

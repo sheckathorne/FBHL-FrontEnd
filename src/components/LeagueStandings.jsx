@@ -35,15 +35,11 @@ const LeagueStandings = ({ lightTheme, handleTableClick }) => {
       </Row>
       <Collapse in={leagueOpen}>
         <div>
-          {conferences.map((conference, i) => 
-            <ConferenceStandings
-              key={i}
-              conference={conference}
-              handleTableClick={handleTableClick}
-              lightTheme={lightTheme}
-              isMobile={isMobile}
-            />
-          )}
+          <ConferenceStandings
+            handleTableClick={handleTableClick}
+            lightTheme={lightTheme}
+            isMobile={isMobile}
+          />
         </div>
       </Collapse>
     </>

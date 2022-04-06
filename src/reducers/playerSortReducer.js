@@ -6,7 +6,7 @@ const playerSortSlice = createSlice({
   name: 'sortField',
   initialState,
   reducers: {
-    setSortField(state, action) {
+    setSortField(_state, action) {
       return action.payload
     },
   },

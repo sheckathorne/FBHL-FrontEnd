@@ -64,6 +64,43 @@ const teams = [
   ,{ clubName: 'FBHL WINNIPEGJETS', clubId: 9148, name: 'Winnipeg Jets', abbreviation: 'WPG', conference: 'West', division: 'Central', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(0, 76, 151)', active: true }
  ]
 
+ const divisions = [{
+  conferenceId: 1,
+  conferenceName: 'East',
+  conferenceDisplayName: 'East',
+  active: true,
+  divisions: [{
+    divisionId: 1,
+    divisionName: 'Atlantic',
+    divisionDisplayName: 'Atlantic',
+    active: true
+  },
+  {
+    divisionId: 2,
+    divisionName: 'Metropolitan',
+    divisionDisplayName: 'Metro',
+    active: false
+  }]
+},
+{
+  conferenceId: 2,
+  conferenceName: 'West',
+  conferenceDisplayName: 'West',
+  active: false,
+  divisions: [{
+    divisionId: 1,
+    divisionName: 'Central',
+    divisionDisplayName: 'Central',
+    active: true
+  },
+  {
+    divisionId: 2,
+    divisionName: 'Pacific',
+    divisionDisplayName: 'Pacific',
+    active: false
+  }]
+}]
+
 const bins = {
   matchHistoryBinId: '61db51fd39a33573b3262564',
   playerDataBinId: '61e238ccdbe5d1308325eede'
@@ -495,6 +532,6 @@ const matchTypeButtonGroup = [
   }
 ]
 
-const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup }
+const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup, divisions }
 
 export default obj

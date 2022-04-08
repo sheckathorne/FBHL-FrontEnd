@@ -137,6 +137,13 @@ const sortButtons = [
     descending: false,
     active: false,
     alpha: false
+  },{
+    id: 5,
+    field: 'skGamesPlayed',
+    fieldName: 'Games Played',
+    descending: false,
+    active: false,
+    alpha: false
   }
 ]
 
@@ -199,6 +206,11 @@ const statCols = [
     columnLabel: '+/-',
     statName: 'plusmin',
     toolTip: 'Plus/Minus'
+  },{
+    id: uuidv4(),
+    columnLabel: 'GP',
+    statName: 'gamesPlayed',
+    toolTip: 'Games Played'
   }
 ]
 

@@ -117,6 +117,13 @@ const sortButtons = [
     active: false,
     alpha: true
   },{
+    id: 4,
+    field: 'skpoints',
+    fieldName: 'Points',
+    descending: false,
+    active: false,
+    alpha: false
+  },{
     id: 2,
     field: 'skgoals',
     fieldName: 'Goals',
@@ -131,9 +138,9 @@ const sortButtons = [
     active: false,
     alpha: false
   },{
-    id: 4,
-    field: 'skpoints',
-    fieldName: 'Points',
+    id: 8,
+    field: 'skplusmin',
+    fieldName: 'Plus/Min',
     descending: false,
     active: false,
     alpha: false
@@ -144,7 +151,21 @@ const sortButtons = [
     descending: false,
     active: false,
     alpha: false
-  }
+  },{
+    id: 6,
+    field: 'skhits',
+    fieldName: 'Hits',
+    descending: false,
+    active: false,
+    alpha: false
+  },{
+    id: 7,
+    field: 'skbs',
+    fieldName: 'Blocked Shots',
+    descending: false,
+    active: false,
+    alpha: false
+  },
 ]
 
 const skaterGoalieToggleButtons = [
@@ -211,6 +232,16 @@ const statCols = [
     columnLabel: 'GP',
     statName: 'gamesPlayed',
     toolTip: 'Games Played'
+  },{
+    id: uuidv4(),
+    columnLabel: 'H',
+    statName: 'hits',
+    toolTip: 'Hits'
+  },{
+    id: uuidv4(),
+    columnLabel: 'BS',
+    statName: 'blockedShots',
+    toolTip: 'Blocked Shots'
   }
 ]
 

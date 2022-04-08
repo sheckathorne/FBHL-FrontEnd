@@ -95,7 +95,6 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
     const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
     const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
-    console.log(rankedCentralTeams)
 
     dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
     setLoaded(true)
@@ -106,7 +105,7 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   return loaded ? <LoadedTable conference={'West'} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
 }
 
-const LoadedTable = ({ conference, handleTableClick, lightTheme, isMobile }) => {
+const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {
   const teamRankingsAndForfeits = useSelector(state => state.teamRankingsAndForfeits)
   const divisionTable = data.divisions
   const conferencePage = useSelector(state => state.pagination.conferencePage)

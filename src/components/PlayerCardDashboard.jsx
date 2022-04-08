@@ -23,7 +23,9 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
             assists: player.skassists.toString(),
             points: player.skpoints.toString(),
             plusmin: player.skplusmin.toString(),
-            gamesPlayed: player.skGamesPlayed.toString() },
+            gamesPlayed: player.skGamesPlayed.toString(),
+            hits: player.skhits.toString(),
+            blockedShots: player.skbs.toString() },
           perGame: {
             goals: '0',
             assists: '0',

@@ -14,7 +14,7 @@ const RecentResultsCarousel = ({ matches, lightTheme, handleCollapseClick, width
   const resultsOpen = useSelector(state => state.viewToggle.resultsOpen)
   const dispatch = useDispatch()
   const isMobile = width <= 640
-  const isTablet = width > 640 && width <= 768
+  const isTablet = width > 640 && width <= 1225
   const slidesPerViewViewport = isMobile ? 1 : isTablet ? 3 : 5
   const slidesPerView = Math.min(matches.length, slidesPerViewViewport)
   const loop = matches.length >= slidesPerView

@@ -19,8 +19,6 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   const forfeits = useSelector(state => state.forfeits)
   const dispatch = useDispatch()
 
-  console.log(teamData)
-
   useEffect(() => {
     const countForfeits = (forfeitType) => {
       const forfeitsToSum = forfeitType === 'overtimeLossClub' ?

@@ -19,6 +19,8 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   const forfeits = useSelector(state => state.forfeits)
   const dispatch = useDispatch()
 
+  console.log(teamData)
+
   useEffect(() => {
     const countForfeits = (forfeitType) => {
       const forfeitsToSum = forfeitType === 'overtimeLossClub' ?
@@ -68,8 +70,8 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     
       if ( i === 0 ) {
         n = 1
-      } else if ( i > 0 && ((team.wins * 2) + team.overtimeLosses) === ((teams[i-1].wins * 2) + teams[i-1].overtimeLosses) ) {
-        n = teams.findIndex(p => (((p.wins * 2) + p.overtimeLosses) === ((team.wins * 2) + team.overtimeLosses)) ) + 1
+      } else if ( i > 0 && ((parseInt(team.wins) * 2) + parseInt(team.overtimeLosses)) === ((parseInt(teams[i-1].wins) * 2) + parseInt(teams[i-1].overtimeLosses)) ) {
+        n = teams.findIndex(p => (((parseInt(p.wins) * 2) + parseInt(p.overtimeLosses)) === ((parseInt(team.wins) * 2) + parseInt(team.overtimeLosses))) ) + 1
       } else {
         n = i + 1
       }
@@ -78,11 +80,11 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     }
 
     const sortTeamData = (teamData) => teamData.sort((a,b) => {
-      let n = (((b.wins * 2) + b.overtimeLosses) - ((a.wins * 2) + a.overtimeLosses))
+      let n = (((parseInt(b.wins * 2)) + parseInt(b.overtimeLosses)) - ((parseInt(a.wins * 2)) + parseInt(a.overtimeLosses)))
       if ( n !== 0) {
         return n
       } else {
-        return ((((parseFloat((b.wins * 2) + b.overtimeLosses)) / parseFloat(b.gamesPlayed))) - ((parseFloat((a.wins * 2) + a.overtimeLosses)) / parseFloat(a.gamesPlayed)))
+        return ((((parseFloat((parseInt(b.wins) * 2) + parseInt(b.overtimeLosses))) / parseFloat(b.gamesPlayed))) - ((parseFloat((parseInt(a.wins) * 2) + parseInt(a.overtimeLosses))) / parseFloat(a.gamesPlayed)))
       }
     })
     
@@ -95,6 +97,7 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
     const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
     const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
+    console.log(rankedCentralTeams)
 
     dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
     setLoaded(true)

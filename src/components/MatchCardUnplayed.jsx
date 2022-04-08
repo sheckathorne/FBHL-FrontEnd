@@ -23,6 +23,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
   const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
   const [ selectedTime, setSelectedTime ] = useState(dayjs(`1/1/2020 ${match.timeString}`, 'M/D/YYYY h:mm A', 'en'))
   const [ winningTeam, setWinningTeam ] = useState('')
+  const [ overtimeLoss, setOvertimeLoss ] = useState(false)
 
   const user = useSelector(state => state.user.user)
 
@@ -81,7 +82,8 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
       timestamp: match.timestamp,
       matchDate: match.matchDate,
       winningClub: winnerId,
-      losingClub: teamsArr.find(team => team.id !== winnerId).id
+      losingClub: teamsArr.find(team => team.id !== winnerId).id,
+      overtimeLoss
     }
 
     dispatch(createForfeit(newForfeit))
@@ -91,6 +93,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
   const handleCancelForfeit = () => {
     setForfeitIsOpen(false)
     setWinningTeam('')
+    setOvertimeLoss(false)
   }
 
   const optionsButton = user !== null && user.role === 'admin' && finishedCollapsing ?
@@ -103,6 +106,26 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
         </DropdownButton>
       </Col>
     </Row> : null
+
+  const otlCheck = (
+    <>
+      <Row>
+        <Col xs={1}>
+          <Form.Check 
+            id='otlCheck'
+            type="checkBox"
+            label='' 
+            name="overtimeLoss"
+            onClick={() => setOvertimeLoss(!overtimeLoss)}
+            onChange={() => false}
+          />
+        </Col>
+        <Col>
+          <Form.Label onClick={() => setOvertimeLoss(!overtimeLoss)}>Count forfeit as an overtime loss</Form.Label>
+        </Col>
+      </Row>
+    </>
+  )
 
   return(
     <div className='mb-2 d-grid'>
@@ -199,6 +222,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
                       setWinningTeam={setWinningTeam}
                     />
                   )}
+                  {otlCheck}
                 <Container>
                   <Row className='mb-3 d-flex justify-content-center'>
                     <Col className='d-grid gap-2 fluid'>

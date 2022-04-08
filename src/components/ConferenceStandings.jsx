@@ -21,29 +21,43 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
 
   useEffect(() => {
     const countForfeits = (forfeitType) => {
-      const forfeitProperty = forfeitType === 'wins' ? 'winningClub' : 'losingClub'
-      return Object.entries(forfeits.map(f => f[forfeitProperty]).reduce(function (acc, curr) {
+      const forfeitsToSum = forfeitType === 'overtimeLossClub' ?
+        forfeits.filter(forfeit => forfeit.overtimeLoss) :
+          forfeitType === 'winningClub' ? forfeits :
+            forfeits.filter(forfeit => !forfeit.overtimeLoss)
+
+      const forfeitTypeProp = forfeitType === 'overtimeLossClub' ? 'losingClub' : forfeitType
+
+
+      return Object.entries(forfeitsToSum.map(f => f[forfeitTypeProp]).reduce(function (acc, curr) {
         acc[curr] ? ++acc[curr] : acc[curr] = 1
         return acc
-      }, {})).map(x => ({ clubId: x[0], [forfeitType]: x[1] }))
+      }, {})).map(x => ({ clubId: x[0], [forfeitTypeProp]: x[1] }))
     }
 
     const addForfeitDataToTeamData = () => {      
-      const winAddCount = countForfeits('wins')
-      const lossAddCount = countForfeits('losses')
+      const winAddCount = countForfeits('winningClub')
+      const lossAddCount = countForfeits('losingClub')
+      const overtimeLossAddCount = countForfeits('overtimeLossClub')
 
       const newTeamData = teamData.map(team => {
         const winData = winAddCount.find(winningClub => winningClub.clubId === team.teamId)
         return ( winData ? 
         { ...team, 
-          gamesPlayed: (parseInt(team.gamesPlayed) + winData.wins).toString(),
-          wins: (parseInt(team.wins) + winData.wins),
+          gamesPlayed: (parseInt(team.gamesPlayed) + winData.winningClub).toString(),
+          wins: (parseInt(team.wins) + winData.winningClub),
         } : team)}).map(team => {
         const lossData = lossAddCount.find(losingClub => losingClub.clubId === team.teamId)
         return ( lossData ? 
         { ...team, 
-          gamesPlayed: (parseInt(team.gamesPlayed) + lossData.losses).toString(),
-          losses: (parseInt(team.losses) + lossData.losses),
+          gamesPlayed: (parseInt(team.gamesPlayed) + lossData.losingClub).toString(),
+          losses: (parseInt(team.losses) + lossData.losingClub),
+        } : team)}).map(team => {
+        const overtimeLossData = overtimeLossAddCount.find(overtimeLossClub => overtimeLossClub.clubId === team.teamId)
+        return ( overtimeLossData ? 
+        { ...team, 
+          gamesPlayed: (parseInt(team.gamesPlayed) + overtimeLossData.losingClub).toString(),
+          overtimeLosses: (parseInt(team.overtimeLosses) + overtimeLossData.losingClub),
         } : team)})
 
       return newTeamData

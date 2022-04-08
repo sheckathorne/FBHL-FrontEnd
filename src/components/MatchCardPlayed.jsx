@@ -7,8 +7,9 @@ import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import { useDispatch, useSelector } from 'react-redux'
 import { invalidateMatch, reinstateMatch } from '../reducers/invalidMatchReducer'
+import { deleteForfeit } from '../reducers/forfeitReducer'
 
-const MatchCardPlayed = ({ match, addDefaultSrc }) => {
+const MatchCardPlayed = ({ match, addDefaultSrc }) => { 
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])
@@ -16,6 +17,10 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
 
   const navigate = useNavigate('')
   const dispatch = useDispatch()
+
+  const handleDeleteClick = (matchId) => () => {
+    dispatch(deleteForfeit(matchId))
+  }
     
   const query = useQuery()
   const user = useSelector(state => state.user.user)
@@ -42,7 +47,6 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
 
   const invalidClass = user !== null && user.role === 'admin' ? matchIsInvalid ? ' invalid-match-card' : '' : ' mb-2'
   const invalidText = user !== null && user.role === 'admin' && !match.forfeit ? matchIsInvalid ?
-  
   <>
     <Row className='mb-2'>
       <Col className='d-grid fluid'>
@@ -58,14 +62,21 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
     </Row>
   </> : null
 
-const forfeitClass = match.forfeit ? ' mb-2' : ''
-
   const forfeitedMatch = match.forfeit ?
     <Row className={themeClass}>
       <Col className='my-auto text-center'>
         <h6 className='fw-bold'>* Game is the result of a forfeit - full game stats are unavailable</h6>
       </Col>
     </Row> : null
+
+  const undoButton = user !== null && user.role === 'admin' && invalidText === null ?
+    <>
+      <Row className='mb-2'>
+        <Col className='d-grid fluid'>
+          <Button variant='warning' onClick={handleDeleteClick(match.matchId)}>Undo this forfeit</Button>
+        </Col>
+      </Row>
+    </> : null
 
   const handleMatchClick = () => {
     if ( !match.forfeit ) {
@@ -75,7 +86,7 @@ const forfeitClass = match.forfeit ? ' mb-2' : ''
 
   return (
     <div className='d-grid'>
-      <div className={`small-match-result-card pointer-cursor${darkCardClass}${buttonSelectedClass}${invalidClass}${forfeitClass}`} onClick={handleMatchClick} value={match.matchId}>
+      <div className={`small-match-result-card pointer-cursor${darkCardClass}${buttonSelectedClass}${invalidClass}`} onClick={handleMatchClick} value={match.matchId}>
         <Container>
           <Row className='mt-2'>
             {teamsArr.map((team,i) =>
@@ -101,6 +112,7 @@ const forfeitClass = match.forfeit ? ' mb-2' : ''
         </Container>
       </div>
       {invalidText}
+      {undoButton}
     </div>
   )
 }

@@ -26,7 +26,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
 
   const returnUrl = teamId ? `/calendar/${teamId}` : '/calendar'
   const delta = isMobile ? 1 : 2
-  const itemsPerPage = 3
+  const itemsPerPage = isMobile ? 3 : queriedMatch ? 5 : 8
 
   const displayAlert = (message, type) => {
     dispatch(setNotification({ message: message, type: type, scope: 'MatchCardDashboard' }))
@@ -48,6 +48,12 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[queriedMatch, dispatch])
+
+  useEffect(() => {
+    if ( matchActivePage > pageCount ) {
+      dispatch(setMatchActivePage(pageCount))
+    }
+  },[dispatch, matchActivePage, pageCount])
 
   const displayedMatches = filteredMatchCardsByInvalid.sort((a,b) => a.timestamp - b.timestamp).slice((matchActivePage - 1) * itemsPerPage, ((matchActivePage - 1) * itemsPerPage) + itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(matchActivePage, pageCount, delta, paginationClick)
@@ -107,30 +113,33 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
         </Col>
       </Row>
       {calendarBtn}
-      {displayedMatches.map(match => {
-        if ( match.matchWasPlayed ) {
-          return (
-            <MatchCardPlayed
-              key={match._id}
-              id={match._id}
-              match={match}
-              addDefaultSrc={addDefaultSrc}
-              goToLastPaginationPage={goToLastPaginationPage}
-            />
-          )
-        } else {
-          return (
-            <MatchCardUnplayed
-              key={match._id}
-              id={match._id}
-              match={match}
-              addDefaultSrc={addDefaultSrc}
-              displayAlert={displayAlert}
-              goToLastPaginationPage={goToLastPaginationPage}
-            />
-          )
-        }
-      })}
+      <Row>
+        {displayedMatches.map(match => {
+          if ( match.matchWasPlayed ) {
+            return (
+              <MatchCardPlayed
+                key={match._id}
+                id={match._id}
+                match={match}
+                addDefaultSrc={addDefaultSrc}
+                goToLastPaginationPage={goToLastPaginationPage}
+                queriedMatch={queriedMatch}
+              />
+            )
+          } else {
+            return (
+              <MatchCardUnplayed
+                key={match._id}
+                id={match._id}
+                match={match}
+                addDefaultSrc={addDefaultSrc}
+                displayAlert={displayAlert}
+                goToLastPaginationPage={goToLastPaginationPage}
+              />
+            )
+          }
+        })}
+      </Row>
     </>
   )
 }

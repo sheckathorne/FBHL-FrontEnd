@@ -37,12 +37,13 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
   const pageCount = Math.ceil(searchedPlayers.length/itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(playersActivePage, pageCount, delta, paginationClick)
   const playerCardWidth = queriedPlayer ? 6 : 8
+  const dashboardWidth = queriedPlayer ? 10 : 8
 
   const paginationDisplay = ( pageCount > 1 ) ? <Row><Col className='d-grid gap-2'><PaginationRow items={paginationItems} /></Col></Row> : null
 
   return (
     <>
-      <Col xs={12} lg={8} className='mt-2'>
+      <Col xs={12} lg={dashboardWidth} className='mt-2'>
         <Row>
           <Col lg={playerCardWidth}>
             {paginationDisplay}

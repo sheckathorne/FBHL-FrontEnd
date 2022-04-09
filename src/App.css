@@ -334,10 +334,10 @@ a.dropdown-item:hover {
   .match-card-avatar {
     height: 35px;
     width: 35px;
-  }  
+  }
 }
 
-@media (min-width: 991px) {
+@media (min-width: 991px) and (max-width: 1300px) {
   .player-card-name {
     font-size: 1vw;
   }
@@ -354,6 +354,20 @@ a.dropdown-item:hover {
   .match-card-avatar {
     height: 40px;
     width: 40px;
+  }
+
+  .selected-player-stat-row {
+    font-size: .75vw
+  }
+
+  .stat-col-lg {
+    font-size: .9vw;
+  }
+}
+
+@media (min-width: 1301px) {
+  .selected-player-stat-row {
+    font-size: .68vw
   }
 }
 

@@ -19,6 +19,8 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
 
   const queriedMatch = filteredMatchCards.filter(match => match.matchId).find(match => match.matchId.toString() === queriedMatchId)
 
+  const cardDashboardColSize = queriedMatch ? 4 : 8
+
   const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null
 
   const calendarDate = selectedDate === 'Invalid Date' ? dayjs() : dayjs.unix(selectedDate).toDate()
@@ -31,7 +33,7 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
     </Col> ) : null
 
   const matchCardDashboard = (timestampRangeOfSelectedDay.begin > 0 && timestampRangeOfSelectedDay.end > 0) ? (
-    <Col lg={4} className='mt-2'>
+    <Col lg={cardDashboardColSize} className='mt-2'>
       <MatchCardDashboard
         filteredMatchCards={rangedFilteredMatchCards}
         queriedMatch={queriedMatch}

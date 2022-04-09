@@ -13,6 +13,7 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
   const lastPlayerIndex = players.length
   const query = useQuery()
   const queriedPlayerId = query.get('playerId')
+  const aPlayerIsSelelected = queriedPlayerId !== null
 
   return (
     <Flipper flipKey={players}>{
@@ -58,6 +59,7 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
               playerCardClickSource='players'
               playerDetailStats={queriedPlayerId === player.playerId ? playerDetailStats : null}
               playerCardWidth={playerCardWidth}
+              aPlayerIsSelelected={aPlayerIsSelelected}
             />
           </Flipped>
         )

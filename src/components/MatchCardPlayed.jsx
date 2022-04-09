@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { invalidateMatch, reinstateMatch } from '../reducers/invalidMatchReducer'
 import { deleteForfeit } from '../reducers/forfeitReducer'
 
-const MatchCardPlayed = ({ match, addDefaultSrc }) => { 
+const MatchCardPlayed = ({ match, addDefaultSrc, queriedMatch }) => { 
   const useQuery = () => {
     const { search } = useLocation()
     return React.useMemo(() => new URLSearchParams(search), [search])
@@ -84,8 +84,10 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
     } 
   }
 
+  const colWidth = queriedMatch ? 12 : 6
+
   return (
-    <div className='d-grid'>
+    <Col lg={colWidth}>
       <div className={`small-match-result-card pointer-cursor${darkCardClass}${buttonSelectedClass}${invalidClass}`} onClick={handleMatchClick} value={match.matchId}>
         <Container>
           <Row className='mt-2'>
@@ -112,8 +114,8 @@ const MatchCardPlayed = ({ match, addDefaultSrc }) => {
         </Container>
       </div>
       {invalidText}
-      {undoButton}
-    </div>
+      {undoButton}  
+    </Col>
   )
 }
 

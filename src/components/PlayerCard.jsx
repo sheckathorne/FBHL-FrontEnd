@@ -8,7 +8,7 @@ import data from '../helpers/data'
 import ThemeContext from './ThemeContext'
 import { useSelector } from 'react-redux'
 
-const PlayerCard = ({ name, teamId, stats, playerId, marginClass, rank, playerIsRanked, posSorted, playerCardClickSource, handleTopPlayerClick, playerDetailStats, playerCardWidth, ...rest }) => {
+const PlayerCard = ({ name, teamId, stats, playerId, marginClass, rank, playerIsRanked, posSorted, playerCardClickSource, handleTopPlayerClick, playerDetailStats, playerCardWidth, aPlayerIsSelelected, ...rest }) => {
   let navigate = useNavigate('')
   const sortField = useSelector(state => state.sortField)
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
@@ -75,6 +75,7 @@ const PlayerCard = ({ name, teamId, stats, playerId, marginClass, rank, playerIs
                           data.statCols}
                         type={'total'}
                         themeTextClass={themeTextClass}
+                        aPlayerIsSelelected={aPlayerIsSelelected}
                       />
                     </Row>
                   </Col>

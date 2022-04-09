@@ -1,15 +1,15 @@
 import React, { useContext, useState } from 'react'
 import MatchCardTeamRow from './MatchCardTeamRow'
-import { Container, Row, Col, Button, Collapse, DropdownButton, Dropdown, Form } from 'react-bootstrap'
+import MatchCardUnplayedDeleteConfirmationCollapse from './MatchCardUnplayedDeleteConfirmationCollapse'
+import MatchCardUnplayedEditFormCollapse from './MatchCardUnplayedEditFormCollapse'
+import MatchCardUnplayedForfeitCollapse from './MatchCardUnplayedForfeitCollapse'
+import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
-import Calendar from 'react-calendar'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
 import { createForfeit } from '../reducers/forfeitReducer'
-import TimePickerForm from './TimePickerForm'
-import ForfeitTeam from './ForfeitTeam'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { HiOutlinePencil } from 'react-icons/hi'
 import { MdDoneOutline } from 'react-icons/md'
@@ -26,7 +26,6 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
   const [ overtimeLoss, setOvertimeLoss ] = useState(false)
 
   const user = useSelector(state => state.user.user)
-
   const dispatch = useDispatch()
 
   const onChange = (newSelectedDate) => {
@@ -107,28 +106,8 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
       </Col>
     </Row> : null
 
-  const otlCheck = (
-    <>
-      <Row>
-        <Col xs={1}>
-          <Form.Check 
-            id='otlCheck'
-            type="checkBox"
-            label='' 
-            name="overtimeLoss"
-            onClick={() => setOvertimeLoss(!overtimeLoss)}
-            onChange={() => false}
-          />
-        </Col>
-        <Col>
-          <Form.Label onClick={() => setOvertimeLoss(!overtimeLoss)}>Count forfeit as an overtime loss</Form.Label>
-        </Col>
-      </Row>
-    </>
-  )
-
-  return(
-    <div className='mb-2 d-grid'>
+  return (
+    <Col lg={6} className='mb-2' >
       <div className={`no-hover small-match-result-card${darkCardClass}`} value={match.matchId}>
         <Container>
           <Row className='mt-2'>
@@ -155,92 +134,40 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
             </Col>
           </Row>
         </Container>
-        <Collapse in={deleteConfirmIsOpen} onExited={() => setFinishedCollapsing(true)}>
-          <Container>
-          <Row className='mb-3 d-flex justify-content-center'>
-              <Col className='d-grid gap-2 fluid'>
-                <Button variant='warning' onClick={() => setDeleteConfirmIsOpen(false)}>Cancel Deletion</Button>
-              </Col>
-            </Row>
-            <Row className='mb-3 d-flex justify-content-center'>
-              <Col className='d-grid gap-2 fluid'>
-                <Button variant='danger' onClick={handleDeleteClick(id)}>Permanently Delete</Button>
-              </Col>
-            </Row>
-          </Container>
-        </Collapse>
-        <Collapse in={editIsOpen} onExited={() => setFinishedCollapsing(true)}>
-          <div>
-            <Row className='mb-2'>
-              <Col className='d-flex justify-content-center mt-2'>
-                <Calendar
-                  onChange={onChange}
-                  value={selectedDate}
-                  className={lightTheme ? 'flex-fill calendar-light match-card-calendar' : 'flex-fill calendar-dark match-card-calendar'}
-                />
-              </Col>
-            </Row>
-            <Container>
-              <Row className='mb-4 mt-4 justify-content-center'>
-                <Col className='d-grid fluid'>
-                  <TimePickerForm
-                    timePick={selectedTime}
-                    setTimePick={setSelectedTime}
-                    themeMode={lightTheme ? 'light' : 'dark'}
-                  />
-                </Col>
-              </Row>
-            </Container>
-            <Container>
-            <Row className='mb-2'>
-                <Col className='d-grid fluid'>
-                  <Button variant='warning' onClick={() => setEditIsOpen(!editIsOpen)}>Cancel Change</Button>
-                </Col>
-              </Row>
-              <Row className='mb-2'>
-                <Col className='d-grid fluid'>
-                  <Button variant='success' onClick={handleSubmitClick(id,selectedDate)}>Submit Change</Button>
-                </Col>
-              </Row>
-            </Container>
-          </div>
-        </Collapse>
-        <Collapse in={forfeitIsOpen} onExited={() => setFinishedCollapsing(true)}>
-          <div>
-            <Container>
-              <Form>
-                <Form.Label className='mt-4 fw-bold'>Select the winning team</Form.Label>
-                  {teamsArr.map((team, i) =>
-                    <ForfeitTeam 
-                      key={team.id}
-                      team={team}
-                      textClass='fw-light'
-                      rowClass={i===0 ? 'mt-2' : 'mb-2'}
-                      themeClass={themeClass}
-                      addDefaultSrc={addDefaultSrc}
-                      winningTeam={winningTeam}
-                      setWinningTeam={setWinningTeam}
-                    />
-                  )}
-                  {otlCheck}
-                <Container>
-                  <Row className='mb-3 d-flex justify-content-center'>
-                    <Col className='d-grid gap-2 fluid'>
-                      <Button variant='warning' onClick={handleCancelForfeit}>Cancel Forfeit</Button>
-                    </Col>
-                  </Row>
-                  <Row className='mb-3 d-flex justify-content-center'>
-                    <Col className='d-grid gap-2 fluid'>
-                      <Button variant='success' onClick={handleForfeitSubmit(winningTeam)} disabled={winningTeam === ''}>Submit</Button>
-                    </Col>
-                  </Row>
-                </Container>
-              </Form>
-            </Container>
-          </div>
-        </Collapse>
+        <MatchCardUnplayedDeleteConfirmationCollapse
+          deleteConfirmIsOpen={deleteConfirmIsOpen}
+          setFinishedCollapsing={setFinishedCollapsing}
+          setDeleteConfirmIsOpen={setDeleteConfirmIsOpen}
+          handleDeleteClick={handleDeleteClick}
+          id={id}
+        />
+        <MatchCardUnplayedEditFormCollapse
+          editIsOpen={editIsOpen}
+          setFinishedCollapsing={setFinishedCollapsing}
+          onChange={onChange}
+          selectedDate={selectedDate}
+          lightTheme={lightTheme}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          setEditIsOpen={setEditIsOpen}
+          handleSubmitClick={handleSubmitClick}
+          id={id}
+        />
+        <MatchCardUnplayedForfeitCollapse
+          overtimeLoss={overtimeLoss}
+          setOvertimeLoss={setOvertimeLoss}
+          forfeitIsOpen={forfeitIsOpen}
+          setFinishedCollapsing={setFinishedCollapsing}
+          teamsArr={teamsArr}
+          themeClass={themeClass}
+          addDefaultSrc={addDefaultSrc}
+          winningTeam={winningTeam}
+          setWinningTeam={setWinningTeam}
+          handleCancelForfeit={handleCancelForfeit}
+          handleForfeitSubmit={handleForfeitSubmit}
+        />
       </div>
-    </div>
+    </Col>
   )
 }
 

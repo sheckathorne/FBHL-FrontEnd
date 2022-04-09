@@ -91,19 +91,21 @@ const MatchCardPlayed = ({ match, addDefaultSrc, queriedMatch }) => {
       <div className={`small-match-result-card pointer-cursor${darkCardClass}${buttonSelectedClass}${invalidClass}`} onClick={handleMatchClick} value={match.matchId}>
         <Container>
           <Row className='mt-2'>
-            {teamsArr.map((team,i) =>
-              <MatchCardTeamRow
-                key={i}
-                addDefaultSrc={addDefaultSrc}
-                abbreviation={data.teams.find(t => t.clubId.toString() === team.id).abbreviation}
-                teamName={team.name}
-                teamScore={team.score}
-                textClass={team.winner ? 'fw-bolder' : 'fw-light'}
-                rowClass={i===0 ? 'mt-2' : 'mb-2'}
-                themeClass={themeClass}
-                matchWasPlayed={match.matchWasPlayed}
-              />
-            )}
+            <Container>
+              {teamsArr.map((team,i) =>
+                <MatchCardTeamRow
+                  key={i}
+                  addDefaultSrc={addDefaultSrc}
+                  abbreviation={data.teams.find(t => t.clubId.toString() === team.id).abbreviation}
+                  teamName={team.name}
+                  teamScore={team.score}
+                  textClass={team.winner ? 'fw-bolder' : 'fw-light'}
+                  rowClass={i===0 ? 'mt-2' : 'mb-2'}
+                  themeClass={themeClass}
+                  matchWasPlayed={match.matchWasPlayed}
+                />
+              )}
+            </Container>
             <Row>
               <Col className='my-auto text-center'>
                 <h6 className={themeClass}><small>{dayjs.unix(match.timestamp).format('MMM D, YYYY - h:mm a')}</small></h6>

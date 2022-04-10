@@ -135,6 +135,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
                 addDefaultSrc={addDefaultSrc}
                 displayAlert={displayAlert}
                 goToLastPaginationPage={goToLastPaginationPage}
+                queriedMatch={queriedMatch}
               />
             )
           }

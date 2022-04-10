@@ -15,7 +15,7 @@ import { HiOutlinePencil } from 'react-icons/hi'
 import { MdDoneOutline } from 'react-icons/md'
 import { v4 as uuidv4 } from 'uuid'
 
-const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage }) => {
+const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, queriedMatch }) => {
   const [ editIsOpen, setEditIsOpen ] = useState(false)
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ forfeitIsOpen, setForfeitIsOpen ] = useState(false)
@@ -106,8 +106,10 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage })
       </Col>
     </Row> : null
 
+  const colWidth = queriedMatch ? 12 : 6 
+
   return (
-    <Col lg={6} className='mb-2' >
+    <Col lg={colWidth} className='mb-2' >
       <div className={`no-hover small-match-result-card${darkCardClass}`} value={match.matchId}>
         <Container>
           <Row className='mt-2'>

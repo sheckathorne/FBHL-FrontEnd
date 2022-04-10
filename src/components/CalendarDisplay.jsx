@@ -27,6 +27,7 @@ const CalendarDashboard = () => {
   ))
 
   const matchesWithForfeits = matchSkeletonWithDate.concat(forfeitedMatches)
+  const invalidMatches = useSelector(state => state.invalidMatches)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
     const scheduledMatchWasPlayed = matchesWithForfeits.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
@@ -39,16 +40,21 @@ const CalendarDashboard = () => {
     contextObj.matchTypeFilter === 'played' ?
     matchesWithForfeits.map(match => ({ matchWasPlayed: true, ...match })) :
       scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))
+  
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
+  const user = useSelector(state => state.user.user)
+  const filteredMatchCardsWithoutInvalid = user !== null && user.role === 'admin' ? 
+    filteredMatchCards : filteredMatchCards.filter(match => !invalidMatches.includes(match.matchId))
+
+  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCardsWithoutInvalid.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
 
   return (
     <>
       <CalendarContentLayout
         onChange={contextObj.onChange}
         tileDisabled={tileDisabled}
-        filteredMatchCards={filteredMatchCards}
-        rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
+        filteredMatchCards={filteredMatchCardsWithoutInvalid}
+        rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
         selectedDate={contextObj.selectedDate}

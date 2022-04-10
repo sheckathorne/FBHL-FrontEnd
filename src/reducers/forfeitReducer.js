@@ -17,7 +17,6 @@ const forfeitSlice = createSlice({
       state.push(newScheduledMatch)
     },
     removeForfeit(state, action) {
-      console.log(action.payload)
       return state.filter(match => match.matchId !== action.payload)
     },
   },

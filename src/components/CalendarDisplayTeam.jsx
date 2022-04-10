@@ -29,6 +29,7 @@ const CalendarDashboard = () => {
   ))
 
   const matchesWithForfeits = matcheSkeletons.concat(forfeitedMatches)
+  const invalidMatches = useSelector(state => state.invalidMatches)
 
   const filteredSchedule = useSelector(state => state.schedule).filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const filteredMatchesWithDate = matchesWithForfeits.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
@@ -45,7 +46,12 @@ const CalendarDashboard = () => {
       filteredMatchesWithDate.map(match => ({ matchWasPlayed: true, ...match })) :
       scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCards.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
+  const user = useSelector(state => state.user.user)
+  const filteredMatchCardsWithoutInvalid = user !== null && user.role === 'admin' ? 
+    filteredMatchCards : filteredMatchCards.filter(match => !invalidMatches.includes(match.matchId))
+
+  
+  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCardsWithoutInvalid.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
   const teamName = data.teams.find(team => team.clubId.toString() === teamId).name
 
   return (
@@ -56,8 +62,8 @@ const CalendarDashboard = () => {
       <CalendarContentLayout
         onChange={contextObj.onChange}
         tileDisabled={tileDisabled}
-        filteredMatchCards={filteredMatchCards}
-        rangedFilteredMatchCards={filteredMatchCards.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
+        filteredMatchCards={filteredMatchCardsWithoutInvalid}
+        rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         teamId={teamId}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}

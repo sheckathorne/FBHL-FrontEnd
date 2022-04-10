@@ -50,7 +50,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
   },[queriedMatch, dispatch])
 
   useEffect(() => {
-    if ( matchActivePage > pageCount ) {
+    if ( matchActivePage > pageCount && pageCount !== 0 ) {
       dispatch(setMatchActivePage(pageCount))
     }
   },[dispatch, matchActivePage, pageCount])

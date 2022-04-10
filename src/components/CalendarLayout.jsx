@@ -14,13 +14,14 @@ const CalendarLayout = () => {
   
   const dispatch = useDispatch()
   const selectedDate = useSelector(state => state.calendarSelectedDate)
-  const schedule = useSelector(state => state.schedule)
+  
 
   const leagueName = useContext(LeagueContext)
   const teamId = useParams().teamId
 
   const TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES = 86340
 
+  const schedule = useSelector(state => state.schedule)
   const matchSkeletons = useSelector(state => state.matchSkeletons)
   const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
     { 
@@ -39,7 +40,6 @@ const CalendarLayout = () => {
 
   const filteredMatchSkeletons = teamId ? matchSkeletons.concat(forfeitedMatches).filter(match => match.clubs.map(club => club.clubId).includes(teamId)) : [...matchSkeletons.concat(forfeitedMatches)]
   const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...filteredMatchSkeletons.map(o => o.timestamp), 0)).startOf('day')).unix()
-
   const filteredSchedule = teamId ? schedule.filter(match => match.teams.includes(teamId)) : schedule
 
   useEffect(() => {

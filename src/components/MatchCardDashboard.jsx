@@ -26,7 +26,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
 
   const returnUrl = teamId ? `/calendar/${teamId}` : '/calendar'
   const delta = isMobile ? 1 : 2
-  const itemsPerPage = isMobile ? 3 : queriedMatch ? 5 : 8
+  const itemsPerPage = isMobile ? 3 : queriedMatch ? 4 : 8
 
   const displayAlert = (message, type) => {
     dispatch(setNotification({ message: message, type: type, scope: 'MatchCardDashboard' }))

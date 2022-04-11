@@ -13,13 +13,15 @@ const dashboardButtons = [
     value: 'calendar',
     active: false,
     route: '/calendar'
-  },{
+  },
+  /*{
     id: 3,
     name: 'Teams',
     value: 'teams',
     active: false,
     route: '/teams'
-  },{
+  },*/
+  {
     id: 4,
     name: 'Players',
     value: 'players',

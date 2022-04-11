@@ -30,12 +30,14 @@ const AppDashboard = ({
         <Route index element={<PlayersDisplay />} />
         <Route path=':teamId' element={<PlayersDisplayTeam />} />
       </Route>
+      {/*
       <Route path='teams' element={<>
         <TeamsLayout />
       </>}>
         <Route index element={<TeamsDisplay />}></Route>
         <Route path=':teamId' element={<TeamDisplay />}></Route>
       </Route>
+      */}
     </Routes>
   )
 }

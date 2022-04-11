@@ -13,11 +13,11 @@ const invalidMatchesSlice = createSlice({
       return action.payload
     },
     invalidateOneMatch(state, action) {
-      return state.concat(action.payload)
+      return state.concat({ matchId: action.payload, newRecord: true})
     },
     reinstateOneMatch(state, action) {
       const matchId = action.payload
-      return state.filter(invalidMatch => invalidMatch !== matchId)
+      return state.filter(invalidMatch => invalidMatch.matchId !== matchId)
     },
   },
 })
@@ -27,8 +27,8 @@ export const { setInvalidMatches, invalidateOneMatch, reinstateOneMatch } = inva
 export const initializeInvalidMatches = () => {
   return async dispatch => {
     const invalidMatches = await chelService.getData('/invalidMatches')
-    const invalidMatchIds = invalidMatches.map(match => match.matchId)
-    dispatch(setInvalidMatches(invalidMatchIds))
+    const invalidMatchesReduced = invalidMatches.map(match => ({ matchId: match.matchId, newRecord: match.newRecord }))
+    dispatch(setInvalidMatches(invalidMatchesReduced))
   }
 }
 

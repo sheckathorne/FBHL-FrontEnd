@@ -35,6 +35,8 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
         } : {
           goaltender: {
             gkGamesPlayed: player.gkGamesPlayed.toString(),
+            gkwins: player.gkwins.toString(),
+            gkwinpct: ((parseFloat(player.gkwins)/parseFloat(player.gkGamesPlayed)) * 100).toFixed(0).toString() + '%',
             gkgaa: player.gkgaa.toString(),
             gksvpct: player.gksvpct.toString(),
             gkso: player.gkso.toString() },

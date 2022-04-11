@@ -29,7 +29,7 @@ const CalendarDashboard = () => {
   ))
 
   const matchesWithForfeits = matcheSkeletons.concat(forfeitedMatches)
-  const invalidMatches = useSelector(state => state.invalidMatches)
+  const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
 
   const filteredSchedule = useSelector(state => state.schedule).filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const filteredMatchesWithDate = matchesWithForfeits.filter(match => match.clubs.map(club => club.clubId).includes(teamId))

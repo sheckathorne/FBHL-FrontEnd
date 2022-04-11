@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 const baseUrl = '/api/fbhl'
 
 let token = null
@@ -9,6 +10,18 @@ const setToken = newToken => {
 
 const getData = async (url) => {
   const res = await axios.get(`${baseUrl}${url}`)
+  return res.data
+}
+
+const getDataFromArray = async (url, arr) => {
+  const res = await axios.get(`${baseUrl}${url}`, {
+    params: {
+      matchIds: arr
+    },
+    paramsSerializer: params => {
+      return qs.stringify(params, { arrayFormat: "repeat" })
+    }
+  })
   return res.data
 }
 
@@ -71,7 +84,7 @@ const reinstateMatch = async (matchId) => {
     headers: { Authorization: token },
   }
 
-  const res = await axios.post(`${baseUrl}/invalidMatches/`, { matchId }, config)
+  const res = await axios.post(`${baseUrl}/invalidMatches/`, { matchId, newRecord: true }, config)
   return res.status
 }
 
@@ -91,7 +104,8 @@ const obj = {
   invalidateMatch,
   getMatch,
   createForfeitedMatch,
-  deleteForfeitedMatch 
+  deleteForfeitedMatch,
+  getDataFromArray
 }
 
 export default obj

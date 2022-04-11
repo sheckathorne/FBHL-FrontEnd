@@ -27,7 +27,7 @@ const CalendarDashboard = () => {
   ))
 
   const matchesWithForfeits = matchSkeletonWithDate.concat(forfeitedMatches)
-  const invalidMatches = useSelector(state => state.invalidMatches)
+  const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
     const scheduledMatchWasPlayed = matchesWithForfeits.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )

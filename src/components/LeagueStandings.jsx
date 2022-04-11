@@ -4,7 +4,6 @@ import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import MobileContext from './MobileContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLeagueOpen } from '../reducers/viewToggleReducer.js'
-import data from '../helpers/data.js'
 import ConferenceStandings from './ConferenceStandings'
 
 const LeagueStandings = ({ lightTheme, handleTableClick }) => {
@@ -25,8 +24,6 @@ const LeagueStandings = ({ lightTheme, handleTableClick }) => {
       <h5 className={themeClass + ' tiny-caps section-title'}>League Standings</h5>
     </Col>
   )
-
-  const conferences = [...new Set(data.teams.map(team => team.conference).filter(conference => conference !== ''))]
 
   return (
     <>

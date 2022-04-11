@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule } from './reducers/scheduleReducer'
-import { initializeMatches } from './reducers/matchesReducer'
 import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters } from './reducers/playersReducer'
@@ -28,7 +27,6 @@ const App = () => {
   const leagueName = 'FBHL'
   
   const appLoadChecklist = { 
-    matches: false,
     players: false,
     schedule: false,
     teamRankings: false,
@@ -52,11 +50,6 @@ const App = () => {
   const dispatch = useDispatch()
 
   // retrieve match history from database
-  useEffect(() => {
-    dispatch(initializeMatches())
-    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matches: true })))
-  }, [dispatch])
-
   useEffect(() => {
     dispatch(initializeMatchSkeletons())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matchSkeletons: true })))

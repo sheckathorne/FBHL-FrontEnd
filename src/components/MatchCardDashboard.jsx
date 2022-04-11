@@ -16,7 +16,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
   const notification = useSelector(state => state.notification)
   const matchActivePage = useSelector(state => state.pagination.matchActivePage)
   const user = useSelector(state => state.user.user)
-  const invalidMatches = useSelector(state => state.invalidMatches)
+  const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
 
   const dispatch = useDispatch()
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
@@ -103,6 +103,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
     </Row> ) : null
 
   const alertBanner = ( notification.message !== null && notification.scope === 'MatchCardDashboard' ) ? <Alert variant={notification.type} onClose={() => dispatch(clearNotification())} dismissible>{notification.text}</Alert> : null
+  const matchCardWidth = queriedMatch ? 12 : 6
 
   return (
     <>
@@ -123,7 +124,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
                 match={match}
                 addDefaultSrc={addDefaultSrc}
                 goToLastPaginationPage={goToLastPaginationPage}
-                queriedMatch={queriedMatch}
+                matchCardWidth={matchCardWidth}
               />
             )
           } else {
@@ -135,7 +136,7 @@ const MatchCardDashboard = ({ filteredMatchCards, queriedMatch, teamId }) => {
                 addDefaultSrc={addDefaultSrc}
                 displayAlert={displayAlert}
                 goToLastPaginationPage={goToLastPaginationPage}
-                queriedMatch={queriedMatch}
+                matchCardWidth={matchCardWidth}
               />
             )
           }

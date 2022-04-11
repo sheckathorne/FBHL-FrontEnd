@@ -10,7 +10,7 @@ import 'swiper/css'
 import 'swiper/css/autoplay'
 import 'swiper/css/navigation'
 
-const RecentResultsCarousel = ({ matches, lightTheme, handleCollapseClick, width }) => {
+const RecentResultsCarousel = ({ matches, lightTheme, width }) => {
   const resultsOpen = useSelector(state => state.viewToggle.resultsOpen)
   const dispatch = useDispatch()
   const isMobile = width <= 640

@@ -1,24 +1,24 @@
+/*
 import { createSlice } from '@reduxjs/toolkit'
 import chelService from '../services/api'
 import dayjs from 'dayjs'
 
 const initialState = []
 
-const matchesSlice = createSlice({
-  name: 'matches',
+const newInvalidMatchDetailsSlice = createSlice({
+  name: 'newInvalidMatchDetails',
   initialState,
   reducers: {
-    setMatches(_state, action) {
-      return action.payload
+    addInvalidMatchDetail(state, action) {
+      state.push(action.payload)
     },
-    toggleMatchValidation(state, action) {
-      const matchId = action.payload
-      return state.map(match => match.matchId === matchId ? { ...match, invalid: !match.invalid } : match )
+    removeInvalidMatchDetail(state, action) {
+      return state.filter(match => match.matchId !== action.payload)
     }
   },
 })
 
-export const { setMatches, toggleMatchValidation } = matchesSlice.actions
+export const { addInvalidMatchDetail, toggleMatchValidation } = newInvalidMatchDetailsSlice.actions
 
 export const initializeMatches = () => {
   return async dispatch => {
@@ -28,4 +28,5 @@ export const initializeMatches = () => {
   }
 }
 
-export default matchesSlice.reducer
+export default newInvalidMatchDetailsSlice.reducer
+*/

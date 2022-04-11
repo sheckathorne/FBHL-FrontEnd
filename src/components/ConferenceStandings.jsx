@@ -11,12 +11,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Container } from 'react-bootstrap'
 import { setTeamRankingsAndForfeits } from '../reducers/teamRankingsAndForfeitsReducer'
 import CircularProgress from '@mui/material/CircularProgress'
+import chelService from '../services/api'
 
 const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => { 
-  const [ loaded, setLoaded ] = useState(false)
+  const [ loaded, setLoaded ] = useState({ invalidMatches: false, forfeits: false })
+  const [ invalidMatchDetails, setInvalidMatchDetails ] = useState([])
 
   const teamData = useSelector(state => state.teamRankings)
   const forfeits = useSelector(state => state.forfeits)
+  const invalidMatchIdsToQuery = useSelector(state => state.invalidMatches).filter(invalidMatch => invalidMatch.newRecord).map(match => match.matchId)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -87,9 +90,33 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     })
     
     const rankTheTeams = (teams) => teams.map((team,i) => ({ ...team, rank: teamRankFunction(i, team, teams) }))
+
+    const removeInvalidDataFromTeamData = (teamData) => {
+      let newTeamData = [ ...teamData ]
+      
+      invalidMatchDetails.forEach(invalidMatch => {
+        invalidMatch.clubs.forEach(club => {
+          const teamRow = newTeamData.find(team => team.teamId === club.clubId)
+          if ( ['1','5','16385'].includes(club.data.result) ) { //WINS
+            const newTeamRow = { ...teamRow, gamesPlayed: parseInt(teamRow.gamesPlayed) - 1, wins: parseInt(teamRow.wins) - 1 }
+            newTeamData = newTeamData.map(team => team.teamId === club.clubId ? newTeamRow : team)
+          } else if ( ['2','10'].includes(club.data.result) ) { //LOSSES
+            const newTeamRow = { ...teamRow, gamesPlayed: parseInt(teamRow.gamesPlayed) - 1, losses: parseInt(teamRow.losses) - 1 }
+            newTeamData = newTeamData.map(team => team.teamId === club.clubId ? newTeamRow : team)
+          } else if ( club.data.result === 6 ) {
+            const newTeamRow = { ...teamRow, gamesPlayed: parseInt(teamRow.gamesPlayed) - 1, losses: parseInt(teamRow.overtimeLosses) - 1 }
+            newTeamData = newTeamData.map(team => team.teamId === club.clubId ? newTeamRow : team)
+          }   
+        })
+      })
+
+      return newTeamData
+    }
     
-    const newTeamData = addForfeitDataToTeamData()
-    const sortedNewTeamData = sortTeamData(newTeamData)
+    const teamDataWithForfeits = addForfeitDataToTeamData()
+    const teamDataWithoutInvalids = removeInvalidDataFromTeamData(teamDataWithForfeits)
+
+    const sortedNewTeamData = sortTeamData(teamDataWithoutInvalids)
 
     const rankedMetroTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Metropolitan'))
     const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
@@ -97,12 +124,22 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
 
     dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
-    setLoaded(true)
+    setLoaded(prevState => ({ ...prevState, forfeits: true }))
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[dispatch, forfeits])
+  },[dispatch, forfeits, invalidMatchDetails])
 
-  return loaded ? <LoadedTable conference={'West'} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
+  useEffect(() => {
+    chelService
+      .getDataFromArray('/invalidMatchesDetail', invalidMatchIdsToQuery)
+      .then(matches => {
+        setInvalidMatchDetails(matches)
+        setLoaded(prevState => ({ ...prevState, invalidMatches: true }))
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  return Object.values(loaded).every(item => item === true) ? <LoadedTable conference={'West'} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
 }
 
 const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {

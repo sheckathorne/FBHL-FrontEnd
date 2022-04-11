@@ -190,6 +190,16 @@ const gkStatCols = [
     toolTip: 'Games Played'
   },{
     id: uuidv4(),
+    columnLabel: 'W',
+    statName: 'gkwins',
+    toolTip: 'Wins'
+  },{
+    id: uuidv4(),
+    columnLabel: 'W%',
+    statName: 'gkwinpct',
+    toolTip: 'Win Percentage'
+  },{
+    id: uuidv4(),
     columnLabel: 'GAA',
     statName: 'gkgaa',
     toolTip: 'Goals Against Average'

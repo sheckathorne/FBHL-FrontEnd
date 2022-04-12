@@ -425,14 +425,17 @@ thead > tr {
 .small-match-result-card.dark, .btn-dark, .clickable-card.dark {
   background-color: #212529 !important;
   border-left: 4px solid #eb983440 !important;
-  border-right: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
+  border-right: 1px solid #212529 !important;
+  border-top: 1px solid #212529 !important;
+  border-bottom: 1px solid #212529 !important;
 }
 
 .small-match-result-card.dark:hover:not(.no-hover), .btn-dark:hover, .clickable-card.dark:hover {
   border-left: 4px solid #eb9834FF !important;
   background-color: #eb983480 !important;
+  border-right: 1px solid #eb983480 !important;
+  border-top: 1px solid #eb983480 !important;
+  border-bottom: 1px solid #eb983480 !important;
 }
 
 .invalid-match-card.small-match-result-card.dark{

@@ -2,7 +2,7 @@ import React from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { FaSortUp, FaSortDown } from 'react-icons/fa'
 
-const SortDropdownItem = ({ field, fieldName, descending, active, alpha, handleSortClick }) => {
+const SortDropdownItem = ({ field, fieldName, descending, active, alpha, reversed, handleSortClick }) => {  
   if ( active ) {
     if ( descending ) {
       return (
@@ -12,6 +12,7 @@ const SortDropdownItem = ({ field, fieldName, descending, active, alpha, handleS
             onClick={handleSortClick}
             descending={descending.toString()}
             alpha={alpha.toString()}
+            reversed-stat={reversed.toString()}
             item-value={field}
           >
             {fieldName} <FaSortDown />
@@ -26,6 +27,7 @@ const SortDropdownItem = ({ field, fieldName, descending, active, alpha, handleS
             onClick={handleSortClick}
             descending={descending.toString()}
             alpha={alpha.toString()}
+            reversed-stat={reversed.toString()}
             item-value={field}
           >
             {fieldName} <FaSortUp />
@@ -40,6 +42,7 @@ const SortDropdownItem = ({ field, fieldName, descending, active, alpha, handleS
         onClick={handleSortClick}
         descending={descending.toString()}
         alpha={alpha.toString()}
+        reversed-stat={reversed.toString()}
         item-value={field}
       >
         {fieldName}

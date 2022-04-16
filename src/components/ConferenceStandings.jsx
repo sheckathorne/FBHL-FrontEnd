@@ -19,6 +19,7 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
 
   const teamData = useSelector(state => state.teamRankings)
   const forfeits = useSelector(state => state.forfeits)
+
   const invalidMatchIdsToQuery = useSelector(state => state.invalidMatches).filter(invalidMatch => invalidMatch.newRecord).map(match => match.matchId)
   const dispatch = useDispatch()
 

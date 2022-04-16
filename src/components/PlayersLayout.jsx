@@ -19,6 +19,7 @@ const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
   const players = useSelector(state => state.players)
   const sortField = useSelector(state => state.sortField)
+  const gkSortField = useSelector(state => state.gkSortField)
   const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
 
   const dispatch = useDispatch()
@@ -60,14 +61,25 @@ const PlayersLayout = () => {
       } else if ( playerType === 'goaltenders' ) {
         const goaltendersCopy = [...playerGroup]
         const goaltendersElligibleToBeRanked = goaltendersCopy.filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (.65 * determineGoaltenderRankingCriteria(goaltendersCopy)))
+
         const sortedRankedGoaltenders = goaltendersElligibleToBeRanked.sort((a,b) => {
-          let n = b.gksvpct - a.gksvpct
+          let n = 0
+          if ( gkSortField.descending ) {
+            n = b[`${gkSortField.field}`] - a[`${gkSortField.field}`]
+          } else {
+            n = a[`${gkSortField.field}`] - b[`${gkSortField.field}`]
+          }
+          
           if ( n !== 0) {
             return n
           } else {
-            return a.gkgaa - b.gkgaa
+            return a.gkGamesPlayed - b.gkGamesPlayed
           }
         })
+
+        if ( gkSortField.reversed ) {
+          sortedRankedGoaltenders.reverse()
+        }
 
         return {
           players: sortedRankedGoaltenders,
@@ -80,7 +92,7 @@ const PlayersLayout = () => {
     case 'skaters':
       return rankThePlayers(createPlayerArray(playerType).players, sortField)
     case 'goaltenders':
-      return rankThePlayers(createPlayerArray(playerType).players, { field: 'gksvpct', descending: true }).map(x => ({ ...x, playerIsRanked: true })).concat(createPlayerArray(playerType).inellgiblePlayers)
+      return rankThePlayers(createPlayerArray(playerType).players, gkSortField).map(x => ({ ...x, playerIsRanked: true })).concat(createPlayerArray(playerType).inellgiblePlayers)
     default:
       break
     }
@@ -120,10 +132,10 @@ const PlayersLayout = () => {
       </Col>
     </Row> : null
 
-  const sortButtonGroup = showingSkaters ? (
+  const sortButtonGroup =
     <Row className='mt-2'>
-      <SortButtonGroup />
-    </Row>) : null
+      <SortButtonGroup showingSkaters={showingSkaters}/>
+    </Row>
 
   const leftNavGroup = queriedPlayer ? null : (
     <Col lg={4} className={isMobile ? '': 'mt-2'}>

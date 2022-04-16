@@ -111,6 +111,7 @@ const bins = {
 const defaultCrest = 'https://media.contentapi.ea.com/content/dam/eacom/nhl/pro-clubs/custom-crests/42.png'
 
 const sortButtons = [
+  /*
   {
     id: 1,
     field: 'playerName',
@@ -118,55 +119,115 @@ const sortButtons = [
     descending: true,
     active: false,
     alpha: true
-  },{
+  },*/
+  {
     id: 4,
     field: 'skpoints',
     fieldName: 'Points',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 2,
     field: 'skgoals',
     fieldName: 'Goals',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 3,
     field: 'skassists',
     fieldName: 'Assists',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 8,
     field: 'skplusmin',
     fieldName: 'Plus/Min',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 5,
     field: 'skGamesPlayed',
     fieldName: 'Games Played',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 6,
     field: 'skhits',
     fieldName: 'Hits',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
   },{
     id: 7,
     field: 'skbs',
     fieldName: 'Blocked Shots',
     descending: false,
     active: false,
-    alpha: false
+    alpha: false,
+    reversed: false,
+  },
+]
+
+const goaltenderSortButtons = [
+  /*{
+    id: 1,
+    field: 'playerName',
+    fieldName: 'Player Name',
+    descending: true,
+    active: false,
+    alpha: true
+  },*/
+  {
+    id: 2,
+    field: 'gksvpct',
+    fieldName: 'Save %',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: false,
+  },{
+    id: 3,
+    field: 'gkwins',
+    fieldName: 'Wins',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: false,
+  },{
+    id: 4,
+    field: 'gkso',
+    fieldName: 'Shutouts',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: false,
+  },{
+    id: 5,
+    field: 'gkgaa',
+    fieldName: 'Goals Against Average',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: true,
+  },{
+    id: 6,
+    field: 'gkGamesPlayed',
+    fieldName: 'Games Played',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: false,
   },
 ]
 
@@ -587,6 +648,6 @@ const matchTypeButtonGroup = [
   }
 ]
 
-const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup, divisions }
+const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup, divisions, goaltenderSortButtons }
 
 export default obj

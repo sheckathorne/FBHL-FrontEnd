@@ -1,33 +1,43 @@
 import React, { useContext } from 'react'
 import SortDropdownItem from './SortDropdownItem'
 import { DropdownButton } from 'react-bootstrap'
-import dataHelper from '../helpers/data'
+import data from '../helpers/data'
 import ThemeContext from './ThemeContext'
 import { setSortField } from '../reducers/playerSortReducer'
+import { setSortField as setGkSortField } from '../reducers/goaltenderSortReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
-const SortButtonGroup = () => {
+const SortButtonGroup = ({ showingSkaters }) => {
   const dispatch = useDispatch()
-  const sortField = useSelector(state => state.sortField)
-  
+  const skatersSort = useSelector(state => state.sortField)
+  const goaltendersSort = useSelector(state => state.gkSortField)  
+  const sortField = showingSkaters ? skatersSort : goaltendersSort
+
   const activeItem = {
     field: sortField.field,
     descending: sortField.descending,
-    active: true
+    active: true,
+    reversed: sortField.reversed,
   }
 
   const handleSortClick = (e) => {
-    dispatch(setSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true') }))
+    if ( showingSkaters ) {
+      dispatch(setSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true'), reversed: (e.currentTarget.getAttribute('reversed-stat') === 'true') }))
+    } else {
+      dispatch(setGkSortField({ field: e.currentTarget.getAttribute('item-value'), descending: !(e.currentTarget.getAttribute('descending') === 'true'), alpha: (e.currentTarget.getAttribute('alpha') === 'true'), reversed: (e.currentTarget.getAttribute('reversed-stat') === 'true') }))
+    }
   }
 
-  const buttonsList = dataHelper.sortButtons.map(button => button.field !== activeItem.field ? button : { ...button, active: true, descending: activeItem.descending } )
+  const sortButtons = showingSkaters ? data.sortButtons : data.goaltenderSortButtons
+  const buttonsList = sortButtons.map(button => button.field !== activeItem.field ? button : { ...button, active: true, descending: activeItem.descending, reversed: activeItem.reversed } )
   const buttonTitle = ( typeof(activeItem.field) === 'undefined' ) ? 'Sort Players' : buttonsList.find(button => button.field === activeItem.field).fieldName
   const themeVariant = useContext(ThemeContext).value === 'light' ? 'outline-dark' : 'dark'
 
   return (
     <>
       <DropdownButton className='d-grid gap-2' variant={themeVariant} id="dropdown-basic-button" title={buttonTitle}>
-        {buttonsList.map(button =>
+        {buttonsList.map(button => {
+          return (
           <SortDropdownItem
             key={button.id}
             field={button.field}
@@ -35,9 +45,10 @@ const SortButtonGroup = () => {
             descending={button.descending}
             active={button.active}
             alpha={button.alpha}
+            reversed={button.reversed}
             handleSortClick={handleSortClick}
-          />
-        )}
+          />)
+        })}
       </DropdownButton>
     </>
   )

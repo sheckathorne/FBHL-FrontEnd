@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { field: 'skpoints', descending: true, alpha: false }
+const initialState = { field: 'skpoints', descending: true, alpha: false, reversed: false }
 
 const playerSortSlice = createSlice({
   name: 'sortField',

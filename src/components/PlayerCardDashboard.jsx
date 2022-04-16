@@ -18,7 +18,6 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
   return (
     <Flipper flipKey={players}>{
       players.map((player, i) => {
-        console.log(player)
         const stats = player.posSorted !== '0' ? {
           total: {
             goals: player.skgoals.toString(),

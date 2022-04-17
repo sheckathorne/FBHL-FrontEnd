@@ -62,28 +62,9 @@ const PlayersLayout = () => {
         const goaltendersCopy = [...playerGroup]
         const goaltendersElligibleToBeRanked = goaltendersCopy.filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (.65 * determineGoaltenderRankingCriteria(goaltendersCopy)))
 
-        const sortedRankedGoaltenders = goaltendersElligibleToBeRanked.sort((a,b) => {
-          let n = 0
-          if ( gkSortField.descending ) {
-            n = b[`${gkSortField.field}`] - a[`${gkSortField.field}`]
-          } else {
-            n = a[`${gkSortField.field}`] - b[`${gkSortField.field}`]
-          }
-          
-          if ( n !== 0) {
-            return n
-          } else {
-            return a.gkGamesPlayed - b.gkGamesPlayed
-          }
-        })
-
-        if ( gkSortField.reversed ) {
-          sortedRankedGoaltenders.reverse()
-        }
-
         return {
-          players: sortedRankedGoaltenders,
-          inellgiblePlayers: goaltendersCopy.filter(goaltender => !sortedRankedGoaltenders.map(x => x.playerId).includes(goaltender.playerId)).map(x => ({ ...x, playerIsRanked: false }))
+          players: goaltendersElligibleToBeRanked,
+          inellgiblePlayers: goaltendersCopy.filter(goaltender => !goaltendersElligibleToBeRanked.map(x => x.playerId).includes(goaltender.playerId)).map(x => ({ ...x, playerIsRanked: false }))
         }
       }
     }
@@ -92,7 +73,8 @@ const PlayersLayout = () => {
     case 'skaters':
       return rankThePlayers(createPlayerArray(playerType).players, sortField)
     case 'goaltenders':
-      return rankThePlayers(createPlayerArray(playerType).players, gkSortField).map(x => ({ ...x, playerIsRanked: true })).concat(createPlayerArray(playerType).inellgiblePlayers)
+      const allGoaltenders = createPlayerArray(playerType)
+      return rankThePlayers(allGoaltenders.players, gkSortField).map(x => ({ ...x, playerIsRanked: true })).concat(allGoaltenders.inellgiblePlayers)
     default:
       break
     }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule } from './reducers/scheduleReducer'
 import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
-import { intializePlayers, sortSkaters } from './reducers/playersReducer'
+import { intializePlayers, sortSkaters, sortGoaltenders } from './reducers/playersReducer'
 import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
 import { setResultsOpen, setLeagueOpen, setPlayerOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
@@ -36,6 +36,7 @@ const App = () => {
   }
 
   const sortField = useSelector(state => state.sortField)
+  const gkSortField = useSelector(state => state.gkSortField)
   const notification = useSelector(state => state.notification)
 
   /* app theme */
@@ -87,6 +88,10 @@ const App = () => {
   useEffect(() => {
     dispatch(sortSkaters(sortField))
   },[dispatch, sortField])
+
+  useEffect(() => {
+    dispatch(sortGoaltenders(gkSortField))
+  },[dispatch, gkSortField])
 
   useEffect(() => {
     const loggedFBHLuser = window.localStorage.getItem('loggedFBHLuser')

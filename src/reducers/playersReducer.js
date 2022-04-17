@@ -3,6 +3,38 @@ import chelService from '../services/api'
 
 const initialState = { skaters: [], goaltenders: [] }
 
+const sortPlayers = (players, sortField) => {
+  players.sort((a,b) => {
+    let n = 0
+    if ( sortField.reversed ) {
+      if ( sortField.descending ) {
+        n = a[`${sortField.field}`] - b[`${sortField.field}`]
+      } else {
+        n = b[`${sortField.field}`] - a[`${sortField.field}`]
+      }
+    } else {
+      if ( sortField.descending ) {
+        n = b[`${sortField.field}`] - a[`${sortField.field}`]
+      } else {
+        n = a[`${sortField.field}`] - b[`${sortField.field}`]
+      }
+    }
+
+    
+    if ( n !== 0) {
+      return n
+    } else {
+      if ( sortField.secondaryReversed ) {
+        return b[`${sortField.secondaryField}`] - a[`${sortField.secondaryField}`]
+      } else {
+        return a[`${sortField.secondaryField}`] - b[`${sortField.secondaryField}`]
+      }
+    }
+  })
+
+  return players
+}
+
 const playersSlice = createSlice({
   name: 'players',
   initialState,
@@ -15,25 +47,13 @@ const playersSlice = createSlice({
     },
     sortSkaters(state, action) {
       const sortField = action.payload
-
-      if ( sortField.field ) {
-        if (sortField.alpha) {
-          if ( sortField.descending ) {
-            state = { skaters: state.skaters.sort((b, a) => a[`${sortField.field}`].localeCompare(b[`${sortField.field}`])), goaltenders: state.goaltenders }
-          } else {
-            state = { skaters: state.skaters.sort((a, b) => a[`${sortField.field}`].localeCompare(b[`${sortField.field}`])), goaltenders: state.goaltenders }
-          }
-        } else {
-          if ( sortField.descending ) {
-            state = { skaters: state.skaters.sort((b, a) => a[`${sortField.field}`] - b[`${sortField.field}`]), goaltenders: state.goaltenders }
-          } else {
-            state ={ skaters: state.skaters.sort((a, b) => a[`${sortField.field}`] - b[`${sortField.field}`]), goaltenders: state.goaltenders }
-          }
-        }
-      }
+      const players = state.skaters
+      state = { skaters: sortPlayers(players, sortField), goaltenders: state.goaltenders }
     },
     sortGoaltenders(state, action) {
-      return state
+      const sortField = action.payload
+      const players = state.goaltenders
+      state = { skaters: state.skaters, goaltenders: sortPlayers(players, sortField) }
     },
   },
 })

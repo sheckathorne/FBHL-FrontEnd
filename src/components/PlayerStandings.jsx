@@ -8,8 +8,6 @@ import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import Pagination from '@mui/material/Pagination'
 import PaginationItem from '@mui/material/PaginationItem'
 import Stack from '@mui/material/Stack'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import MobileContext from './MobileContext'
 import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
@@ -25,7 +23,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const caret = playerOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const themeClass = lightTheme ? '' : 'dark-theme-text'
   const topPlayers = data.topPlayers
-  const numberOfPlayers = 10
+  const numberOfPlayers = 8
   const paginationSize = isMobile ? 'small' : 'medium'
   const top = topPlayers.find((t,i) => i+1 === playerStandingsPage)
   let table = null
@@ -44,7 +42,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
     }
   })
 
-  const handlePlayerPaginationChange = (e,n) => {
+  const handlePlayerPaginationChange = (_e,n) => {
     dispatch(setPlayerStandingsPage(n))
   }
 
@@ -113,7 +111,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   )
 
   const pagination = playerOpen ? (
-    <Col className='d-flex justify-content-end'>
+    <Col className='d-flex justify-content-start'>
       <Stack spacing={2}>
         <Pagination
           classes={{ ul: classes.ul }}
@@ -123,18 +121,19 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
           variant='outlined'
           onChange={handlePlayerPaginationChange}
           page={playerStandingsPage}
+          hidePrevButton
+          hideNextButton
           renderItem={(item) => {
             if ( item.page === 1 ) {
-              item = { ...item, page: 'Pts' }
+              item = { ...item, page: 'Points' }
             } else if ( item.page === 2 ) {
-              item = { ...item, page: 'Gls' }
+              item = { ...item, page: 'Goals' }
             } else if ( item.page === 3 ) {
-              item = { ...item, page: 'Ast' }
+              item = { ...item, page: 'Assists' }
             }
 
             return (
               <PaginationItem
-                components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
                 {...item}
               />
             )}}
@@ -151,9 +150,6 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       <Collapse in={playerOpen}>
         <div>
           <Row>
-            <Col className='mt-1'>
-              <h5 className={themeClass + ' tiny-caps section-title'}>{top.title}</h5>
-            </Col>
             {pagination}
           </Row>
           {table}

@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer'
 import { setSortField } from '../reducers/playerSortReducer'
+import data from '../helpers/data'
 
 const LeagueDashboard = ({ width }) => {
   const navigate = useNavigate('')
@@ -22,7 +23,8 @@ const LeagueDashboard = ({ width }) => {
   const leagueName = useContext(LeagueContext)
 
   const handleTopPlayerClick = (sortField, url) => () => {
-    dispatch(setSortField({ field: sortField.field, descending: true, alpha: false }))
+    const newSortField = data.sortButtons.find(button => button.field === sortField.field )
+    dispatch(setSortField({ field: newSortField.field, descending: newSortField.descending, alpha: newSortField.alpha, secondaryField: newSortField.secondaryField, secondaryReversed: newSortField.secondaryReversed }))
     dispatch(setSkaterOrGoalie({ field: 'skaters' }))
     navigate(url)
   }

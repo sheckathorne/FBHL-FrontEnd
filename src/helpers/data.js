@@ -128,6 +128,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryField: 'skGamesPlayed',
+    secondaryReversed: true,
   },{
     id: 2,
     field: 'skgoals',
@@ -136,6 +138,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skassists',
+    secondaryReversed: false,
   },{
     id: 3,
     field: 'skassists',
@@ -144,6 +148,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skgoals',
+    secondaryReversed: false,
   },{
     id: 8,
     field: 'skplusmin',
@@ -152,6 +158,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skGamesPlayed',
+    secondaryReversed: true,    
   },{
     id: 5,
     field: 'skGamesPlayed',
@@ -160,6 +168,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skpoints',
+    secondaryReversed: false,    
   },{
     id: 6,
     field: 'skhits',
@@ -168,6 +178,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skbs',
+    secondaryReversed: false,
   },{
     id: 7,
     field: 'skbs',
@@ -176,6 +188,8 @@ const sortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'skhits',
+    secondaryReversed: false,    
   },
 ]
 
@@ -196,6 +210,8 @@ const goaltenderSortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'gkgaa',
+    secondaryReversed: true,
   },{
     id: 3,
     field: 'gkwins',
@@ -204,6 +220,8 @@ const goaltenderSortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'gksvpct',
+    secondaryReversed: false,
   },{
     id: 4,
     field: 'gkso',
@@ -212,6 +230,8 @@ const goaltenderSortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'gkgaa',
+    secondaryReversed: true,
   },{
     id: 5,
     field: 'gkgaa',
@@ -220,6 +240,8 @@ const goaltenderSortButtons = [
     active: false,
     alpha: false,
     reversed: true,
+    secondaryFieldName: 'gksvpct',
+    secondaryReversed: false,
   },{
     id: 6,
     field: 'gkGamesPlayed',
@@ -228,6 +250,8 @@ const goaltenderSortButtons = [
     active: false,
     alpha: false,
     reversed: false,
+    secondaryFieldName: 'gksvpct',
+    secondaryReversed: false,
   },
 ]
 

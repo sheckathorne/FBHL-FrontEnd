@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { field: 'gksvpct', descending: true, alpha: false, reversed: false }
+const initialState = {
+  field: 'gksvpct',
+  descending: true,
+  alpha: false,
+  reversed: false,
+  secondaryFieldName: 'gkgaa',
+  secondaryReversed: true
+}
 
 const goaltenderSortSlice = createSlice({
   name: 'gkSortField',

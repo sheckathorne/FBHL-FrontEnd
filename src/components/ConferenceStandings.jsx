@@ -217,7 +217,7 @@ const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {
       <Stack spacing={2}>
         <Pagination
           classes={{ ul: classes.ul }}
-          count={divisionTable.length}
+          count={selectedConference.divisions.length}
           color='primary'
           size={paginationSize}
           variant='outlined'

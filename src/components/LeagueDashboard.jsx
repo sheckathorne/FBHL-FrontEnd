@@ -22,10 +22,13 @@ const LeagueDashboard = ({ width }) => {
   const recentMatchDates = matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
   const leagueName = useContext(LeagueContext)
 
-  const handleTopPlayerClick = (sortField, url) => () => {
-    const newSortField = data.sortButtons.find(button => button.field === sortField.field )
-    dispatch(setSortField({ field: newSortField.field, descending: newSortField.descending, alpha: newSortField.alpha, secondaryField: newSortField.secondaryField, secondaryReversed: newSortField.secondaryReversed }))
-    dispatch(setSkaterOrGoalie({ field: 'skaters' }))
+  const handleTopPlayerClick = (sortField, url, playerType) => () => {
+    const newSortField = playerType === 'skaters' ? 
+      data.sortButtons.find(button => button.field === sortField.field ) :
+      data.goaltenderSortButtons.find(button => button.field === sortField.field )
+
+    dispatch(setSortField({ field: newSortField.field, descending: true, alpha: newSortField.alpha, secondaryField: newSortField.secondaryField, secondaryReversed: newSortField.secondaryReversed }))
+    dispatch(setSkaterOrGoalie({ field: playerType }))
     navigate(url)
   }
 

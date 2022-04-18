@@ -70,38 +70,91 @@ const teams = [
   conferenceId: 1,
   conferenceName: 'East',
   conferenceDisplayName: 'East',
-  active: true,
   divisions: [{
     divisionId: 1,
     divisionName: 'Atlantic',
     divisionDisplayName: 'Atlantic',
-    active: true
   },
   {
     divisionId: 2,
     divisionName: 'Metropolitan',
     divisionDisplayName: 'Metro',
-    active: false
   }]
 },
 {
   conferenceId: 2,
   conferenceName: 'West',
   conferenceDisplayName: 'West',
-  active: false,
   divisions: [{
     divisionId: 1,
     divisionName: 'Central',
     divisionDisplayName: 'Central',
-    active: true
   },
   {
     divisionId: 2,
     divisionName: 'Pacific',
     divisionDisplayName: 'Pacific',
-    active: false
   }]
 }]
+
+const topPlayers = [
+  {
+    title: 'Most Points',
+    stat: 'points',
+    sortField: { field:'skpoints', descending: true, reversed: false }
+  },{
+    title: 'Most Goals',
+    stat: 'goals',
+    sortField: { field:'skgoals', descending: true, reversed: false }
+  },{
+    title: 'Most Assists',
+    stat: 'assists',
+    sortField: { field:'skassists', descending: true, reversed: false }
+  }
+]
+
+const playerRankings = [
+  {
+    id: 1,
+    playerTypeDescription: 'Skaters',
+    playerType: 'skaters',
+    playerTypeStats: [{
+      statId: 1,
+      statName: 'skpoints',
+      statDisplayName: 'Points',
+      statReversed: false,
+    },{
+      statId: 2,
+      statName: 'skgoals',
+      statDisplayName: 'Goals',
+      statReversed: false,
+    },{
+      statId: 3,
+      statName: 'skassists',
+      statDisplayName: 'Assists',
+      statReversed: false,
+    }]
+  },  {
+    id: 2,
+    playerTypeDescription: 'Goalies',
+    playerType: 'goaltenders',
+    playerTypeStats: [{
+      statId: 1,
+      statName: 'gksvpct',
+      statDisplayName: 'Save %',
+      statReversed: false,
+    },{
+      statId: 2,
+      statName: 'gkwinpct',
+      statDisplayName: 'Win %',
+      statReversed: false,
+    },{
+      statId: 3,
+      statName: 'gkgaa',
+      statDisplayName: 'GAA',
+      statReversed: true,
+    }]
+  }]
 
 const bins = {
   matchHistoryBinId: '61db51fd39a33573b3262564',
@@ -216,6 +269,16 @@ const goaltenderSortButtons = [
     id: 3,
     field: 'gkwins',
     fieldName: 'Wins',
+    descending: false,
+    active: false,
+    alpha: false,
+    reversed: false,
+    secondaryFieldName: 'gksvpct',
+    secondaryReversed: false,
+  },{
+    id: 7,
+    field: 'gkwinpct',
+    fieldName: 'Win %',
     descending: false,
     active: false,
     alpha: false,
@@ -490,22 +553,6 @@ const leadersSpec = [
   }
 ]
 
-const topPlayers = [
-  {
-    title: 'Most Points',
-    stat: 'points',
-    sortField: { field:'skpoints', descending:true, alpha:false }
-  },{
-    title: 'Most Goals',
-    stat: 'goals',
-    sortField: { field:'skgoals', descending:true, alpha:false }
-  },{
-    title: 'Most Assists',
-    stat: 'assists',
-    sortField: { field:'skassists', descending:true, alpha:false }
-  }
-]
-
 const playerDetailStats = [
   {
     id: uuidv4(),
@@ -642,16 +689,28 @@ const playerStandingsColumns = {
       position: 'center',
     },
   ],
-  points: [{
+  skpoints: [{
     title: 'P',
     position: 'center',
   }],
-  goals: [{
+  skgoals: [{
     title: 'G',
     position: 'center',
   }],
-  assists: [{
+  skassists: [{
     title: 'A',
+    position: 'center',
+  }],
+  gksvpct: [{
+    title: 'SV%',
+    position: 'center',
+  }],
+  gkwinpct: [{
+    title: 'W%',
+    position: 'center',
+  }],
+  gkgaa: [{
+    title: 'GAA',
     position: 'center',
   }],
 }
@@ -672,6 +731,6 @@ const matchTypeButtonGroup = [
   }
 ]
 
-const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup, divisions, goaltenderSortButtons }
+const obj = { dashboardButtons, bins, defaultCrest, teams, sortButtons, statCols, teamStatCols, dataPointRowSpec, translatePositions, leadersSpec, gkStatCols, skaterGoalieToggleButtons, topPlayers, playerDetailStats, leagueStandingsColumns, playerStandingsColumns, matchTypeButtonGroup, divisions, goaltenderSortButtons, playerRankings }
 
 export default obj

@@ -5,7 +5,7 @@ import { setSortField } from '../reducers/playerSortReducer'
 import { useNavigate } from 'react-router-dom'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 
-const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, borderless, size, variant, className, sortField, type, handleTableClick, summaryObj, rankedPlayers }) => {
+const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, borderless, size, variant, className, sortField, type, handleTableClick, playerType, summaryObj, rankedPlayers }) => { 
   const summaryRow = summaryObj ?
   <SummaryRow summaryObj={summaryObj} columns={columns} sortField={sortField} rankedPlayers={rankedPlayers} />
   : null
@@ -30,6 +30,7 @@ const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, b
                 data={data}
                 type={type}
                 sortField={sortField}
+                playerType={playerType}
                 handleTableClick={handleTableClick}
               />
               {summaryRow}
@@ -53,10 +54,10 @@ const TableHead = ({ columns }) => {
   )
 }
 
-const TableRows = ({ data, type, sortField, handleTableClick }) => {
+const TableRows = ({ data, type, sortField, handleTableClick, playerType }) => {
   return (
     data.map((row, i) =>
-      <tr key={i} className='pointer-cursor table-row' onClick={type === 'players' ? handleTableClick.players(sortField, row.rowUrl) : handleTableClick.league(row.rowUrl)}>
+      <tr key={i} className='pointer-cursor table-row' onClick={type === 'players' ? handleTableClick.players(sortField, row.rowUrl, playerType) : handleTableClick.league(row.rowUrl)}>
         {Object.keys(row.columns).map((col, i) => {
           const colObj = row.columns[`${col}`]
           const positionClass = `text-${colObj.position}`

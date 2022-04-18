@@ -4,9 +4,10 @@ const initialState = {
   matchActivePage: 1,
   playersActivePage: 1,
   teamsActivePage: 1,
-  playerStandingsPage: 1,
   conferencePage: 1,
   divisionPage: 1,
+  playerType: 1,
+  statId: 1
 }
 
 const paginationSlice = createSlice({
@@ -31,6 +32,12 @@ const paginationSlice = createSlice({
     setDivisionPage(state, action) {
       return { ...state, divisionPage: action.payload }
     },
+    setPlayerType(state, action) {
+      return { ...state, playerType: action.payload }
+    },
+    setStatId(state, action) {
+      return { ...state, statId: action.payload }
+    },
     resetPagination(_state, _action) {
       return initialState
     }
@@ -44,7 +51,9 @@ export const {
   setTeamsActivePage,
   resetPagination,
   setConferencePage,
-  setDivisionPage
+  setDivisionPage,
+  setPlayerType,
+  setStatId
 } = paginationSlice.actions
 
 export default paginationSlice.reducer

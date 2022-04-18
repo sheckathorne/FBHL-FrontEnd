@@ -11,22 +11,34 @@ import Stack from '@mui/material/Stack'
 import MobileContext from './MobileContext'
 import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
-import { setPlayerStandingsPage } from '../reducers/paginationReducer'
+import { setPlayerType, setStatId } from '../reducers/paginationReducer'
 import { setPlayerOpen } from '../reducers/viewToggleReducer.js'
 
 const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const dispatch = useDispatch()
   const players = useSelector(state => state.players)
-  const playerStandingsPage = useSelector(state => state.pagination.playerStandingsPage)
   const playerOpen = useSelector(state => state.viewToggle.playerOpen)
   const isMobile = useContext(MobileContext)
+  const playerTypeId = useSelector(state => state.pagination.playerType)
+  const statId = useSelector(state => state.pagination.statId)
   const caret = playerOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
   const themeClass = lightTheme ? '' : 'dark-theme-text'
-  const topPlayers = data.topPlayers
   const numberOfPlayers = 8
   const paginationSize = isMobile ? 'small' : 'medium'
-  const top = topPlayers.find((t,i) => i+1 === playerStandingsPage)
+  const playerRankings = data.playerRankings
+  const selectedPlayerType = playerRankings.find(playerType => playerType.id === playerTypeId)
+  const selectedStat = selectedPlayerType.playerTypeStats.find(stat => stat.statId === statId)
+  const sortField = { field: selectedStat.statName, descending: true, reversed: selectedStat.statReversed }
   let table = null
+
+  const handlePlayerTypeChange = (_e,n) => {
+    dispatch(setPlayerType(n))
+    dispatch(setStatId(1))
+  }
+
+  const handleStatIdChange = (_e,n) => {
+    dispatch(setStatId(n))
+  }
 
   const useStyles = makeStyles(() => {
     if ( !lightTheme ) {
@@ -42,10 +54,6 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
     }
   })
 
-  const handlePlayerPaginationChange = (_e,n) => {
-    dispatch(setPlayerStandingsPage(n))
-  }
-
   const rankThePlayers = (players, sortField) =>
     players.map((player,i) => {
       const allPlayersStatValue = players.map(player => player[`${sortField.field}`])
@@ -53,7 +61,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       return { rank: generateRankNumber(i, allPlayersStatValue, currentPlayerStatValue), ...player }
     })
 
-  const showTenPlayersOrLess = (players) => {
+  const showNumOfPlayersOrLess = (players) => {
     for ( let i = numberOfPlayers; i > 0; i-- ) {
       const filteredPlayers = players.filter(player => player.rank <= i)
       if ( filteredPlayers.length <= i ) {
@@ -65,10 +73,23 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const classes = useStyles()
 
   if ( players.skaters ) {
-    const playersCopy = [...players.skaters].sort((a,b) => b[`${top.sortField.field}`] - a[`${top.sortField.field}`])
-    const rankedPlayers = rankThePlayers(playersCopy, top.sortField)
+    const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,3).reduce((y,a) => y+a, 0))/parseFloat(3)
+
+    const sortPlayers = (players, sortField) => {
+      if ( sortField.reversed ) {
+        return players.sort((a,b) => a[`${sortField.field}`] - b[`${sortField.field}`])
+      } else {
+        return players.sort((a,b) => b[`${sortField.field}`] - a[`${sortField.field}`])
+      }
+    }
+  
+    const playersCopy =  selectedPlayerType.playerTypeDescription === 'Skaters' ? 
+      sortPlayers([...players.skaters], sortField) : 
+      sortPlayers([...players.goaltenders].filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (.65 * determineGoaltenderRankingCriteria(players.goaltenders))), sortField)
+
+    const rankedPlayers = rankThePlayers(playersCopy, sortField)
     const rankedFilteredPlayers = rankedPlayers.filter(player => player.rank <= numberOfPlayers)
-    const reducedPlayers = showTenPlayersOrLess(rankedFilteredPlayers)
+    const reducedPlayers = showNumOfPlayersOrLess(rankedFilteredPlayers)
     const maxReducedRank = Math.max(...reducedPlayers.map(player => player.rank))
     const nextPlayersRank = Math.min(...rankedFilteredPlayers.filter(player => player.rank > maxReducedRank).map(player => player.rank))
     
@@ -78,26 +99,23 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       nextRank: nextPlayersRank
     } : null
 
-    table = (
-      <>
-        <BootstrapTable
-          title={top.title}
-          columns={functions.generateStandingsColumns(data.playerStandingsColumns, top.stat, themeClass)}
-          data={functions.generatePlayerStandingData(reducedPlayers, top.sortField.field, themeClass)}
-          hover={true}
-          responsive={true}
-          striped={false}
-          variant={lightTheme ? 'light' : 'dark'}
-          themeClass={themeClass}
-          size={isMobile ? 'sm' : ''}
-          sortField={top.sortField}
-          handleTableClick={handleTableClick}
-          type='players'
-          summaryObj={summaryObj}
-          rankedPlayers={rankedPlayers}
-        />
-      </>
-    )
+    table = 
+      <BootstrapTable
+        columns={functions.generateStandingsColumns(data.playerStandingsColumns, sortField.field, themeClass)}
+        data={functions.generatePlayerStandingData(reducedPlayers, sortField.field, themeClass)}
+        hover={true}
+        responsive={true}
+        striped={false}
+        variant={lightTheme ? 'light' : 'dark'}
+        themeClass={themeClass}
+        size={isMobile ? 'sm' : ''}
+        sortField={sortField}
+        handleTableClick={handleTableClick}
+        playerType={playerRankings.find(playerType => playerType.id === playerTypeId).playerType}
+        type='players'
+        summaryObj={summaryObj}
+        rankedPlayers={rankedPlayers}
+      />
   }
 
   const clickableTitle = isMobile ? (
@@ -110,26 +128,24 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
     </Col>
   )
 
-  const pagination = playerOpen ? (
-    <Col className='d-flex justify-content-start'>
+  const playerTypePagination = 
+    <Col className='mt-1'>
       <Stack spacing={2}>
         <Pagination
           classes={{ ul: classes.ul }}
-          count={3}
+          count={playerRankings.length}
           color='primary'
           size={paginationSize}
           variant='outlined'
-          onChange={handlePlayerPaginationChange}
-          page={playerStandingsPage}
+          onChange={handlePlayerTypeChange}
+          page={playerTypeId}
           hidePrevButton
           hideNextButton
           renderItem={(item) => {
             if ( item.page === 1 ) {
-              item = { ...item, page: 'Points' }
+              item = { ...item, page: playerRankings.find(playerType => playerType.id === 1).playerTypeDescription }
             } else if ( item.page === 2 ) {
-              item = { ...item, page: 'Goals' }
-            } else if ( item.page === 3 ) {
-              item = { ...item, page: 'Assists' }
+              item = { ...item, page: playerRankings.find(playerType => playerType.id === 2).playerTypeDescription }
             }
 
             return (
@@ -140,7 +156,37 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
         />
       </Stack>
     </Col>
-  ) : null
+
+  const statTypePagination =
+    <Col className='d-flex justify-content-end'>
+      <Stack spacing={2}>
+        <Pagination
+          classes={{ ul: classes.ul }}
+          count={selectedPlayerType.playerTypeStats.length}
+          color='primary'
+          size={paginationSize}
+          variant='outlined'
+          onChange={handleStatIdChange}
+          page={statId}
+          hidePrevButton
+          hideNextButton
+          renderItem={(item) => {
+            if ( item.page === 1 ) {
+              item = { ...item, page: selectedPlayerType.playerTypeStats.find(stat => stat.statId === 1).statDisplayName }
+            } else if ( item.page === 2 ) {
+              item = { ...item, page: selectedPlayerType.playerTypeStats.find(stat => stat.statId === 2).statDisplayName }
+            } else if ( item.page === 3 ) {
+              item = { ...item, page: selectedPlayerType.playerTypeStats.find(stat => stat.statId === 3).statDisplayName }
+            }
+
+            return (
+              <PaginationItem
+                {...item}
+              />
+            )}}
+        />
+      </Stack>
+    </Col>
 
   return (
     <>
@@ -150,7 +196,8 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       <Collapse in={playerOpen}>
         <div>
           <Row>
-            {pagination}
+            {playerTypePagination}
+            {statTypePagination}
           </Row>
           {table}
         </div>

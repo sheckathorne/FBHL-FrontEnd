@@ -43,7 +43,8 @@ const playersSlice = createSlice({
       return state = { ...state, skaters: action.payload }
     },
     setGoaltenders(state, action) {
-      return state = { ...state, goaltenders: action.payload }
+      const goaltenders = action.payload
+      return state = { ...state, goaltenders: goaltenders.map(goaltender => ({ ...goaltender, gkwinpct: parseFloat(goaltender.gkwins/goaltender.gkGamesPlayed).toFixed(3).toString() })) }
     },
     sortSkaters(state, action) {
       const sortField = action.payload

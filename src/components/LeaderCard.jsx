@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import HorizontalDivider from './HorizontalDivider'
 import { Row, Col } from 'react-bootstrap'
 import dataHelper from '../helpers/data'
 import LeaderDetail from './LeaderDetail'
@@ -35,7 +34,6 @@ const LeaderCard = ({ leaderCategory, leaderList, homeTeamClubId }) => {
 
   return (
     <>
-      <HorizontalDivider width='11'/>
       <Row className='match-detail-text'><Col><h5 className={lightTheme ? '' : 'dark-theme-text'}>{leaderSpec.fullStatName} {(leaderArray.length > 1) ? 'Leaders' : 'Leader' }</h5></Col></Row>
       {leaderArray.map((leader,i) =>
         <LeaderDetail

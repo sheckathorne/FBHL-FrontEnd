@@ -9,6 +9,13 @@ import GoalieLeaderCard from './GoalieLeaderCard'
 import colorCompare from '../helpers/colorCompare'
 import api from '../services/api'
 import CircularProgress from '@mui/material/CircularProgress'
+import HorizontalDivider from './HorizontalDivider'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination, Autoplay } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/autoplay'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 const MatchDetailDashboard = ({ queriedMatchId }) => {
   const [ match, setMatch ] = useState({})
@@ -65,6 +72,23 @@ const LoadedMatchDetailDashboard = ({ match }) => {
 
   const addDefaultSrc = (e) => e.target.src = 'https://media.contentapi.ea.com/content/dam/eacom/nhl/pro-clubs/custom-crests/42.png'
 
+  const swiperItems = [...leaders.map((leader,i) =>
+    <SwiperSlide key={i}>
+      <LeaderCard
+        key={leader.id}
+        leaderCategory={leader.category}
+        leaderList={leader[leader.category]}
+        homeTeamClubId={homeTeamClubId}
+      />
+    </SwiperSlide>),
+    <SwiperSlide key={99}>
+      <GoalieLeaderCard 
+        homeTeamGoalie={homeTeamGoalie}
+        awayTeamGoalie={awayTeamGoalie}
+      />
+    </SwiperSlide>
+  ]
+
   return (
     <Col xs={12} className='match-detail-card'>
       <Container>
@@ -76,18 +100,28 @@ const LoadedMatchDetailDashboard = ({ match }) => {
           addDefaultSrc={addDefaultSrc}
           colors={colors}
         />
-        {leaders.map(leader =>
-          <LeaderCard
-            key={leader.id}
-            leaderCategory={leader.category}
-            leaderList={leader[leader.category]}
-            homeTeamClubId={homeTeamClubId}
-          />
-        )}
-        <GoalieLeaderCard 
-          homeTeamGoalie={homeTeamGoalie}
-          awayTeamGoalie={awayTeamGoalie}
-        />
+        <HorizontalDivider width='11'/>
+        
+          <Swiper
+            navigation={false}
+            modules={[Autoplay, Pagination ]}
+            pagination={{
+              el: '.my-custom-pagination-div',
+              clickable: true
+            }}
+            spaceBetween={50}
+            slidesPerView={1}
+            loop={true}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
+            {swiperItems}
+          </Swiper>
+          <Row className='mt-4 mb-4'>
+            <div className='my-custom-pagination-div d-flex justify-content-center' />
+          </Row>
       </Container>
     </Col>
   )

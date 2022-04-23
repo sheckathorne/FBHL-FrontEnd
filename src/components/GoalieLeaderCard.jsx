@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
-import HorizontalDivider from './HorizontalDivider'
 import GoalieDetailStatRow from './GoalieDetailStatRow'
 
 const GoalieLeaderCard = ({ homeTeamGoalie, awayTeamGoalie }) => {
@@ -15,7 +14,6 @@ const GoalieLeaderCard = ({ homeTeamGoalie, awayTeamGoalie }) => {
   
   return (
     <>
-      <HorizontalDivider width='11'/>
       <Row className='match-detail-text'><Col><h5 className={lightTheme ? '' : 'dark-theme-text'}>Goalies</h5></Col></Row>
       <Row className='match-detail-text'>
         <Col xs={3} className='my-auto text-start'>

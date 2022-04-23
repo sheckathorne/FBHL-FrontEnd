@@ -11,19 +11,15 @@ import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, matchTypeFilter, handleMatchTypeChange }) => {
+const CalendarContentLayout = ({ queriedMatchId, onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, matchTypeFilter, handleMatchTypeChange }) => {
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
-  
   const lightTheme = useContext(ThemeContext).value === 'light'
   const isMobile = useContext(MobileContext)
-
   const queriedMatch = filteredMatchCards.filter(match => match.matchId).find(match => match.matchId.toString() === queriedMatchId)
-
   const cardDashboardColSize = queriedMatch ? 4 : 8
-
   const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null
-
-  const calendarDate = selectedDate === 'Invalid Date' ? dayjs() : dayjs.unix(selectedDate).toDate()
+  const selectedDate = useSelector(state => state.calendarSelectedDate)
+  const calendarDate = selectedDate === 'Invalid Date' ? dayjs().toDate() : dayjs.unix(selectedDate).toDate()
 
   const matchDetails = queriedMatchId ? (
     <Col lg={8} className='mt-2'>
@@ -60,7 +56,7 @@ const CalendarContentLayout = ({ queriedMatchId, selectedDate, onChange, tileDis
     </Col>
   )
 
-  return (
+  return (    
     <Row>
       {calendar}
       {matchCardDashboard}

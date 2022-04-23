@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import data from '../helpers/data'
 import matchDetails from '../helpers/matchDetails'
 import LeaderCard from './LeaderCard'
+import GoalieLeaderCard from './GoalieLeaderCard'
 import colorCompare from '../helpers/colorCompare'
 import api from '../services/api'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -55,6 +56,9 @@ const LoadedMatchDetailDashboard = ({ match }) => {
   const playerArray = matchDetails.generatePlayerArray(homeTeamClubId, match)
   const leaders = matchDetails.generateLeaders(playerArray, data.leadersSpec, homeTeamClubId).filter( x => x[`${x.category}`].reduce((a,b) => a + b.value, 0) !== 0 )
 
+  const homeTeamGoalie = matchDetails.generateGoalieData(match, homeTeamClubId)
+  const awayTeamGoalie = matchDetails.generateGoalieData(match, awayTeamClubId)
+
   const homeTeamColors = [homeTeam.primaryColor, homeTeam.secondaryColor]
   const awayTeamColors = [awayTeam.primaryColor, awayTeam.secondaryColor]
   const colors = colorCompare.selectTeamColors(homeTeamColors,awayTeamColors)
@@ -80,6 +84,10 @@ const LoadedMatchDetailDashboard = ({ match }) => {
             homeTeamClubId={homeTeamClubId}
           />
         )}
+        <GoalieLeaderCard 
+          homeTeamGoalie={homeTeamGoalie}
+          awayTeamGoalie={awayTeamGoalie}
+        />
       </Container>
     </Col>
   )

@@ -49,7 +49,6 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
         return (
           <Flipped key={player.playerId} flipId={player.playerId}>
             <PlayerCard
-              key={player.playerId}
               name={player.playerName}
               teamId={player.teamId}
               stats={stats}

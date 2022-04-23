@@ -1,15 +1,21 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import CalendarContentLayout from './CalendarContentLayout'
 import dayjs from 'dayjs'
 import 'react-calendar/dist/Calendar.css'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setMatchActivePage } from '../reducers/paginationReducer'
+import { setSelectedDate } from '../reducers/calendarReducer'
+import { setTimestampRange } from '../reducers/calenderRangeReducer'
 
 const CalendarDashboard = () => {
+  const dispatch = useDispatch()
   const contextObj = useOutletContext()
+  const matchTypeFilter = contextObj.matchTypeFilter
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const schedule = useSelector(state => state.schedule).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const matchSkeletonWithDate = useSelector(state => state.matchSkeletons)
+  const matchSkeletons = useSelector(state => state.matchSkeletons)
+  const selectedDate = useSelector(state => state.calendarSelectedDate)
   const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
     { 
       matchDate: match.matchDate,
@@ -26,7 +32,36 @@ const CalendarDashboard = () => {
     }
   ))
 
-  const matchesWithForfeits = matchSkeletonWithDate.concat(forfeitedMatches)
+  const matchesWithForfeits = [...matchSkeletons, ...forfeitedMatches]
+  const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...matchesWithForfeits.map(o => o.timestamp), 0)).startOf('day')).unix()
+
+  useEffect(() => {
+    dispatch(setMatchActivePage(1))
+  },[dispatch])
+
+  useEffect(() => {
+    dispatch(setSelectedDate(lastMatchTimestampForTeams))
+  },[dispatch, lastMatchTimestampForTeams])
+
+  // sets calendar to last date a given team (or all teams if none selected) played a game
+  useEffect(() => {
+    if ( matchTypeFilter === 'all' || matchTypeFilter === 'played' ) {
+      dispatch(setSelectedDate(lastMatchTimestampForTeams))
+    } else {
+      const scheduleFromTodayOnward = schedule.filter(match => dayjs.unix(dayjs(match.matchDate).unix()).startOf('day').toDate() >= dayjs().startOf('day').toDate())
+      const minScheduledTimeStamp = scheduleFromTodayOnward.length === 0 ?
+        dayjs().startOf('day').unix() :
+        Math.min(...schedule.filter(match => dayjs.unix(dayjs(match.matchDate).unix()).startOf('day').toDate() >= dayjs().startOf('day').toDate()).map(match => ({ ...match, timestamp: dayjs(match.matchDate).unix() })).map(o => o.timestamp))
+      dispatch(setSelectedDate(dayjs(dayjs.unix(minScheduledTimeStamp).startOf('day')).unix()))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[matchTypeFilter, dispatch])
+
+  // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
+  useEffect(() => {
+    dispatch(setTimestampRange({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() }))
+  },[dispatch, selectedDate])
+
   const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
 
   const scheduleWithoutPlayedMatches = schedule.filter(match => {
@@ -36,10 +71,10 @@ const CalendarDashboard = () => {
 
   const filteredMatchCards =
     contextObj.matchTypeFilter === 'all' ?
-    matchesWithForfeits.map(match => ({ matchWasPlayed: true, ...match })).concat(scheduleWithoutPlayedMatches.map(match => ({ matchWasPlayed: false, matchDateString: match.matchDate, ...match }))) :
+    matchesWithForfeits.map(match => ({ ...match, matchWasPlayed: true })).concat(scheduleWithoutPlayedMatches.map(match => ({ ...match, matchWasPlayed: false, matchDateString: match.matchDate }))) :
     contextObj.matchTypeFilter === 'played' ?
-    matchesWithForfeits.map(match => ({ matchWasPlayed: true, ...match })) :
-      scheduleWithoutPlayedMatches.map(match => ({ matchDateString: match.matchDate, matchWasPlayed: false, ...match }))
+    matchesWithForfeits.map(match => ({ ...match, matchWasPlayed: true })) :
+      scheduleWithoutPlayedMatches.map(match => ({ ...match, matchDateString: match.matchDate, matchWasPlayed: false }))
   
 
   const user = useSelector(state => state.user.user)
@@ -57,7 +92,6 @@ const CalendarDashboard = () => {
         rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
         matchTypeFilter={contextObj.matchTypeFilter}
         handleMatchTypeChange={contextObj.handleMatchTypeChange}
-        selectedDate={contextObj.selectedDate}
         queriedMatchId={contextObj.queriedMatchId}
       />
     </>

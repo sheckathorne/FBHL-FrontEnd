@@ -48,10 +48,22 @@ const generateLeaders = (playerArray, leaderSpec, homeTeamClubId) => {
   return result
 }
 
+const generateGoalieData = (match, clubId) => {
+  const goalie = match.players.find(player => player.clubId === clubId).members.find(member => member.data.position === 'goalie').data
+  return {
+    playerName: goalie.playername,
+    goalsAllowed: goalie.glga,
+    shotsFaced: goalie.glshots,
+    saves: goalie.glsaves,
+    toi: goalie.toi,
+  }
+}
+
 const obj = {
   generatePlayerArray,
   generateLeaders,
   generateMatchData,
+  generateGoalieData
 }
 
 export default obj

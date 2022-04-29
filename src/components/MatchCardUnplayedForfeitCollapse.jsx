@@ -1,7 +1,7 @@
 import { Collapse, Container, Row, Col, Form, Button } from 'react-bootstrap'
 import ForfeitTeam from './ForfeitTeam'
 
-const MatchCardUnplayedForfeitCollapse = ({ overtimeLoss, setOvertimeLoss, forfeitIsOpen, setFinishedCollapsing, teamsArr, themeClass, addDefaultSrc, winningTeam, setWinningTeam, handleCancelForfeit, handleForfeitSubmit }) => (
+const MatchCardUnplayedForfeitCollapse = ({ overtimeLoss, setOvertimeLoss, forfeitIsOpen, setFinishedCollapsing, ineligiblePlayer, setIneligiblePlayer, teamsArr, themeClass, addDefaultSrc, winningTeam, setWinningTeam, handleCancelForfeit, handleForfeitSubmit }) => (
   <Collapse in={forfeitIsOpen} onExited={() => setFinishedCollapsing(true)}>
     <div>
       <Container>
@@ -32,6 +32,21 @@ const MatchCardUnplayedForfeitCollapse = ({ overtimeLoss, setOvertimeLoss, forfe
             </Col>
             <Col>
               <Form.Label onClick={() => setOvertimeLoss(!overtimeLoss)}>Count forfeit as an overtime loss</Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={1}>
+              <Form.Check 
+                id='ineligibleCheck'
+                type="checkBox"
+                label='' 
+                name="ineligiblePlayer"
+                onClick={() => setIneligiblePlayer(!ineligiblePlayer)}
+                onChange={() => false}
+              />
+            </Col>
+            <Col>
+              <Form.Label onClick={() => setOvertimeLoss(!overtimeLoss)}>Forfeit because of ineligible player</Form.Label>
             </Col>
           </Row>
           <Container>

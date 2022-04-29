@@ -24,6 +24,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
   const [ selectedTime, setSelectedTime ] = useState(dayjs(`1/1/2020 ${match.timeString}`, 'M/D/YYYY h:mm A', 'en'))
   const [ winningTeam, setWinningTeam ] = useState('')
   const [ overtimeLoss, setOvertimeLoss ] = useState(false)
+  const [ ineligiblePlayer, setIneligiblePlayer ] = useState(false)  
 
   const user = useSelector(state => state.user.user)
   const dispatch = useDispatch()
@@ -82,7 +83,8 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
       matchDate: match.matchDate,
       winningClub: winnerId,
       losingClub: teamsArr.find(team => team.id !== winnerId).id,
-      overtimeLoss
+      overtimeLoss,
+      ineligiblePlayer
     }
 
     dispatch(createForfeit(newForfeit))
@@ -158,6 +160,8 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
           setOvertimeLoss={setOvertimeLoss}
           forfeitIsOpen={forfeitIsOpen}
           setFinishedCollapsing={setFinishedCollapsing}
+          ineligiblePlayer={ineligiblePlayer}
+          setIneligiblePlayer={setIneligiblePlayer}
           teamsArr={teamsArr}
           themeClass={themeClass}
           addDefaultSrc={addDefaultSrc}

@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
-import { Row, Col, Container } from 'react-bootstrap'
+import React, { useContext, useState } from 'react'
+import { Row, Col, Container, Tabs, Tab } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
-import LeagueStandings from './LeagueStandings'
+import ConferenceStandings from './ConferenceStandings'
 import PlayerStandings from './PlayerStandings'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import RecentResultsCarousel from './RecentResultsCarousel'
@@ -11,8 +11,11 @@ import { useNavigate } from 'react-router-dom'
 import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer'
 import { setSortField } from '../reducers/playerSortReducer'
 import data from '../helpers/data'
+import MobileContext from './MobileContext'
 
 const LeagueDashboard = ({ width }) => {
+  const [ tabPage, setTabPaqe ] = useState('standings')
+
   const navigate = useNavigate('')
   const dispatch = useDispatch()
 
@@ -21,6 +24,8 @@ const LeagueDashboard = ({ width }) => {
   const matches = useSelector(state => state.matchSkeletons)
   const recentMatchDates = matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
   const leagueName = useContext(LeagueContext)
+  const isMobile = useContext(MobileContext)
+  const themeClass = lightTheme ? '' : 'dark-theme-text'
 
   const handleTopPlayerClick = (sortField, url, playerType) => () => {
     const newSortField = playerType === 'skaters' ? 
@@ -58,10 +63,28 @@ const LeagueDashboard = ({ width }) => {
         </Row>
         <Row>
           <Col className='mt-2' xs={12} lg={7}>
-            <LeagueStandings
-              lightTheme={lightTheme}
-              handleTableClick={handleTableClick}
-            />
+            <Row className='table-title d-flex align-items-center expand-paranthetical'>
+              <Col className='mt-1'>
+                <h5 className={themeClass + ' tiny-caps section-title'}>League</h5>
+              </Col>
+            </Row>
+            <Tabs
+              id="controlled-tab-example"
+              activeKey={tabPage}
+              onSelect={(k) => setTabPaqe(k)}
+              className="mb-3"
+            >
+              <Tab eventKey="standings" title="Standings" tabClassName={themeClass}>
+                <ConferenceStandings
+                  handleTableClick={handleTableClick}
+                  lightTheme={lightTheme}
+                  isMobile={isMobile}
+                />
+              </Tab>
+              <Tab eventKey="playoffs" title="Playoff Race" tabClassName={themeClass}>
+                <></>
+              </Tab>
+            </Tabs>
           </Col>
           <Col className='mt-2' xs={12} lg={5}>
             <PlayerStandings

@@ -546,3 +546,7 @@ thead > tr {
 .vertically-centered-text {
   margin-bottom: 0px;
 }
+
+.nav-link.dark-theme-text:not(.active) {
+  color: white !important;
+}

@@ -6,7 +6,7 @@ import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
 import { intializePlayers, sortSkaters, sortGoaltenders } from './reducers/playersReducer'
 import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
-import { setResultsOpen, setLeagueOpen, setPlayerOpen } from './reducers/viewToggleReducer'
+import { setResultsOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
 import AppDashboard from './components/AppDashboard'
@@ -124,8 +124,6 @@ const App = () => {
       setWidth(window.innerWidth)
       if ( window.innerWidth >= 768 ) {
         dispatch(setResultsOpen(true))
-        dispatch(setLeagueOpen(true))
-        dispatch(setPlayerOpen(true))
       }
     }
     

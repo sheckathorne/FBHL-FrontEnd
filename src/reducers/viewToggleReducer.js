@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   resultsOpen: true,
-  leagueOpen: true,
   playerOpen: true,
   createMatchIsOpen: false,
   loginIsOpen: false,
@@ -15,12 +14,6 @@ const viewToggleSlice = createSlice({
     setResultsOpen(state, action) {
       return { ...state, resultsOpen: action.payload }
     },
-    setLeagueOpen(state, action) {    
-      return { ...state, leagueOpen: action.payload }
-    },
-    setPlayerOpen(state, action) {
-      return { ...state, playerOpen: action.payload }
-    },
     setCreateMatchIsOpen(state, action) {
       return { ...state, createMatchIsOpen: action.payload }
     },
@@ -30,6 +23,6 @@ const viewToggleSlice = createSlice({
   },
 })
 
-export const { setResultsOpen, setLeagueOpen, setPlayerOpen, setCreateMatchIsOpen, setLoginIsOpen } = viewToggleSlice.actions
+export const { setResultsOpen, setCreateMatchIsOpen, setLoginIsOpen } = viewToggleSlice.actions
 
 export default viewToggleSlice.reducer

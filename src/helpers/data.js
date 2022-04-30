@@ -116,7 +116,7 @@ const topPlayers = [
 const playerRankings = [
   {
     id: 1,
-    playerTypeDescription: 'Skaters',
+    playerTypeDescription: 'Top Skaters',
     playerType: 'skaters',
     playerTypeStats: [{
       statId: 1,
@@ -136,7 +136,7 @@ const playerRankings = [
     }]
   },  {
     id: 2,
-    playerTypeDescription: 'Goalies',
+    playerTypeDescription: 'Top Goalies',
     playerType: 'goaltenders',
     playerTypeStats: [{
       statId: 1,

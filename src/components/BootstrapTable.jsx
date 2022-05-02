@@ -9,7 +9,7 @@ const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, b
   const summaryRow = summaryObj ?
   <SummaryRow summaryObj={summaryObj} columns={columns} sortField={sortField} rankedPlayers={rankedPlayers} />
   : null
-  
+
   return (
     <>
       <Row className='mt-2'>
@@ -23,7 +23,7 @@ const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, b
             size={size}
             variant={variant}
             className={className}
-          >
+          > 
             <TableHead columns={columns} />
             <tbody>
               <TableRows

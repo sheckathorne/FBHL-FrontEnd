@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import data from '../helpers/data.js'
 import functions from '../helpers/tableGenerator'
 import { Row, Col, Tabs, Tab } from 'react-bootstrap'

@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react'
-import Pagination from '@mui/material/Pagination'
-import PaginationItem from '@mui/material/PaginationItem'
-import Stack from '@mui/material/Stack'
-import BootstrapTable from './BootstrapTable'
-import data from '../helpers/data.js'
-import { setConferencePage, setDivisionPage } from '../reducers/paginationReducer'
-import functions from '../helpers/tableGenerator.js'
-import { makeStyles } from '@mui/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Container } from 'react-bootstrap'
-import { setTeamRankingsAndForfeits } from '../reducers/teamRankingsAndForfeitsReducer'
 import CircularProgress from '@mui/material/CircularProgress'
 import chelService from '../services/api'
+import { setPlayoffRace } from '../reducers/playoffRaceReducer'
+import data from '../helpers/data.js'
+import functions from '../helpers/tableGenerator.js'
+import BootstrapTable from './BootstrapTable'
 
-const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => { 
+const PlayoffStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   const [ loaded, setLoaded ] = useState({ invalidMatches: false, forfeits: false })
   const [ invalidMatchDetails, setInvalidMatchDetails ] = useState([])
 
@@ -24,6 +19,14 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    const sortPlayoffTeams = (teams) => teams.sort((a,b) => {
+      const pts = (((parseInt(b.wins * 2)) + parseInt(b.overtimeLosses)) - ((parseInt(a.wins * 2)) + parseInt(a.overtimeLosses)))
+      const regulationWins = parseInt(b.regulationWins) - parseInt(a.regulationWins)
+      const wins = parseInt(b.wins) - parseInt(a.wins)
+      
+      return pts || regulationWins || wins
+    })
+
     const countForfeits = (forfeitType) => {
       const forfeitsToSum = forfeitType === 'overtimeLossClub' ?
         forfeits.filter(forfeit => forfeit.overtimeLoss) :
@@ -119,12 +122,20 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
 
     const sortedNewTeamData = sortTeamData(teamDataWithoutInvalids)
 
-    const rankedMetroTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Metropolitan'))
-    const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
-    const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
-    const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
+    const rankedEastTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'East'))
+    const rankedWestTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'West'))
+    
+    const qualifiedEastTeams = rankedEastTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedWestTeams = rankedWestTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
 
-    dispatch(setTeamRankingsAndForfeits([...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams]))
+    const conferenceQualifiedTeams = sortPlayoffTeams([...qualifiedEastTeams, ...qualifiedWestTeams])
+    const remainingTeams = sortPlayoffTeams([ ...rankedEastTeams, ...rankedWestTeams ])
+    const wildcardQualifiedTeams = sortPlayoffTeams(remainingTeams).splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
+    
+    const qualifiedTeams = [ ...conferenceQualifiedTeams, ...wildcardQualifiedTeams ]
+    const unqualifiedTeams = remainingTeams.map(team => ({ ...team, conferenceLeader: false, wildcard: false }))
+
+    dispatch(setPlayoffRace([...qualifiedTeams, ...unqualifiedTeams]))
     setLoaded(prevState => ({ ...prevState, forfeits: true }))
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,127 +151,7 @@ const ConferenceStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  return Object.values(loaded).every(item => item === true) ? <LoadedTable conference={'West'} handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
-}
-
-const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {
-  const teamRankingsAndForfeits = useSelector(state => state.teamRankingsAndForfeits)
-  const divisionTable = data.divisions
-  const conferencePage = useSelector(state => state.pagination.conferencePage)
-  const divisionPage = useSelector(state => state.pagination.divisionPage)
-
-  const dispatch = useDispatch()
-
-  const paginationSize = isMobile ? 'small' : 'medium'
-  const themeClass = lightTheme ? '' : 'dark-theme-text'
-
-  const handleConferencePaginationChange = (e,n) => {
-    dispatch(setConferencePage(n))
-    dispatch(setDivisionPage(1))
-  }
-
-  const handleDivisionPaginationChange = (e,n) => {
-    dispatch(setDivisionPage(n))
-  }
-  
-  const useStyles = makeStyles(() => {
-    if ( !lightTheme ) {
-      return (
-        {
-          ul: {
-            '& .MuiPaginationItem-root': {
-              color: '#fff'
-            }
-          }
-        }
-      )
-    }
-  })
-
-  const classes = useStyles()
-
-  const selectedConference = divisionTable.find(conference => conference.conferenceId === conferencePage)
-  const selectedDivision = selectedConference.divisions.find(division => division.divisionId === divisionPage)
-  const leagueStandingData = functions.generateLeagueStandingData(teamRankingsAndForfeits.filter(team => team.conference === selectedConference.conferenceName && team.division === selectedDivision.divisionName), lightTheme, false)
-
-  const conferencePagination = 
-    <Col className='mt-1'>
-      <Stack spacing={2}>
-        <Pagination
-          classes={{ ul: classes.ul }}
-          count={divisionTable.length}
-          color='primary'
-          size={paginationSize}
-          variant='outlined'
-          onChange={handleConferencePaginationChange}
-          page={conferencePage}
-          hidePrevButton
-          hideNextButton
-          renderItem={(item) => {
-            if ( item.page === 1 ) {
-              item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 1).conferenceDisplayName }
-            } else if ( item.page === 2 ) {
-              item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 2).conferenceDisplayName }
-            }
-
-            return (
-              <PaginationItem
-                {...item}
-              />
-            )}}
-        />
-      </Stack>
-    </Col>
-  
-  const divisionPagination =
-    <Col className='d-flex justify-content-end'>
-      <Stack spacing={2}>
-        <Pagination
-          classes={{ ul: classes.ul }}
-          count={selectedConference.divisions.length}
-          color='primary'
-          size={paginationSize}
-          variant='outlined'
-          onChange={handleDivisionPaginationChange}
-          page={divisionPage}
-          hidePrevButton
-          hideNextButton
-          renderItem={(item) => {
-            if ( item.page === 1 ) {
-              item = { ...item, page: selectedConference.divisions.find(division => division.divisionId === 1).divisionDisplayName }
-            } else if ( item.page === 2 ) {
-              item = { ...item, page: selectedConference.divisions.find(division => division.divisionId === 2).divisionDisplayName }
-            }
-
-            return (
-              <PaginationItem
-                {...item}
-              />
-            )}}
-        />
-      </Stack>
-    </Col>
-
-  return (
-    <>
-      <Row>
-        {conferencePagination}
-        {divisionPagination}
-      </Row>
-      <BootstrapTable
-        columns={functions.generateColumns(data.leagueStandingsColumns, themeClass)}
-        data={leagueStandingData}
-        hover={true}
-        size={isMobile ? 'sm' : ''}
-        striped={false}
-        variant={lightTheme ? 'light' : 'dark'}
-        themeClass={themeClass}
-        responsive={true}
-        handleTableClick={handleTableClick}
-        type='league'
-      />
-    </>
-  )
+  return Object.values(loaded).every(item => item === true) ? <LoadedTable handleTableClick={handleTableClick} lightTheme={lightTheme} isMobile={isMobile} /> : <Spinner />
 }
 
 const Spinner = () => {
@@ -275,4 +166,49 @@ const Spinner = () => {
   )
 }
 
-export default ConferenceStandings
+const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {
+  const playoffRace = useSelector(state => state.playoffRace)
+  const themeClass = lightTheme ? '' : 'dark-theme-text'
+  const playoffStandingData = functions.generateLeagueStandingData(playoffRace, lightTheme, true)
+
+  return (
+    <>
+    <Container>
+      <Row className='playoff-table-header table-body-row'>
+        <Col xs={1} className='my-auto'>
+          <span className={`${themeClass} align-middle`}>
+            Key:
+          </span>
+        </Col>
+        <Col xs={{ span: 4, offset: 1 }} className='playoff-conference-leader playoff-table-key table-body-row my-auto'>
+          <span className={`${themeClass} align-middle`}>
+            Conference Qualifier
+          </span>
+        </Col>
+        <Col xs={{ span: 4, offset: 2 }} className='playoff-wildcard-leader playoff-table-key table-body-row my-auto'>
+          <span className={`${themeClass} align-middle`}>
+            Wildcard Qualifier
+          </span>
+        </Col>
+      </Row>
+    </Container>
+      <div className='table-wrapper'>
+        <BootstrapTable
+          columns={functions.generateColumns(data.leagueStandingsColumns, themeClass)}
+          data={playoffStandingData}
+          hover={true}
+          size={isMobile ? 'sm' : ''}
+          striped={false}
+          variant={lightTheme ? 'light' : 'dark'}
+          themeClass={themeClass}
+          responsive={true}
+          handleTableClick={handleTableClick}
+          type='league'
+          className='table-fixed-header'
+        />
+      </div>
+    </>
+  )
+}
+
+export default PlayoffStandings

@@ -1,5 +1,3 @@
-
-
 .App {
   text-align: center;
 }
@@ -549,4 +547,32 @@ thead > tr {
 
 .nav-link.dark-theme-text:not(.active) {
   color: white !important;
+}
+
+.playoff-conference-leader {
+  background-color: #00b00f4D !important
+}
+
+.playoff-wildcard-leader {
+  background-color: #00b00f26 !important
+}
+
+.playoff-cutoff-row {
+  border-bottom: 2px solid red !important;
+}
+
+.playoff-table-header {
+  min-height: 32px;
+  max-height: 32px;
+}
+
+.table-wrapper .table-responsive {
+  height: 434px;  
+  overflow: scroll;
+}
+
+.table-fixed-header thead tr:nth-child(1) th{
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }

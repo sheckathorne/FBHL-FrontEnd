@@ -3,6 +3,7 @@ import { Row, Col, Container, Tabs, Tab } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
 import ConferenceStandings from './ConferenceStandings'
 import PlayerStandings from './PlayerStandings'
+import PlayoffStandings from './PlayoffStandings'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import RecentResultsCarousel from './RecentResultsCarousel'
 import LeagueContext from './LeagueContext'
@@ -82,7 +83,11 @@ const LeagueDashboard = ({ width }) => {
                 />
               </Tab>
               <Tab eventKey="playoffs" title="Playoff Race" tabClassName={themeClass}>
-                <></>
+                <PlayoffStandings
+                  handleTableClick={handleTableClick}
+                  lightTheme={lightTheme}
+                  isMobile={isMobile}
+                />
               </Tab>
             </Tabs>
           </Col>

@@ -1,17 +1,34 @@
 import Image from 'react-bootstrap/Image'
 import data from './data.js'
 
-const generateLeagueStandingData = (teams, themeClass) => teams.map(team => {
+const generateLeagueStandingData = (teams, themeClass, playoffs) => teams.map((team, i) => {
   const streakClass = team.currentStreak ? team.currentStreak.includes('W') ? 'winner-streak' : 'loser-streak' : 'no-streak'
-  const dataRowClass = 'table-body-row'.concat(' ',themeClass)
+  let teamRank = team.rank
+  let dataRowClass = 'table-body-row'.concat(' ',themeClass)
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
+
+  if ( playoffs ) {
+    teamRank = i + 1
+
+    if ( team.conferenceLeader ) {
+      dataRowClass = 'table-body-row'.concat(' playoff-conference-leader')
+    } else if ( team.wildcard ) {
+      dataRowClass = 'table-body-row'.concat(' playoff-wildcard-leader')
+    } else {
+      dataRowClass = 'table-body-row'.concat(' ',themeClass)
+    }
+
+    if ( teamRank === 8 ) {
+      dataRowClass = dataRowClass.concat(' playoff-cutoff-row')
+    }
+  }
 
   return ({
     rowUrl: `calendar/${team.teamId}`,
     conference: team.conference,
     columns: {
       rank: {
-        value: team.rank,
+        value: teamRank,
         class: dataRowClass,
         position: 'center',
       },

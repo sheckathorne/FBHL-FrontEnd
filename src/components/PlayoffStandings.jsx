@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import Pagination from '@mui/material/Pagination'
+import PaginationItem from '@mui/material/PaginationItem'
+import Stack from '@mui/material/Stack'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Container } from 'react-bootstrap'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -7,6 +10,8 @@ import { setPlayoffRace } from '../reducers/playoffRaceReducer'
 import data from '../helpers/data.js'
 import functions from '../helpers/tableGenerator.js'
 import BootstrapTable from './BootstrapTable'
+import { setConferencePage } from '../reducers/paginationReducer'
+import { makeStyles } from '@mui/styles'
 
 const PlayoffStandings = ({ handleTableClick, lightTheme, isMobile }) => {
   const [ loaded, setLoaded ] = useState({ invalidMatches: false, forfeits: false })
@@ -122,18 +127,23 @@ const PlayoffStandings = ({ handleTableClick, lightTheme, isMobile }) => {
 
     const sortedNewTeamData = sortTeamData(teamDataWithoutInvalids)
 
-    const rankedEastTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'East'))
-    const rankedWestTeams = rankTheTeams(sortedNewTeamData.filter(team => team.conference === 'West'))
+    const rankedMetroTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Metropolitan'))
+    const rankedAtlanticTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Atlantic'))
+    const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
+    const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
     
-    const qualifiedEastTeams = rankedEastTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
-    const qualifiedWestTeams = rankedWestTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedMetroTeams = rankedMetroTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedAtlanticTeams = rankedAtlanticTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedPacificTeams = rankedPacificTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedCentralTeams = rankedCentralTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
 
-    const conferenceQualifiedTeams = sortPlayoffTeams([...qualifiedEastTeams, ...qualifiedWestTeams])
-    const remainingTeams = sortPlayoffTeams([ ...rankedEastTeams, ...rankedWestTeams ])
-    const wildcardQualifiedTeams = sortPlayoffTeams(remainingTeams).splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
+    const divisionQualifiedTeams = sortPlayoffTeams([ ...qualifiedMetroTeams, ...qualifiedAtlanticTeams, ...qualifiedPacificTeams, ...qualifiedCentralTeams ])
+    const remainingTeams = sortPlayoffTeams([ ...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams ])
+    const wildcardEastQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'East').splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
+    const wildcardWestQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'West').splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
     
-    const qualifiedTeams = [ ...conferenceQualifiedTeams, ...wildcardQualifiedTeams ]
-    const unqualifiedTeams = remainingTeams.map(team => ({ ...team, conferenceLeader: false, wildcard: false }))
+    const qualifiedTeams = [ ...divisionQualifiedTeams, ...wildcardEastQualifiedTeams, ...wildcardWestQualifiedTeams ]
+    const unqualifiedTeams = remainingTeams.filter(team => !qualifiedTeams.map(qt => qt.teamId).includes(team.teamId)).map(team => ({ ...team, conferenceLeader: false, wildcard: false }))
 
     dispatch(setPlayoffRace([...qualifiedTeams, ...unqualifiedTeams]))
     setLoaded(prevState => ({ ...prevState, forfeits: true }))
@@ -168,30 +178,68 @@ const Spinner = () => {
 
 const LoadedTable = ({ handleTableClick, lightTheme, isMobile }) => {
   const playoffRace = useSelector(state => state.playoffRace)
+  const divisionTable = data.divisions
+  const conferencePage = useSelector(state => state.pagination.conferencePage)
+  const divisionName = divisionTable.find(conference => conference.conferenceId === conferencePage).conferenceDisplayName
+  const playoffStandingData = functions.generateLeagueStandingData(playoffRace.filter(team => team.conference === divisionName), lightTheme, true)
+
+  const dispatch = useDispatch()
+
+  const paginationSize = isMobile ? 'small' : 'medium'
   const themeClass = lightTheme ? '' : 'dark-theme-text'
-  const playoffStandingData = functions.generateLeagueStandingData(playoffRace, lightTheme, true)
+
+  const handleConferencePaginationChange = (e,n) => {
+    dispatch(setConferencePage(n))
+  }
+  
+  const useStyles = makeStyles(() => {
+    if ( !lightTheme ) {
+      return (
+        {
+          ul: {
+            '& .MuiPaginationItem-root': {
+              color: '#fff'
+            }
+          }
+        }
+      )
+    }
+  })
+
+  const classes = useStyles()
+
+  const conferencePagination = 
+  <Col className='mt-1'>
+    <Stack spacing={2}>
+      <Pagination
+        classes={{ ul: classes.ul }}
+        count={divisionTable.length}
+        color='primary'
+        size={paginationSize}
+        variant='outlined'
+        onChange={handleConferencePaginationChange}
+        page={conferencePage}
+        hidePrevButton
+        hideNextButton
+        renderItem={(item) => {
+          if ( item.page === 1 ) {
+            item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 1).conferenceDisplayName }
+          } else if ( item.page === 2 ) {
+            item = { ...item, page: divisionTable.find(conference => conference.conferenceId === 2).conferenceDisplayName }
+          }
+
+          return (
+            <PaginationItem
+              {...item}
+            />
+          )}}
+      />
+    </Stack>
+  </Col>
 
   return (
     <>
-    <Container>
-      <Row className='playoff-table-header table-body-row'>
-        <Col xs={1} className='my-auto'>
-          <span className={`${themeClass} align-middle`}>
-            Key:
-          </span>
-        </Col>
-        <Col xs={{ span: 4, offset: 1 }} className='playoff-conference-leader playoff-table-key table-body-row my-auto'>
-          <span className={`${themeClass} align-middle`}>
-            Conference Qualifier
-          </span>
-        </Col>
-        <Col xs={{ span: 4, offset: 2 }} className='playoff-wildcard-leader playoff-table-key table-body-row my-auto'>
-          <span className={`${themeClass} align-middle`}>
-            Wildcard Qualifier
-          </span>
-        </Col>
-      </Row>
-    </Container>
+    {conferencePagination}
       <div className='table-wrapper'>
         <BootstrapTable
           columns={functions.generateColumns(data.leagueStandingsColumns, themeClass)}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useMemo } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import dayjs from 'dayjs'
@@ -18,7 +18,7 @@ const CalendarLayout = () => {
 
   const useQuery = () => {
     const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
+    return useMemo(() => new URLSearchParams(search), [search])
   }
 
   const query = useQuery()

@@ -1,4 +1,4 @@
-import React from 'react'
+import { useMemo } from 'react'
 import { Flipper, Flipped } from 'react-flip-toolkit'
 import PlayerCard from './PlayerCard'
 import { useLocation } from 'react-router-dom'
@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playerCardWidth }) => {
   const useQuery = () => {
     const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
+    return useMemo(() => new URLSearchParams(search), [search])
   }
 
   const lastPlayerIndex = players.length

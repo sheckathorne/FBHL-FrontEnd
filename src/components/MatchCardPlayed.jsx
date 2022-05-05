@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useMemo } from 'react'
 import MatchCardTeamRow from './MatchCardTeamRow'
 import { Container, Row, Col, Button, DropdownButton, Dropdown } from 'react-bootstrap'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -21,7 +21,7 @@ const MatchCardPlayed = ({ match, addDefaultSrc, matchCardWidth }) => {
   
   const useQuery = () => {
     const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
+    return useMemo(() => new URLSearchParams(search), [search])
   }
 
   const navigate = useNavigate('')

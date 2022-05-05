@@ -61,7 +61,7 @@ const teams = [
   ,{ clubName: 'FB Blues', clubId: 475, name: 'St. Louis Blues', abbreviation: 'STL', conference: 'West', division: 'Central', platform: 'PS4', primaryColor: '(0, 47, 135)', secondaryColor: '(252, 181, 20)', active: true }
   ,{ clubName: 'FBHL Tampa Bay Lightning', clubId: 3934, name: 'Tampa Bay Lightning', abbreviation: 'TB', conference: 'East', division: 'Atlantic', platform: 'PS4', primaryColor: '(0, 40, 104)', secondaryColor: '(255, 255, 255)', active: true }
   ,{ clubName: 'FBHL Toronto', clubId: 6343, name: 'Toronto Mapleleafs', abbreviation: 'TOR', conference: 'East', division: 'Atlantic', platform: 'PS4', primaryColor: '(0, 32, 91)', secondaryColor: '(255, 255, 255)', active: true }
-  ,{ clubName: 'FBHL Vancouver Canucks', clubId: 314010, name: 'Vancouver Canucks', abbreviation: 'VAN', conference: 'West', division: 'Pacific', platform: 'PS4', primaryColor: '(0, 32, 91)', secondaryColor: '(10, 134, 61)', active: true }
+  ,{ clubName: 'FBHL Vancouver Canucks', clubId: 378187, name: 'Vancouver Canucks', abbreviation: 'VAN', conference: 'West', division: 'Pacific', platform: 'PS4', primaryColor: '(0, 32, 91)', secondaryColor: '(10, 134, 61)', active: true }
   ,{ clubName: 'FBHL Washington Capitals', clubId: 9583, name: 'Washington Capitals', abbreviation: 'WSH', conference: 'East', division: 'Metropolitan', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(200, 16, 46)', active: true }
   ,{ clubName: 'FBHL WINNIPEGJETS', clubId: 9148, name: 'Winnipeg Jets', abbreviation: 'WPG', conference: 'West', division: 'Central', platform: 'PS4', primaryColor: '(4, 30, 66)', secondaryColor: '(0, 76, 151)', active: true }
  ]

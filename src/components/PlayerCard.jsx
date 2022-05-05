@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import StatRow from './StatRow'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Image } from 'react-bootstrap'
@@ -16,7 +16,7 @@ const PlayerCard = ({ name, teamId, stats, playerId, marginClass, rank, playerIs
 
   const useQuery = () => {
     const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
+    return useMemo(() => new URLSearchParams(search), [search])
   }
 
   const query = useQuery()

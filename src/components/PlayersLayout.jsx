@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext, useMemo } from 'react'
 import { Outlet, useLocation, Link } from 'react-router-dom'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import SortButtonGroup from './SortButtonGroup'
@@ -26,7 +26,7 @@ const PlayersLayout = () => {
 
   const useQuery = () => {
     const { search } = useLocation()
-    return React.useMemo(() => new URLSearchParams(search), [search])
+    return useMemo(() => new URLSearchParams(search), [search])
   }
 
   const playerIsRanked = (showingSkaters, sortField) => showingSkaters ? (!(typeof(sortField.field) === 'undefined') && !sortField.alpha) : true

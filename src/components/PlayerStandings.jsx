@@ -11,6 +11,7 @@ import MobileContext from './MobileContext'
 import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayerType, setStatId } from '../reducers/paginationReducer'
+import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer.js'
 
 const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const dispatch = useDispatch()
@@ -27,9 +28,16 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const sortField = { field: selectedStat.statName, descending: true, reversed: selectedStat.statReversed }
   let table = null
 
+  const playerTypeReducer = selectedPlayerType.playerType === 'goaltenders' ? 'skaters' : 'goaltenders'
+
   const handlePlayerTypeChange = (n) => {
     dispatch(setPlayerType(n))
     dispatch(setStatId(1))
+  }
+
+  const handleTabSelect = (k, playerTypeReducer) => {
+    handlePlayerTypeChange(parseInt(k))
+    dispatch(setSkaterOrGoalie({ field: playerTypeReducer }))
   }
 
   const handleStatIdChange = (_e,n) => {
@@ -69,7 +77,9 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   const classes = useStyles()
 
   if ( players.skaters ) {
-    const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,3).reduce((y,a) => y+a, 0))/parseFloat(3)
+    const numberOfGoaltendersToAvg = 5
+    const percentageOfMostShotsFaced = .40
+    const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,numberOfGoaltendersToAvg).reduce((y,a) => y+a, 0))/parseFloat(numberOfGoaltendersToAvg)
 
     const sortPlayers = (players, sortField) => {
       if ( sortField.reversed ) {
@@ -81,7 +91,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   
     const playersCopy =  selectedPlayerType.playerType === 'skaters' ? 
       sortPlayers([...players.skaters], sortField) : 
-      sortPlayers([...players.goaltenders].filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (.65 * determineGoaltenderRankingCriteria(players.goaltenders))), sortField)
+      sortPlayers([...players.goaltenders].filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (percentageOfMostShotsFaced * determineGoaltenderRankingCriteria(players.goaltenders))), sortField)
 
     const rankedPlayers = rankThePlayers(playersCopy, sortField)
     const rankedFilteredPlayers = rankedPlayers.filter(player => player.rank <= numberOfPlayers)
@@ -160,7 +170,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
       <Tabs
           id="controlled-tab-example"
           activeKey={selectedPlayerType.id}
-          onSelect={(k) => handlePlayerTypeChange(parseInt(k))}
+          onSelect={(k) => handleTabSelect(k, playerTypeReducer)}
           className="mb-3"
         >
           <Tab eventKey={1} title="Top Skaters" tabClassName={themeClass}>

@@ -51,8 +51,9 @@ const PlayersLayout = () => {
       return players
     }
   }
-
-  const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,3).reduce((y,a) => y+a, 0))/parseFloat(3)
+  const numberOfGoaltendersToAvg = 5
+  const percentageOfMostShotsFaced = .40
+  const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,numberOfGoaltendersToAvg).reduce((y,a) => y+a, 0))/parseFloat(numberOfGoaltendersToAvg)
 
   const rankAndFilterPlayers = (playerType) => {
     const createPlayerArray = (playerType) => {
@@ -60,7 +61,7 @@ const PlayersLayout = () => {
         return { players: [...playerGroup], inellgiblePlayers: null }
       } else if ( playerType === 'goaltenders' ) {
         const goaltendersCopy = [...playerGroup]
-        const goaltendersElligibleToBeRanked = goaltendersCopy.filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (.65 * determineGoaltenderRankingCriteria(goaltendersCopy)))
+        const goaltendersElligibleToBeRanked = goaltendersCopy.filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (percentageOfMostShotsFaced * determineGoaltenderRankingCriteria(goaltendersCopy)))
 
         return {
           players: goaltendersElligibleToBeRanked,

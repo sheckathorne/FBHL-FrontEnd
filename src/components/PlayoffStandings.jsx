@@ -132,15 +132,15 @@ const PlayoffStandings = ({ handleTableClick, lightTheme, isMobile }) => {
     const rankedPacificTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Pacific'))
     const rankedCentralTeams = rankTheTeams(sortedNewTeamData.filter(team => team.division === 'Central'))
     
-    const qualifiedMetroTeams = rankedMetroTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
-    const qualifiedAtlanticTeams = rankedAtlanticTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
-    const qualifiedPacificTeams = rankedPacificTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
-    const qualifiedCentralTeams = rankedCentralTeams.splice(0,2).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedMetroTeams = rankedMetroTeams.splice(0,3).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedAtlanticTeams = rankedAtlanticTeams.splice(0,3).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedPacificTeams = rankedPacificTeams.splice(0,3).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
+    const qualifiedCentralTeams = rankedCentralTeams.splice(0,3).map(team => ({ ...team, conferenceLeader: true, wildcard: false }))
 
     const divisionQualifiedTeams = sortPlayoffTeams([ ...qualifiedMetroTeams, ...qualifiedAtlanticTeams, ...qualifiedPacificTeams, ...qualifiedCentralTeams ])
     const remainingTeams = sortPlayoffTeams([ ...rankedMetroTeams, ...rankedAtlanticTeams, ...rankedPacificTeams, ...rankedCentralTeams ])
-    const wildcardEastQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'East').splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
-    const wildcardWestQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'West').splice(0,4).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
+    const wildcardEastQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'East').splice(0,2).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
+    const wildcardWestQualifiedTeams = sortPlayoffTeams(remainingTeams).filter(team => team.conference === 'West').splice(0,2).map(team => ({ ...team, conferenceLeader: false, wildcard: true }))
     
     const qualifiedTeams = [ ...divisionQualifiedTeams, ...wildcardEastQualifiedTeams, ...wildcardWestQualifiedTeams ]
     const unqualifiedTeams = remainingTeams.filter(team => !qualifiedTeams.map(qt => qt.teamId).includes(team.teamId)).map(team => ({ ...team, conferenceLeader: false, wildcard: false }))

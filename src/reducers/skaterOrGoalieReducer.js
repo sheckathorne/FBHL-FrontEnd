@@ -6,7 +6,7 @@ const skaterOrGoalieSlice = createSlice({
   name: 'skaterOrGoalie',
   initialState,
   reducers: {
-    setSkaterOrGoalie(state, action) {
+    setSkaterOrGoalie(_state, action) {
       return action.payload
     },
   },

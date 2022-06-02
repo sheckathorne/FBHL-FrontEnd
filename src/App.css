@@ -576,3 +576,43 @@ thead > tr {
   top: 0;
   z-index: 10;
 }
+
+.box {
+  float: left;
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
+  border: 1px solid black;
+}
+
+.legend-red {
+  background-color: rgb(255, 99, 132)
+}
+
+.legend-orange {
+  background-color: rgb(255, 159, 64)
+}
+
+.legend-yellow {
+  background-color: rgb(255, 205, 86)
+}
+
+.legend-green {
+  background-color: rgb(75, 192, 192)
+}
+
+.legend-blue {
+  background-color: rgb(54, 162, 235)
+}
+
+.legend-purple {
+  background-color: rgb(153, 102, 255)
+}
+
+.legend-grey {
+  background-color: rgb(201, 203, 207)
+}
+
+.legend-black {
+  background-color: rgb(0, 0, 0)
+}

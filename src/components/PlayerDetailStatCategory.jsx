@@ -5,6 +5,8 @@ import ThemeContext from './ThemeContext'
 import MobileContext from './MobileContext'
 import PlayerDetailStatCategoryTitleRow from './PlayerDetailStatCategoryTitleRow'
 import generateRankNumber from '../helpers/rankFunction'
+import PlayerStatsDoughnutChart from './PlayerStatsDoughnutChart'
+
 
 const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
   const [ selectedStat, setSelectedStat ] = useState('')
@@ -68,10 +70,36 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
       </Popover.Body>
     </Popover>
   )
+  
+  const chartColors = {
+    'legend-red': 'rgb(255, 99, 132)',
+    'legend-orange': 'rgb(255, 159, 64)',
+    'legend-yellow': 'rgb(255, 205, 86)',
+    'legend-green': 'rgb(75, 192, 192)',
+    'legend-blue': 'rgb(54, 162, 235)',
+    'legend-purple': 'rgb(153, 102, 255)',
+    'legend-grey': 'rgb(201, 203, 207)'
+  };
+
+  const generateChartData = (playerStats, categoryStats) => {
+    const chartData = {}
+
+    for ( const [key, val] of Object.entries(playerStats) ) {
+      if ( categoryStats.map(x => x.statName).includes(key) && key.includes('pg') ) {
+        const title = categoryStats.find(stat => stat.statName === key).statTitle
+        chartData[title] = val
+      }
+    }
+
+    return chartData
+  }
+
+  const chartData = generateChartData(playerStats, category.stats)
+  const thisChartsColors = Object.keys(chartColors).slice(0, Object.keys(chartData).length)
 
   return (
     <Row className='mt-2 mb-4'>
-      <Col>
+      <Col lg={9}>
         <PlayerDetailStatCategoryTitleRow lightTheme={lightTheme} actionTxt={actionTxt} popover={popover} categoryTitle={category.categoryTitle} />
         {category.stats.map((stat,i) => (
           <PlayerDetailStatRow
@@ -91,8 +119,14 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
             statClicked={statClicked}
             playerId={player.playerId}
             itemsPerPage={itemsPerPage}
+            color={thisChartsColors.includes(Object.keys(chartColors)[i]) ? Object.keys(chartColors)[i] : 'legend-black' }
           />
         ))}
+      </Col>
+      <Col lg={3} className='d-flex align-self-center'>
+        <div style={{"height" : "150px"}}>
+          <PlayerStatsDoughnutChart chartData={chartData} chartColors={chartColors} />
+        </div>
       </Col>
     </Row>
   )

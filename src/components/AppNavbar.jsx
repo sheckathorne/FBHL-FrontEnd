@@ -35,13 +35,11 @@ const AppNavbar = ({ handleSwitch, theme }) => {
     <>
       {themeSwitch}
       {collapse}  
-    </>
-    :
+    </> :
     <>
-    {collapse}
-    {themeSwitch}
+      {collapse}
+      {themeSwitch}
     </>
-
 
   return (
     <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>

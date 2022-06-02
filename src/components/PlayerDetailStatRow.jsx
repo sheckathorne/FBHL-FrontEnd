@@ -3,7 +3,7 @@ import { Row, Col } from 'react-bootstrap'
 import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import PlayerDetailExpandedStatRow from './PlayerDetailExpandedStatRow'
 
-const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, itemsPerPage }) => {
+const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, itemsPerPage, color }) => {
   const rowIsSelected = selectedStat === statTitle
   const titleClass = lightTheme ? '' : 'dark-theme-text'
   const valueClass = lightTheme ? 'fw-light' : 'dark-theme-text fw-light'
@@ -55,6 +55,7 @@ const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGa
     <>
       <Row className='mt-1'>
         <Col xs={6} lg={4} className='my-auto pointer-cursor' onClick={statClicked(statTitle)}>
+          <div className={`box ${color}`}></div>
           <h6 className={titleClass + ' player-detail-row'}>{statTitle}{caret}</h6>
         </Col>
         <Col xs={3} lg={4} className='my-auto d-flex justify-content-start'>

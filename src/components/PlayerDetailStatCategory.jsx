@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import PlayerDetailStatRow from './PlayerDetailStatRow'
 import { Row, Col, Popover } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
@@ -6,20 +6,33 @@ import MobileContext from './MobileContext'
 import PlayerDetailStatCategoryTitleRow from './PlayerDetailStatCategoryTitleRow'
 import generateRankNumber from '../helpers/rankFunction'
 import PlayerStatsDoughnutChart from './PlayerStatsDoughnutChart'
-
+import PlayerStatsBarChart from './PlayerStatsBarChart'
 
 const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
-  const [ selectedStat, setSelectedStat ] = useState('')
+  const [ selectedStat, setSelectedStat ] = useState({ title: '', name: ''})
+  const [ chartArr, setChartArr ] = useState([])
 
   const isMobile = useContext(MobileContext)
   const lightTheme = useContext(ThemeContext).value === 'light'
   const actionTxt = isMobile ? 'Tap' : 'Click'
 
-  const statClicked = (statTitle) => () => {
-    if ( statTitle === selectedStat ) {
-      setSelectedStat('')
+  const statClicked = (stat) => {
+    if ( stat.title === selectedStat.title ) {
+      setSelectedStat({ title: '', name: ''})
     } else {
-      setSelectedStat(statTitle)
+      setSelectedStat({ title: stat.title, name: stat.name })
+    }
+  }
+
+  const clearStat = () => {
+    setSelectedStat({ title: '', name: ''})
+  }
+
+  const doughnutElementClicked = (stat) => {
+    if ( stat.title === selectedStat.title ) {
+      setSelectedStat({ title: '', name: ''})
+    } else {
+      setSelectedStat({ title: stat.title, name: stat.name })
     }
   }
 
@@ -71,7 +84,7 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
     </Popover>
   )
   
-  const chartColors = {
+  const doughnutChartColors = {
     'legend-red': 'rgb(255, 99, 132)',
     'legend-orange': 'rgb(255, 159, 64)',
     'legend-yellow': 'rgb(255, 205, 86)',
@@ -79,7 +92,13 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
     'legend-blue': 'rgb(54, 162, 235)',
     'legend-purple': 'rgb(153, 102, 255)',
     'legend-grey': 'rgb(201, 203, 207)'
-  };
+  }
+
+  const barChartColors = {
+    'bar-darkOrange': '#eb9834FF',
+    'bar-lightOrange': '#eb983480',
+    'bar-blue': '#8ad4eb'
+  }
 
   const generateChartData = (playerStats, categoryStats) => {
     const chartData = {}
@@ -95,7 +114,25 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
   }
 
   const chartData = generateChartData(playerStats, category.stats)
-  const thisChartsColors = Object.keys(chartColors).slice(0, Object.keys(chartData).length)
+  const thisChartsColors = Object.keys(doughnutChartColors).slice(0, Object.keys(chartData).length)
+
+  const chart = selectedStat.title === '' ? 
+    <div className='d-flex align-items-center' style={{"height" : "150px"}}>
+      <PlayerStatsDoughnutChart
+        chartData={chartData}
+        chartColors={doughnutChartColors}
+        stats={category.stats}
+        statClicked={doughnutElementClicked}
+      />
+    </div> : 
+    <div className='d-flex align-items-center' style={{"height" : "220px"}}>
+      <PlayerStatsBarChart
+        chartData={chartArr.find(chart => chart.category === selectedStat.name).data}
+        chartColors={barChartColors}
+        title={selectedStat.title}
+        clearStat={clearStat}
+      />
+    </div>
 
   return (
     <Row className='mt-2 mb-4'>
@@ -119,14 +156,13 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
             statClicked={statClicked}
             playerId={player.playerId}
             itemsPerPage={itemsPerPage}
-            color={thisChartsColors.includes(Object.keys(chartColors)[i]) ? Object.keys(chartColors)[i] : 'legend-black' }
+            color={thisChartsColors.includes(Object.keys(doughnutChartColors)[i]) ? Object.keys(doughnutChartColors)[i] : 'legend-black' }
+            setChartArr={setChartArr}
           />
         ))}
       </Col>
-      <Col lg={3} className='d-flex align-self-center'>
-        <div style={{"height" : "150px"}}>
-          <PlayerStatsDoughnutChart chartData={chartData} chartColors={chartColors} />
-        </div>
+      <Col lg={3} className='d-flex align-items-center'>
+          {chart}
       </Col>
     </Row>
   )

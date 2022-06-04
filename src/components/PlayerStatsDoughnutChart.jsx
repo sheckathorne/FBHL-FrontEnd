@@ -1,8 +1,17 @@
+import { useRef } from 'react'
 import 'chart.js/auto'
-import { Chart } from 'react-chartjs-2'
+import { Chart, getElementAtEvent } from 'react-chartjs-2'
 import ChartDeferred from 'chartjs-plugin-deferred';
 
-const PlayerStatsDoughnutChart = ({ chartData, chartColors }) => {
+const PlayerStatsDoughnutChart = ({ chartData, chartColors, stats, statClicked }) => {
+  const chartRef = useRef()
+
+  const onClick = (e) => {
+    const statIndex = getElementAtEvent(chartRef.current, e)[0].index
+    const stat = stats[statIndex]
+    statClicked({ title: stat.statTitle, name: stat.baseStatName })
+  }
+
   const data = {
     labels: Object.keys(chartData),
     datasets: [
@@ -22,15 +31,22 @@ const PlayerStatsDoughnutChart = ({ chartData, chartColors }) => {
       },
       deferred: {
         delay: 250,
-        xOffset: '100%',
-        yOffset: '100%'
+        xOffset: '75%',
+        yOffset: '75%'
       }
     }
   }
 
   return (
     <>
-      <Chart type='doughnut' data={data} options={options} plugins={[ChartDeferred]} />
+      <Chart
+        ref={chartRef}
+        onClick={onClick}
+        type='doughnut'
+        data={data}
+        options={options}
+        plugins={[ChartDeferred]}
+      />
     </>
   )
 }

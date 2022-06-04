@@ -1,10 +1,10 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import PlayerDetailExpandedStatRow from './PlayerDetailExpandedStatRow'
 
-const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, itemsPerPage, color }) => {
-  const rowIsSelected = selectedStat === statTitle
+const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, players, calculateValuePerGameOfStat, playerStatValue, lightTheme, rankTheStat, ordinal_suffix_of, statType, selectedStat, statClicked, playerId, itemsPerPage, color }) => {
+  const rowIsSelected = selectedStat.title === statTitle
   const titleClass = lightTheme ? '' : 'dark-theme-text'
   const valueClass = lightTheme ? 'fw-light' : 'dark-theme-text fw-light'
   const perGameStat = statType === 'perGame'
@@ -31,6 +31,23 @@ const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGa
   const allPlayers = [...rankedPlayers, ...unrankedPlayers]
   const topFiveRankedPlayers = rankedPlayers.filter(player => player.rank <= 5)
   const currentPlayerRankByStat = allPlayers.find(s => s.playerId === playerId).rank
+  const totalStatValue = rankedPlayers.map(player => player.value).reduce((a,b) => a + b)
+  const avgStatValue = (totalStatValue / rankedPlayers.length).toFixed(2)
+  const chartData = topFiveRankedPlayers.map(player => ({ playerName: player.playerName, value: player.value, isSelectedPlayer: player.playerId === playerId })).concat({ playerName: 'Average', value: avgStatValue, isSelectedPlayer: false })
+
+  //if current selected player is not in the top five, add the play to the array
+  if ( chartData.every(player => !player.isSelectedPlayer) ) {
+    const player = playersArr.find(player => player.playerId === playerId)
+    chartData.push({ playerName: player.playerName, value: player.value, isSelectedPlayer: true })
+  }
+
+  chartData.sort((a,b) => a.value - b.value)
+
+  useEffect(() => {
+    const obj = { category: statName, data: chartData  }
+    setChartArr(arr => arr.concat(obj))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
   const caret = rowIsSelected ? <AiOutlineCaretDown /> : <AiOutlineCaretRight />
 
@@ -54,7 +71,7 @@ const PlayerDetailStatRow = ({ statTitle, statName, players, calculateValuePerGa
   return (
     <>
       <Row className='mt-1'>
-        <Col xs={6} lg={4} className='my-auto pointer-cursor' onClick={statClicked(statTitle)}>
+        <Col xs={6} lg={4} className='my-auto pointer-cursor' onClick={() =>statClicked({ title: statTitle, name: statName })}>
           <div className={`box ${color}`}></div>
           <h6 className={titleClass + ' player-detail-row'}>{statTitle}{caret}</h6>
         </Col>

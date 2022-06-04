@@ -589,7 +589,7 @@ const playerDetailStats = [
       },
       {
         id: uuidv4(),
-        statTitle: 'Passing Percentage',
+        statTitle: 'Passing %',
         baseStatName: 'skpasspct',
         statName: 'skpasspct',
         type: 'percentage',

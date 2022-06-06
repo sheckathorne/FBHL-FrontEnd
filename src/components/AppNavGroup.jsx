@@ -6,7 +6,6 @@ import data from '../helpers/data.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoginIsOpen } from '../reducers/viewToggleReducer'
 
-
 const AppNavGroup = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.user)

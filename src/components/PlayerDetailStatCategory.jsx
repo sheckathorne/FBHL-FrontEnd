@@ -83,15 +83,16 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
       </Popover.Body>
     </Popover>
   )
-  
+
+  const alphaValue = '.4'
   const doughnutChartColors = {
-    'legend-red': 'rgb(255, 99, 132)',
-    'legend-orange': 'rgb(255, 159, 64)',
-    'legend-yellow': 'rgb(255, 205, 86)',
-    'legend-green': 'rgb(75, 192, 192)',
-    'legend-blue': 'rgb(54, 162, 235)',
-    'legend-purple': 'rgb(153, 102, 255)',
-    'legend-grey': 'rgb(201, 203, 207)'
+    'legend-red': `rgba(255, 99, 132, ${alphaValue})`,
+    'legend-orange': `rgba(255, 159, 64, ${alphaValue})`,
+    'legend-yellow': `rgba(255, 205, 86, ${alphaValue})`,
+    'legend-green': `rgba(75, 192, 192, ${alphaValue})`,
+    'legend-blue': `rgba(54, 162, 235, ${alphaValue})`,
+    'legend-purple': `rgba(153, 102, 255, ${alphaValue})`,
+    'legend-grey': `rgba(201, 203, 207, ${alphaValue})`
   }
 
   const barChartColors = {
@@ -123,6 +124,7 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
         chartColors={doughnutChartColors}
         stats={category.stats}
         statClicked={doughnutElementClicked}
+        alphaValue={alphaValue}
       />
     </div> : 
     <div className='d-flex align-items-center' style={{"height" : "220px"}}>

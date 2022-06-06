@@ -53,8 +53,8 @@ const PlayerStatsBarChart = ({ chartData, chartColors, title, clearStat }) => {
       },
       deferred: {
         delay: 250,
-        xOffset: '75%',
-        yOffset: '75%'
+        xOffset: '50%',
+        yOffset: '50%'
       },
       datalabels: {
         color: 'black',

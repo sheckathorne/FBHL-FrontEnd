@@ -3,7 +3,7 @@ import 'chart.js/auto'
 import { Chart, getElementAtEvent } from 'react-chartjs-2'
 import ChartDeferred from 'chartjs-plugin-deferred';
 
-const PlayerStatsDoughnutChart = ({ chartData, chartColors, stats, statClicked }) => {
+const PlayerStatsDoughnutChart = ({ chartData, chartColors, stats, statClicked, alphaValue }) => {
   const chartRef = useRef()
 
   const onClick = (e) => {
@@ -18,6 +18,8 @@ const PlayerStatsDoughnutChart = ({ chartData, chartColors, stats, statClicked }
       {
         data: Object.values(chartData),
         backgroundColor: Object.values(chartColors),
+        hoverBackgroundColor: Object.values(chartColors).map(color => color.replace(`, ${alphaValue}`,', 1.25')),
+        hoverBorderColor: 'white'
       }
     ]
   }
@@ -31,9 +33,15 @@ const PlayerStatsDoughnutChart = ({ chartData, chartColors, stats, statClicked }
       },
       deferred: {
         delay: 250,
-        xOffset: '75%',
-        yOffset: '75%'
+        xOffset: '50%',
+        yOffset: '50%'
       }
+    },
+    onHover: (e, chartElement) => {
+      e.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default'
+    },
+    onLeave: (e, chartElement) => {
+      e.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default'
     }
   }
 

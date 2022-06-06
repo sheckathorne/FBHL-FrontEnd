@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
 
-const initialState = dayjs().startOf('day').unix()
+const initialState: number = dayjs().startOf('day').unix()
 
 const calendarSlice = createSlice({
   name: 'calendarSelectedDate',

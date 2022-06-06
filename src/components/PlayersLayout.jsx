@@ -17,6 +17,7 @@ import { setPlayersActivePage } from '../reducers/paginationReducer'
 
 const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
+
   const players = useSelector(state => state.players)
   const sortField = useSelector(state => state.sortField)
   const gkSortField = useSelector(state => state.gkSortField)
@@ -133,9 +134,12 @@ const PlayersLayout = () => {
       {sortButtonGroup}
       <Row className='mt-2'>
         <Col>
-          <Form.Control placeholder='Player search' onChange={(e) => {
-            setPlayerSearch(e.target.value)
-            dispatch(setPlayersActivePage(1))
+          <Form.Control
+            placeholder='Player search'
+            defaultValue={playerSearch}
+            onChange={(e) => {
+              setPlayerSearch(e.target.value)
+              dispatch(setPlayersActivePage(1))
           }} />
         </Col>
       </Row>

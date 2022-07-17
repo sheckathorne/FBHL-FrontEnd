@@ -15,7 +15,7 @@ const CalendarDashboard = () => {
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const schedule = useSelector(state => state.schedule).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
   const matchSkeletons = useSelector(state => state.matchSkeletons)
-  const selectedDate = useSelector(state => state.calendarSelectedDate)
+  const selectedTimestamp = useSelector(state => state.calendarSelectedDate)
   const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
     { 
       matchDate: match.matchDate,
@@ -31,6 +31,12 @@ const CalendarDashboard = () => {
         data: { goals: '0' }}]
     }
   ))
+
+  const selectedDate = dayjs.unix(selectedTimestamp)
+  const firstOfMonthDate = dayjs(selectedDate).startOf('month')
+  const lastOfMonthDate = dayjs(selectedDate).endOf('month')
+  const firstOfMonthTimestamp =  dayjs(firstOfMonthDate).unix()
+  const lastOfMonthTimestamp = dayjs(lastOfMonthDate).unix()
 
   const matchesWithForfeits = [...matchSkeletons, ...forfeitedMatches]
   const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...matchesWithForfeits.map(o => o.timestamp), 0)).startOf('day')).unix()
@@ -59,8 +65,8 @@ const CalendarDashboard = () => {
 
   // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
   useEffect(() => {
-    dispatch(setTimestampRange({ begin: selectedDate, end: dayjs.unix(selectedDate).add(1,'d').subtract(1,'s').unix() }))
-  },[dispatch, selectedDate])
+    dispatch(setTimestampRange({ begin: selectedTimestamp, end: dayjs.unix(selectedTimestamp).add(1,'d').subtract(1,'s').unix() }))
+  },[dispatch, selectedTimestamp])
 
   const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
 

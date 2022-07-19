@@ -6,11 +6,10 @@ interface AppNavItemProps {
   eventKey: number,
   itemValue: string,
   itemTitle: string,
-  route: string
-}
+  route: string}
 
 const AppNavItem = ({ eventKey, itemValue, itemTitle, route }: AppNavItemProps) => {
-  const baseUrl = (url: string) :string => ( url.indexOf('/', (url.indexOf('/') + 1)) > 0 ) ? url.substring(0,url.indexOf('/', (url.indexOf('/') + 1))) : url
+  const baseUrl = (url: string): string => ( url.indexOf('/', (url.indexOf('/') + 1)) > 0 ) ? url.substring(0,url.indexOf('/', (url.indexOf('/') + 1))) : url
 
   const currentUrl: string = useLocation().pathname
   const currentBaseUrl: string = baseUrl(currentUrl)

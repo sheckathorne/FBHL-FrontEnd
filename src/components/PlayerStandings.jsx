@@ -48,6 +48,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
   }
 
   const handleTabSelect = (k, playerTypeReducer) => {
+    console.log(playerTypeReducer)
     handlePlayerTypeChange(parseInt(k))
     dispatch(setSkaterOrGoalie({ field: playerTypeReducer }))
   }
@@ -100,7 +101,7 @@ const PlayerStandings = ({ lightTheme, handleTableClick }) => {
     const maxReducedRank = Math.max(...reducedPlayers.map(player => player[rankField]))
     const nextPlayersRank = Math.min(...rankedFilteredPlayers.filter(player => player[rankField] > maxReducedRank).map(player => player[rankField]))
     
-    const summaryObj = reducedPlayers < rankedFilteredPlayers && reducedPlayers.length < 10 ?
+    const summaryObj = reducedPlayers.length < rankedFilteredPlayers.length && reducedPlayers.length < 10 ?
     {
       additionalPlayers: rankedFilteredPlayers.filter(player => player[rankField] === nextPlayersRank).length,
       nextRank: nextPlayersRank

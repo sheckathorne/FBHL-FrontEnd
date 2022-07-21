@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeSchedule } from './reducers/scheduleReducer'
 import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
-import { intializePlayers, sortSkaters, sortGoaltenders } from './reducers/playersReducer'
 import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
 import { setResultsOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
@@ -27,7 +26,6 @@ const App = () => {
   const leagueName = 'FBHL'
   
   const appLoadChecklist = { 
-    players: false,
     schedule: false,
     teamRankings: false,
     invalidMatches: false,
@@ -76,22 +74,6 @@ const App = () => {
     dispatch(initializeForfeits())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, forfeits: true })))
   },[dispatch])
-
-  // retrieve player data from database
-  useEffect(() => {
-    dispatch(intializePlayers()).then(() => {
-      dispatch(sortSkaters({ field: 'skpoints', descending: true, alpha: false }))
-      setLoadingProgress(loadingProgress => ({ ...loadingProgress, players: true }))
-    })
-  },[dispatch])
-
-  useEffect(() => {
-    dispatch(sortSkaters(sortField))
-  },[dispatch, sortField])
-
-  useEffect(() => {
-    dispatch(sortGoaltenders(gkSortField))
-  },[dispatch, gkSortField])
 
   useEffect(() => {
     const loggedFBHLuser = window.localStorage.getItem('loggedFBHLuser')

@@ -4,10 +4,12 @@ import { useDispatch } from 'react-redux'
 import { setSortField } from '../reducers/playerSortReducer'
 import { useNavigate } from 'react-router-dom'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
+import { setSortField as setGkSortField } from '../reducers/goaltenderSortReducer'
+import data from '../helpers/data'
 
 const BootstrapTable = ({ columns, data, responsive, striped, hover, bordered, borderless, size, variant, className, sortField, type, handleTableClick, playerType, summaryObj, rankedPlayers }) => { 
   const summaryRow = summaryObj ?
-  <SummaryRow summaryObj={summaryObj} columns={columns} sortField={sortField} rankedPlayers={rankedPlayers} />
+  <SummaryRow summaryObj={summaryObj} columns={columns} sortField={sortField} rankedPlayers={rankedPlayers} playerType={playerType} />
   : null
 
   return (
@@ -72,13 +74,14 @@ const TableRows = ({ data, type, sortField, handleTableClick, playerType }) => {
   )
 }
 
-const SummaryRow = ({ summaryObj, columns, sortField, rankedPlayers }) => {
+const SummaryRow = ({ summaryObj, columns, sortField, rankedPlayers, playerType }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate('')
   
+  const rankField = `${sortField.field}_rank`    
   const itemsPerPage = 6
-  const indexOfNextRank = rankedPlayers.findIndex(player => player.rank === summaryObj.nextRank)
-  const page = Math.ceil(parseFloat(indexOfNextRank)/parseFloat(itemsPerPage))
+  const indexOfNextRank = rankedPlayers.findIndex(player => player[rankField] === summaryObj.nextRank)
+  const page = Math.ceil(parseFloat(indexOfNextRank + 1)/parseFloat(itemsPerPage))
 
   const ordinal_suffix_of = (i) => {
     let j = i % 10,
@@ -95,9 +98,27 @@ const SummaryRow = ({ summaryObj, columns, sortField, rankedPlayers }) => {
     return i + 'th'
   }
 
+  function getFullSort(sortField, playerType) {
+    const buttons = playerType === 'skaters' ? data.sortButtons : data.goaltenderSortButtons
+    const sortButton = buttons.find(button => button.field === sortField.field)
+    
+    return {
+      field: sortButton.field,
+      descending: true,
+      alpha: sortButton.alpha,
+      reversed: sortButton.reversed,
+      secondaryFieldName: sortButton.secondaryFieldName,
+      secondaryReversed: sortButton.secondaryReversed,
+    }
+  }
+
   const handleSummaryClick = () => {
-    dispatch(setSortField(sortField))
-    dispatch(setPlayersActivePage(page))    
+    if ( playerType === 'skaters' ) {
+      dispatch(setSortField(getFullSort(sortField, playerType)))
+    } else {
+      dispatch(setGkSortField(getFullSort(sortField, playerType)))
+    }
+    dispatch(setPlayersActivePage(page)) 
     navigate('/players')
   }
 

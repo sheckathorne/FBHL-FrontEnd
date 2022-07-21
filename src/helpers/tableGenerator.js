@@ -93,6 +93,7 @@ const generateColumns = (cols, themeClass) => {
 const generateStandingsColumns = (cols, stat, themeClass) => cols.all.slice(0,2).map(col => ({ ...col, className: themeClass, })).concat(cols[`${stat}`].map(col => ({ ...col, className: themeClass, })),cols.all.slice(2).map(col => ({ ...col, className: themeClass, })))
 
 const generatePlayerStandingData = (players, stat, themeClass) => players.map(player => {
+  const rankField = `${stat}_rank`
   const dataRowClass = 'table-body-row'.concat(' ',themeClass)
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
   const team = data.teams.find(team => team.clubId.toString() === player.teamId )
@@ -103,7 +104,7 @@ const generatePlayerStandingData = (players, stat, themeClass) => players.map(pl
     rowUrl: `players/${team.clubId.toString()}?playerId=${player.playerId}`,
     columns: {
       rank: {
-        value: player.rank,
+        value: player[rankField],
         class: dataRowClass,
         position: 'center',
       },

@@ -14,6 +14,7 @@ const goaltenderSortSlice = createSlice({
   initialState,
   reducers: {
     setSortField(_state, action) {
+      console.log(action.payload)
       return action.payload
     },
   },

@@ -8,7 +8,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 const PlayersDisplayTeam = () => {
   const contextObj = useOutletContext()
   const teamId = useParams().teamId.toString()
-  const rankedFilteredPlayers = contextObj.rankedFilteredPlayers.filter(player => player.teamId === teamId)
   const teamName = data.teams.find(team => team.clubId.toString() === teamId).name
 
   return (
@@ -19,11 +18,12 @@ const PlayersDisplayTeam = () => {
       <PlayersAndPaginationDisplay
         playerIsRanked={contextObj.playerIsRankedValue}
         playerSearch={contextObj.playerSearch}
-        rankedFilteredPlayers={rankedFilteredPlayers}
+        rankedFilteredPlayers={contextObj.rankedFilteredPlayers}
         itemsPerPage={contextObj.itemsPerPage}
         delta={contextObj.delta}
         queriedPlayer={contextObj.queriedPlayer}
         playerDetailStats={contextObj.playerDetailStats}
+        teamId={teamId}
       />
     </HelmetProvider>
   )

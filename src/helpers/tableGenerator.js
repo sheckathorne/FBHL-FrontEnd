@@ -97,6 +97,7 @@ const generatePlayerStandingData = (players, stat, themeClass) => players.map(pl
   const addDefaultSrc = (e) => e.target.src = data.defaultCrest
   const team = data.teams.find(team => team.clubId.toString() === player.teamId )
   const position = data.translatePositions.find(position => position.posSorted === player.posSorted).abbreviation
+  const statVal = position === 'G' ? parseFloat(player[stat]).toFixed(3) : player[stat]
 
   return ({
     rowUrl: `players/${team.clubId.toString()}?playerId=${player.playerId}`,
@@ -112,7 +113,7 @@ const generatePlayerStandingData = (players, stat, themeClass) => players.map(pl
         position: 'start'
       },
       stat: {
-        value: player[`${stat}`],
+        value: statVal,
         class: dataRowClass,
         position: 'center',
       },

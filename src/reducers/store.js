@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-//import matchesReducer from './matchesReducer'
 import paginationReducer from './paginationReducer'
 import viewToggleReducer from './viewToggleReducer'
 import teamRankingsReducer from './teamRankingsReducer'
@@ -17,10 +16,11 @@ import forfeitReducer from './forfeitReducer'
 import teamRankingsAndForfeitsReducer from './teamRankingsAndForfeitsReducer'
 import goaltenderSortReducer from './goaltenderSortReducer'
 import playoffRaceReducer from './playoffRaceReducer'
+import topPlayersReducer from './topPlayersReducer'
+import paginatedPlayersReducer from './paginatedPlayersReducer'
 
 const store = configureStore({
   reducer: {
-    //matches: matchesReducer,
     pagination: paginationReducer,
     viewToggle: viewToggleReducer,
     teamRankings: teamRankingsReducer,
@@ -38,6 +38,8 @@ const store = configureStore({
     teamRankingsAndForfeits: teamRankingsAndForfeitsReducer,
     gkSortField: goaltenderSortReducer,
     playoffRace: playoffRaceReducer,
+    topPlayers: topPlayersReducer,
+    paginatedPlayers: paginatedPlayersReducer,
   }
 })
 

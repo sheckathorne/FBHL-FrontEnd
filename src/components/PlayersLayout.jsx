@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from 'react'
+import { useState, useContext, useMemo, useEffect } from 'react'
 import { Outlet, useLocation, Link } from 'react-router-dom'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import SortButtonGroup from './SortButtonGroup'
@@ -11,94 +11,68 @@ import data from '../helpers/data.js'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import MobileTitle from './MobileTitle'
 import LeagueContext from './LeagueContext'
-import generateRankNumber from '../helpers/rankFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
+import { initializePlayers } from '../reducers/paginatedPlayersReducer'
 
 const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
-
-  const players = useSelector(state => state.players)
-  const sortField = useSelector(state => state.sortField)
-  const gkSortField = useSelector(state => state.gkSortField)
-  const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
-
-  const dispatch = useDispatch()
 
   const useQuery = () => {
     const { search } = useLocation()
     return useMemo(() => new URLSearchParams(search), [search])
   }
 
-  const playerIsRanked = (showingSkaters, sortField) => showingSkaters ? (!(typeof(sortField.field) === 'undefined') && !sortField.alpha) : true
+  const query = useQuery()
 
-  const rankThePlayers = (players, sortField) => {
-    if ( playerIsRanked(showingSkaters,sortField) ) {
-      if ( sortField.descending ) {
-        return players.map((player,i) => {
-          const allPlayersStatValue = players.map(player => player[`${sortField.field}`])
-          const currentPlayerStatValue = player[`${sortField.field}`]
-          return { rank: generateRankNumber(i, allPlayersStatValue, currentPlayerStatValue), ...player }
-        })
+  function sortDirection(playerSortField) {
+    if ( playerSortField.descending ) {
+      if ( playerSortField.reversed ) {
+        return 'asc'
       } else {
-        const reversed = players.reverse()
-        return reversed.map((player,i) => {
-          const allPlayersStatValue = reversed.map(player => player[`${sortField.field}`])
-          const currentPlayerStatValue = player[`${sortField.field}`]
-          return { rank: generateRankNumber(i, allPlayersStatValue, currentPlayerStatValue), ...player }
-        }).reverse()
+        return 'desc'
       }
     } else {
-      return players
-    }
-  }
-  const numberOfGoaltendersToAvg = 5
-  const percentageOfMostShotsFaced = .40
-  const determineGoaltenderRankingCriteria = (goaltenders) => parseFloat(goaltenders.map(x => x.gkShotsFaced).sort((a,b) => b - a).slice(0,numberOfGoaltendersToAvg).reduce((y,a) => y+a, 0))/parseFloat(numberOfGoaltendersToAvg)
-
-  const rankAndFilterPlayers = (playerType) => {
-    const createPlayerArray = (playerType) => {
-      if ( playerType === 'skaters' ) {
-        return { players: [...playerGroup], inellgiblePlayers: null }
-      } else if ( playerType === 'goaltenders' ) {
-        const goaltendersCopy = [...playerGroup]
-        const goaltendersElligibleToBeRanked = goaltendersCopy.filter(goaltender => parseFloat(goaltender.gkShotsFaced) >= (percentageOfMostShotsFaced * determineGoaltenderRankingCriteria(goaltendersCopy)))
-
-        return {
-          players: goaltendersElligibleToBeRanked,
-          inellgiblePlayers: goaltendersCopy.filter(goaltender => !goaltendersElligibleToBeRanked.map(x => x.playerId).includes(goaltender.playerId)).map(x => ({ ...x, playerIsRanked: false }))
-        }
+      if ( playerSortField.reversed ) {
+        return 'desc'
+      } else {
+        return 'asc'
       }
     }
-
-  switch(playerType) {
-    case 'skaters':
-      return rankThePlayers(createPlayerArray(playerType).players, sortField)
-    case 'goaltenders':
-      const allGoaltenders = createPlayerArray(playerType)
-      return rankThePlayers(allGoaltenders.players, gkSortField).map(x => ({ ...x, playerIsRanked: true })).concat(allGoaltenders.inellgiblePlayers)
-    default:
-      break
-    }
   }
+  
+  const dispatch = useDispatch()
 
-  const rankedPlayerType = (showingSkaters) => showingSkaters ? 'skaters' : 'goaltenders'
+  const activePage = useSelector(state => state.pagination.playersActivePage)
+  const sortField = useSelector(state => state.sortField)
+  const gkSortField = useSelector(state => state.gkSortField)
+  const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
+  
+  const itemsPerPage = 6
+  const showingSkaters = skaterOrGoalie.field === 'skaters'
+  const playerSortField = showingSkaters ? sortField : gkSortField
+  const sortDir = sortDirection(playerSortField)
+  const teamId = useLocation().pathname.replace('/players','').replace('/','')
 
-  const query = useQuery()
+  useEffect(() => {
+    dispatch(initializePlayers(activePage, itemsPerPage, playerSortField.field, sortDir, showingSkaters, teamId))
+  }, [dispatch, activePage, playerSortField.field, sortDir, showingSkaters, teamId])
+
+  const rankedFilteredPlayers = useSelector(state => state.paginatedPlayers)
+  
   const isMobile = useContext(MobileContext)
   const lightTheme = useContext(ThemeContext).value === 'light'
   const leagueName = useContext(LeagueContext)
-
-  const itemsPerPage = 6
-  const delta = isMobile ? 1 : 2
-  const teamId = useLocation().pathname.replace('/players','').replace('/','')
   const themeVariant = lightTheme ? 'outline-dark' : 'dark'
+  const delta = isMobile ? 1 : 2
 
-  const showingSkaters = skaterOrGoalie.field === 'skaters'
+
+
+
+
+  const playerIsRanked = (showingSkaters, sortField) => showingSkaters ? (!(typeof(sortField.field) === 'undefined') && !sortField.alpha) : true
   const playerIsRankedValue = playerIsRanked(showingSkaters, sortField)
-  const playerGroup = showingSkaters ? players.skaters : players.goaltenders
-  const queriedPlayer = playerGroup.find(player => player.playerId.toString() === query.get('playerId'))
-  const rankedFilteredPlayers = rankAndFilterPlayers(rankedPlayerType(showingSkaters))
+  const queriedPlayer = rankedFilteredPlayers.find(player => player.playerId.toString() === query.get('playerId'))
 
   const calendarBtn = teamId.length > 0 ?
     <Row>

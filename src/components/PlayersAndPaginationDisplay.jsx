@@ -1,13 +1,29 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import PlayerCardDashboard from './PlayerCardDashboard'
 import PaginationRow from './PaginationRow'
 import { Row, Col } from 'react-bootstrap'
 import paginationFunction from '../helpers/paginationFunction.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
+import chelService from '../services/api'
 
-const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats }) => {
+const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats, teamId }) => {
   const dispatch = useDispatch()
+  const [ playerCount, setPlayerCount ] = useState('')
+
+  const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
+  const showingSkaters = skaterOrGoalie.field === 'skaters'
+
+  useEffect(() => {
+    const url = teamId ? 
+      `/playerData/count/club?skater=${showingSkaters}&clubId=${teamId}` :
+      `/playerData/count?skater=${showingSkaters}`
+    
+    chelService.getData(url).then(r => {
+      setPlayerCount(r.count)
+    })
+  },[showingSkaters, teamId])
+  
   const playersActivePage = useSelector(state => state.pagination.playersActivePage)
 
   const paginationClick = (type, num) => () => {
@@ -33,8 +49,7 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
   }
 
   const searchedPlayers = ( playerSearch === '' ) ? rankedFilteredPlayers : rankedFilteredPlayers.filter(player => player.playerName.toLowerCase().includes(playerSearch.toLowerCase()))
-  const displayedPlayers = searchedPlayers.slice((playersActivePage - 1) * itemsPerPage, ((playersActivePage - 1) * itemsPerPage) + itemsPerPage)
-  const pageCount = Math.ceil(searchedPlayers.length/itemsPerPage)
+  const pageCount = Math.ceil(playerCount/itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(playersActivePage, pageCount, delta, paginationClick)
   const playerCardWidth = queriedPlayer ? 6 : 8
   const dashboardWidth = queriedPlayer ? 10 : 8
@@ -51,7 +66,7 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
         </Row>
         <Row>
           <PlayerCardDashboard
-            players={displayedPlayers}
+            players={searchedPlayers}
             playerIsRanked={playerIsRanked}
             playerDetailStats={playerDetailStats}
             playerCardWidth={playerCardWidth}

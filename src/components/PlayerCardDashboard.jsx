@@ -2,9 +2,13 @@ import { useMemo } from 'react'
 import { Flipper, Flipped } from 'react-flip-toolkit'
 import PlayerCard from './PlayerCard'
 import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 
 const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playerCardWidth }) => {
+  const sortField = useSelector(state => state.sortField)
+  const gkSortField = useSelector(state => state.gkSortField)
+  
   const useQuery = () => {
     const { search } = useLocation()
     return useMemo(() => new URLSearchParams(search), [search])
@@ -18,6 +22,10 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
   return (
     <Flipper flipKey={players}>{
       players.map((player, i) => {
+        const rankField = player.posSorted !== '0' ? 
+          `${sortField.field}_rank` :
+          `${gkSortField.field}_rank`
+
         const stats = player.posSorted !== '0' ? {
           total: {
             goals: player.skgoals.toString(),
@@ -36,9 +44,9 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
           goaltender: {
             gkGamesPlayed: player.gkGamesPlayed.toString(),
             gkwins: player.gkwins.toString(),
-            gkwinpct: ((parseFloat(player.gkwins)/parseFloat(player.gkGamesPlayed)) * 100).toFixed(0).toString() + '%',
+            gkwinpct: (player.gkwinpct * 100).toFixed(1).toString() + '%',
             gkgaa: player.gkgaa.toString(),
-            gksvpct: parseFloat((player.gksvpct)*100).toFixed(1).toString() + '%',
+            gksvpct: parseFloat(player.gksvpct).toFixed(3).toString(),
             gkso: player.gkso.toString() },
           perGame: {
             goals: '0',
@@ -54,7 +62,7 @@ const PlayerCardDashboard = ({ players, playerIsRanked, playerDetailStats, playe
               stats={stats}
               playerId={player.playerId}
               marginClass={lastPlayerIndex === i + 1 ? 'mb-4' : 'mb-2'}
-              rank={player.rank}
+              rank={player[rankField]}
               playerIsRanked={player.posSorted === '0' ? player.playerIsRanked : playerIsRanked}
               posSorted={player.posSorted}
               playerCardClickSource='players'

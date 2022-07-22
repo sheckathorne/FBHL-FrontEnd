@@ -20,7 +20,6 @@ const playerSort = (players, sortField) => {
       }
     }
 
-    
     if ( n !== 0) {
       return n
     } else {

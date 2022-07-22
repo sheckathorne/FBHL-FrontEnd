@@ -33,8 +33,6 @@ const App = () => {
     forfeits: false,
   }
 
-  const sortField = useSelector(state => state.sortField)
-  const gkSortField = useSelector(state => state.gkSortField)
   const notification = useSelector(state => state.notification)
 
   /* app theme */

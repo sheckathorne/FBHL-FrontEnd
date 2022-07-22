@@ -16,8 +16,8 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
 
   useEffect(() => {
     const url = teamId ? 
-      `/playerData/count/club?skater=${showingSkaters}&clubId=${teamId}` :
-      `/playerData/count?skater=${showingSkaters}`
+      `/playerData/pagination/club/count?skater=${showingSkaters}&clubId=${teamId}` :
+      `/playerData/pagination/count?skater=${showingSkaters}`
     
     chelService.getData(url).then(r => {
       setPlayerCount(r.count)

@@ -7,23 +7,39 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 import chelService from '../services/api'
 
-const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats, teamId }) => {
+const PlayersAndPaginationDisplay = ({ playerIsRanked, rankedFilteredPlayers, itemsPerPage, delta, queriedPlayer, playerDetailStats, teamId, searchTerm }) => {
   const dispatch = useDispatch()
   const [ playerCount, setPlayerCount ] = useState('')
 
   const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
   const showingSkaters = skaterOrGoalie.field === 'skaters'
 
+
+
   useEffect(() => {
-    const url = teamId ? 
-      `/playerData/pagination/club/count?skater=${showingSkaters}&clubId=${teamId}` :
-      `/playerData/pagination/count?skater=${showingSkaters}`
-    
-    chelService.getData(url).then(r => {
+    function getUrl(teamId, searchTerm) {
+      let url = ''
+      if ( searchTerm.length === 0 ) {
+        if ( teamId ) {
+          url = `/playerData/pagination/club/count?skater=${showingSkaters}&clubId=${teamId}`
+        } else {
+          url = `/playerData/pagination/count?skater=${showingSkaters}`
+        }
+      } else {
+        if ( teamId ) {
+          url = `/playerData/search/club/count?skater=${showingSkaters}&clubId=${teamId}&name=${searchTerm}`
+        } else {
+          url = `/playerData/search/count?skater=${showingSkaters}&name=${searchTerm}`
+        }
+      }
+      return url
+    }
+
+    chelService.getData(getUrl(teamId, searchTerm)).then(r => {
       setPlayerCount(r.count)
     })
-  },[showingSkaters, teamId])
-  
+  },[showingSkaters, teamId, searchTerm])
+
   const playersActivePage = useSelector(state => state.pagination.playersActivePage)
 
   const paginationClick = (type, num) => () => {
@@ -48,7 +64,6 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
     }
   }
 
-  const searchedPlayers = ( playerSearch === '' ) ? rankedFilteredPlayers : rankedFilteredPlayers.filter(player => player.playerName.toLowerCase().includes(playerSearch.toLowerCase()))
   const pageCount = Math.ceil(playerCount/itemsPerPage)
   const paginationItems = paginationFunction.generatePaginationItems(playersActivePage, pageCount, delta, paginationClick)
   const playerCardWidth = queriedPlayer ? 6 : 8
@@ -66,7 +81,7 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, playerSearch, rankedFilte
         </Row>
         <Row>
           <PlayerCardDashboard
-            players={searchedPlayers}
+            players={rankedFilteredPlayers}
             playerIsRanked={playerIsRanked}
             playerDetailStats={playerDetailStats}
             playerCardWidth={playerCardWidth}

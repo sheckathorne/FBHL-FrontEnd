@@ -7,7 +7,7 @@ const teamRankingsSlice = createSlice({
   name: 'teamRankings',
   initialState,
   reducers: {
-    setTeamRankings(state, action) {
+    setTeamRankings(_state, action) {
       return action.payload
     },
   },

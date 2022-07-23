@@ -17,13 +17,13 @@ const PlayersDisplayTeam = () => {
       </Helmet>
       <PlayersAndPaginationDisplay
         playerIsRanked={contextObj.playerIsRankedValue}
-        playerSearch={contextObj.playerSearch}
         rankedFilteredPlayers={contextObj.rankedFilteredPlayers}
         itemsPerPage={contextObj.itemsPerPage}
         delta={contextObj.delta}
         queriedPlayer={contextObj.queriedPlayer}
         playerDetailStats={contextObj.playerDetailStats}
         teamId={teamId}
+        searchTerm={contextObj.searchTerm}
       />
     </HelmetProvider>
   )

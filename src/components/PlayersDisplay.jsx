@@ -9,12 +9,12 @@ const PlayersDisplay = () => {
   return (
     <PlayersAndPaginationDisplay
       playerIsRanked={contextObj.playerIsRankedValue}
-      playerSearch={contextObj.playerSearch}
       rankedFilteredPlayers={rankedFilteredPlayers}
       itemsPerPage={contextObj.itemsPerPage}
       delta={contextObj.delta}
       queriedPlayer={contextObj.queriedPlayer}
       playerDetailStats={contextObj.playerDetailStats}
+      searchTerm={contextObj.searchTerm}
     />
   )
 }

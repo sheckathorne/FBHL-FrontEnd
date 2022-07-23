@@ -14,9 +14,20 @@ import LeagueContext from './LeagueContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 import { initializePlayers } from '../reducers/paginatedPlayersReducer'
+import { useDebounce } from '../hooks/useDebounce'
+import chelService from '../services/api'
 
 const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
+  const [ statAverages, setStatAverages ] = useState({})
+  const debouncedSearchTerm = useDebounce(playerSearch, 500)
+  const searchTerm = debouncedSearchTerm || ''
+
+  useEffect(() => {
+    chelService.getData('/statAverages').then(avg => {
+      setStatAverages(avg)
+    })
+  },[])
 
   const useQuery = () => {
     const { search } = useLocation()
@@ -55,8 +66,8 @@ const PlayersLayout = () => {
   const teamId = useLocation().pathname.replace('/players','').replace('/','')
 
   useEffect(() => {
-    dispatch(initializePlayers(activePage, itemsPerPage, playerSortField.field, sortDir, showingSkaters, teamId))
-  }, [dispatch, activePage, playerSortField.field, sortDir, showingSkaters, teamId])
+    dispatch(initializePlayers(activePage, itemsPerPage, playerSortField.field, sortDir, showingSkaters, teamId, searchTerm))
+  }, [dispatch, activePage, playerSortField.field, sortDir, showingSkaters, teamId, searchTerm])
 
   const rankedFilteredPlayers = useSelector(state => state.paginatedPlayers)
   
@@ -65,10 +76,6 @@ const PlayersLayout = () => {
   const leagueName = useContext(LeagueContext)
   const themeVariant = lightTheme ? 'outline-dark' : 'dark'
   const delta = isMobile ? 1 : 2
-
-
-
-
 
   const playerIsRanked = (showingSkaters, sortField) => showingSkaters ? (!(typeof(sortField.field) === 'undefined') && !sortField.alpha) : true
   const playerIsRankedValue = playerIsRanked(showingSkaters, sortField)
@@ -132,6 +139,7 @@ const PlayersLayout = () => {
             players={rankedFilteredPlayers}
             playerIsSkater={queriedPlayer.posSorted !== '0'}
             itemsPerPage={itemsPerPage}
+            statAverages={statAverages}
           />
         ))}
       </Container>
@@ -151,13 +159,13 @@ const PlayersLayout = () => {
           {leftNavGroup}
           <Outlet
             context={{
-              playerSearch,
               itemsPerPage,
               rankedFilteredPlayers,
               delta,
               playerIsRankedValue,
               queriedPlayer,
-              playerDetailStats }}
+              playerDetailStats,
+              searchTerm }}
           />
         </Row>
       </Container>

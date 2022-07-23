@@ -4,11 +4,11 @@ import { Row, Col, Popover } from 'react-bootstrap'
 import ThemeContext from './ThemeContext'
 import MobileContext from './MobileContext'
 import PlayerDetailStatCategoryTitleRow from './PlayerDetailStatCategoryTitleRow'
-import generateRankNumber from '../helpers/rankFunction'
 import PlayerStatsDoughnutChart from './PlayerStatsDoughnutChart'
 import PlayerStatsBarChart from './PlayerStatsBarChart'
 
-const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
+
+const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage, statAverages }) => {
   const [ selectedStat, setSelectedStat ] = useState({ title: '', name: ''})
   const [ chartArr, setChartArr ] = useState([])
 
@@ -36,25 +36,17 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
     }
   }
 
-  const calculateValuePerGameOfStat = (player, statName) => (parseFloat(player[`${statName}`])/parseFloat(player.skGamesPlayed)).toFixed(2).toString()
-
-  const generateCustomStats = (player) => (
-    {
-      skpointspg: calculateValuePerGameOfStat(player,'skpoints'),
-      skgoalspg: calculateValuePerGameOfStat(player,'skgoals'),
-      skassistspg: calculateValuePerGameOfStat(player,'skassists'),
-      skshotspg: calculateValuePerGameOfStat(player,'skshots'),
-      skpasspct: parseFloat(player.skpasspct),
-      skhitspg: calculateValuePerGameOfStat(player,'skhits'),
-      skinterceptionspg: calculateValuePerGameOfStat(player,'skinterceptions'),
-      sktakeawayspg: calculateValuePerGameOfStat(player,'sktakeaways'),
-      skblockedshotspg: calculateValuePerGameOfStat(player,'skbs'),
-    }
-  )
-
-  const playerStats = generateCustomStats(player)
-
-  const rankTheStat = (stats) => stats.map((stat,i) => ({ rank: generateRankNumber(i, stats, stat), ...stat }))
+  const playerStats = {
+    skpointspg: player.skpointspg,
+    skgoalspg: player.skgoalspg,
+    skassistspg: player.skassistspg,
+    skshotspg: player.skshotspg,
+    skpasspct: player.skpasspct,
+    skhitspg: player.skhitspg,
+    skinterceptionspg: player.skinterceptionspg,
+    sktakeawayspg: player.sktakeawayspg,
+    skblockedshotspg: player.skblockedshotspg,
+  }
 
   const ordinal_suffix_of = (i) => {
     let j = i % 10,
@@ -145,18 +137,18 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
             key={stat.id}
             statTitle={stat.statTitle}
             statName={stat.baseStatName}
+            statAverage={statAverages[0][stat.statName]}
+            actualStatName={stat.statName}
+            player={player}
             players={players}
-            calculateValuePerGameOfStat={calculateValuePerGameOfStat}
             playerStatValue={playerStats[`${stat.statName}`]}
             lightTheme={lightTheme}
             currentIndex={i}
             statCount={category.stats.length}
-            rankTheStat={rankTheStat}
             ordinal_suffix_of={ordinal_suffix_of}
             statType={stat.type}
             selectedStat={selectedStat}
             statClicked={statClicked}
-            playerId={player.playerId}
             itemsPerPage={itemsPerPage}
             color={thisChartsColors.includes(Object.keys(doughnutChartColors)[i]) ? Object.keys(doughnutChartColors)[i] : 'legend-black' }
             setChartArr={setChartArr}

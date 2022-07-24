@@ -12,22 +12,20 @@ const PlayerDetailExpandedRow = ({ player, players, itemsPerPage, statValue, ran
   const sortField = useSelector(state => state.sortField)
   const sort = sortField.descending ? 'desc' : 'asc'
   const statName = sortField.field
-  console.log(player)
-  const statVal = player[statName]
   const playerName = player.playerName
   const playerId = player.playerId
   const to_url = `/players?playerId=${playerId}`
-  const playerIndex = players.findIndex(p => p.playerId === playerId)
 
   const handlePlayerClick = () => {
-    const url = `/playerData/pagination/indexNum?skater=true&playerId=${playerId}&statName=${statName}&sort=${sort}`
-    chelService.getData(url).then(index => {
-
-      const pageNum = Math.ceil(parseFloat(index + 1)/parseFloat(itemsPerPage))
-      dispatch(setPlayersActivePage(pageNum))
-      navigate(to_url)
+    const countUrl = `/playerData/pagination/count?skater=true`
+    chelService.getData(countUrl).then(count => {
+      const indexUrl = `/playerData/pagination/indexNum?skater=true&playerId=${playerId}&statName=${statName}&sort=${sort}&playerCount=${count}`
+      chelService.getData(indexUrl).then(index => {
+        const pageNum = Math.ceil(parseFloat(index + 1)/parseFloat(itemsPerPage))
+        dispatch(setPlayersActivePage(pageNum))
+        navigate(to_url)
+      })
     })
-
   }
 
   return (

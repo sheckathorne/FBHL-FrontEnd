@@ -15,19 +15,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 import { initializePlayers } from '../reducers/paginatedPlayersReducer'
 import { useDebounce } from '../hooks/useDebounce'
-import chelService from '../services/api'
 
 const PlayersLayout = () => {
   const [ playerSearch, setPlayerSearch ] = useState('')
-  const [ statAverages, setStatAverages ] = useState({})
   const debouncedSearchTerm = useDebounce(playerSearch, 500)
   const searchTerm = debouncedSearchTerm || ''
-
-  useEffect(() => {
-    chelService.getData('/statAverages').then(avg => {
-      setStatAverages(avg)
-    })
-  },[])
 
   const useQuery = () => {
     const { search } = useLocation()
@@ -139,7 +131,6 @@ const PlayersLayout = () => {
             players={rankedFilteredPlayers}
             playerIsSkater={queriedPlayer.posSorted !== '0'}
             itemsPerPage={itemsPerPage}
-            statAverages={statAverages}
           />
         ))}
       </Container>

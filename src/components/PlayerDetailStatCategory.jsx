@@ -6,12 +6,14 @@ import MobileContext from './MobileContext'
 import PlayerDetailStatCategoryTitleRow from './PlayerDetailStatCategoryTitleRow'
 import PlayerStatsDoughnutChart from './PlayerStatsDoughnutChart'
 import PlayerStatsBarChart from './PlayerStatsBarChart'
+import { useSelector } from 'react-redux'
 
 
-const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage, statAverages }) => {
+const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
   const [ selectedStat, setSelectedStat ] = useState({ title: '', name: ''})
   const [ chartArr, setChartArr ] = useState([])
 
+  const statAverages = useSelector(state => state.playerAverages)
   const isMobile = useContext(MobileContext)
   const lightTheme = useContext(ThemeContext).value === 'light'
   const actionTxt = isMobile ? 'Tap' : 'Click'
@@ -137,7 +139,7 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage, sta
             key={stat.id}
             statTitle={stat.statTitle}
             statName={stat.baseStatName}
-            statAverage={statAverages[0][stat.statName]}
+            statAverage={statAverages[stat.statName]}
             actualStatName={stat.statName}
             player={player}
             players={players}

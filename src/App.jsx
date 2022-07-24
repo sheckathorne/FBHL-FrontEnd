@@ -21,6 +21,7 @@ import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import jwt_decode from 'jwt-decode'
 import { initializeForfeits } from './reducers/forfeitReducer'
+import { initializeAverages } from './reducers/playerAveragesReducer'
 
 const App = () => {
   const leagueName = 'FBHL'
@@ -31,6 +32,7 @@ const App = () => {
     invalidMatches: false,
     matchSkeletons: false,
     forfeits: false,
+    averages: false,
   }
 
   const notification = useSelector(state => state.notification)
@@ -52,10 +54,14 @@ const App = () => {
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matchSkeletons: true })))
   }, [dispatch])
 
-
   useEffect(() => {
     dispatch(initializeInvalidMatches())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, invalidMatches: true })))
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeAverages())
+    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, averages: true })))
   }, [dispatch])
 
   useEffect(() => {

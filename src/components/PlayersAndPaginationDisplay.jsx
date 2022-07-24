@@ -14,8 +14,6 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, rankedFilteredPlayers, it
   const skaterOrGoalie = useSelector(state => state.skaterOrGoalie)
   const showingSkaters = skaterOrGoalie.field === 'skaters'
 
-
-
   useEffect(() => {
     function getUrl(teamId, searchTerm) {
       let url = `/playerData/pagination/count?skater=${showingSkaters}`
@@ -27,12 +25,12 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, rankedFilteredPlayers, it
       if ( searchTerm.length > 0 ) {
         url += `&name=${searchTerm}`
       }
-      console.log(url)
+
       return url
     }
 
-    chelService.getData(getUrl(teamId, searchTerm)).then(r => {
-      setPlayerCount(r.count)
+    chelService.getData(getUrl(teamId, searchTerm)).then(count => {
+      setPlayerCount(count)
     })
   },[showingSkaters, teamId, searchTerm])
 

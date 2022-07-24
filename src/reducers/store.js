@@ -17,6 +17,7 @@ import goaltenderSortReducer from './goaltenderSortReducer'
 import playoffRaceReducer from './playoffRaceReducer'
 import topPlayersReducer from './topPlayersReducer'
 import paginatedPlayersReducer from './paginatedPlayersReducer'
+import playerAveragesReducer from './playerAveragesReducer'
 
 const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ const store = configureStore({
     playoffRace: playoffRaceReducer,
     topPlayers: topPlayersReducer,
     paginatedPlayers: paginatedPlayersReducer,
+    playerAverages: playerAveragesReducer,
   }
 })
 

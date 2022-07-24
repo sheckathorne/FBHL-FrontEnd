@@ -3,6 +3,7 @@ import { Row, Col } from 'react-bootstrap'
 import { AiOutlineCaretRight, AiOutlineCaretDown } from 'react-icons/ai'
 import PlayerDetailExpandedStatRow from './PlayerDetailExpandedStatRow'
 import chelService from '../services/api'
+import { useSelector } from 'react-redux'
 
 const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName, statAverage, players, player, playerStatValue, lightTheme, ordinal_suffix_of, statType, selectedStat, statClicked, itemsPerPage, color }) => {
   const [ topPlayers, setTopPlayers ] = useState([])
@@ -14,6 +15,8 @@ const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName,
     })
   },[actualStatName])
 
+  const sortField = useSelector(state => state.sortField)
+  const currentStat = sortField.field
   const rowIsSelected = selectedStat.title === statTitle
   const titleClass = lightTheme ? '' : 'dark-theme-text'
   const valueClass = lightTheme ? 'fw-light' : 'dark-theme-text fw-light'
@@ -28,17 +31,18 @@ const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName,
       .map(player => ({
         playerName: player.playerName,
         value: player.value,
+        currentStatVal: player[currentStat],
         isSelectedPlayer: player.playerId === playerId
       }))
       .concat({ 
         playerName: 'Average',
         value: statAverage,
+        currentStatVal: '0',
         isSelectedPlayer: false
       })
 
     //if current selected player is not in the top five, add the player to the array
     if ( chartData.every(player => !player.isSelectedPlayer) ) {
-      console.log(player)
       chartData.push({ playerName: player.playerName, value: player[actualStatName], isSelectedPlayer: true })
     }
   
@@ -63,11 +67,11 @@ const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName,
       <Row key={i} className={topPlayers.length === i + 1 ? 'mb-4' : ''}>
         <PlayerDetailExpandedStatRow
           key={i}
-          playerName={player.playerName}
-          playerId={player.playerId}
           players={players}
+          player={player}
           itemsPerPage={itemsPerPage}
           statValue={percentageStat ? player.value.toFixed(2).toString()+'%' : player.value.toFixed(2).toString()}
+          statName={statName}
           rank={ordinal_suffix_of(player.rank)}
           valueClass={player.playerId === playerId ? valueClass.replace('fw-light','fw-bold fst-italic') : valueClass}
         />

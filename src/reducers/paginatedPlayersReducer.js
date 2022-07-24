@@ -1,3 +1,4 @@
+import { ScreenSearchDesktopSharp } from '@mui/icons-material'
 import { createSlice } from '@reduxjs/toolkit'
 import chelService from '../services/api'
 
@@ -52,30 +53,23 @@ const paginatedPlayersSlice = createSlice({
 export const { setPlayers, sortPlayers } = paginatedPlayersSlice.actions
 
 export const initializePlayers = (num, playerCount, sortField, sortDir, skater, teamId, searchTerm) => {
-  if ( !searchTerm && searchTerm.length === 0 ) {
-    if ( teamId.length === 0 ) {
-      return async dispatch => {
-        const players = await chelService.getData(`/playerData/pagination?pageNum=${num}&playerCount=${playerCount}&statName=${sortField}&sort=${sortDir}&skater=${skater}`)
-        dispatch(setPlayers(players))
-      }
-    } else {
-      return async dispatch => {
-        const players = await chelService.getData(`/playerData/pagination/club?pageNum=${num}&playerCount=${playerCount}&statName=${sortField}&sort=${sortDir}&skater=${skater}&clubId=${teamId}`)
-        dispatch(setPlayers(players))
-      }
-    }
-  } else {
-    if ( teamId.length === 0 ) {
-      return async dispatch => {
-        const players = await chelService.getData(`/playerData/search?pageNum=${num}&playerCount=${playerCount}&statName=${sortField}&sort=${sortDir}&skater=${skater}&name=${searchTerm}`)
-        dispatch(setPlayers(players))
-      }
-    } else {
-      return async dispatch => {
-        const players = await chelService.getData(`/playerData/search/club?pageNum=${num}&playerCount=${playerCount}&statName=${sortField}&sort=${sortDir}&skater=${skater}&clubId=${teamId}&name=${searchTerm}`)
-        dispatch(setPlayers(players))
-      }
-    }
+  let url = `/playerData/pagination?pageNum=${num}`
+  url += `&playerCount=${playerCount}`
+  url += `&statName=${sortField}`
+  url += `&sort=${sortDir}`
+  url += `&skater=${skater}`
+  
+  if ( teamId.length > 0 ) {
+    url += `&clubId=${teamId}`
+  }
+
+  if ( searchTerm && searchTerm.length > 0 ) {
+    url += `&name=${searchTerm}`
+  }
+  
+  return async dispatch => {
+    const players = await chelService.getData(url)
+    dispatch(setPlayers(players))
   }
 }
 

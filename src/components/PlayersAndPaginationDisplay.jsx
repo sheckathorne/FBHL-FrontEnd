@@ -18,20 +18,16 @@ const PlayersAndPaginationDisplay = ({ playerIsRanked, rankedFilteredPlayers, it
 
   useEffect(() => {
     function getUrl(teamId, searchTerm) {
-      let url = ''
-      if ( searchTerm.length === 0 ) {
-        if ( teamId ) {
-          url = `/playerData/pagination/club/count?skater=${showingSkaters}&clubId=${teamId}`
-        } else {
-          url = `/playerData/pagination/count?skater=${showingSkaters}`
-        }
-      } else {
-        if ( teamId ) {
-          url = `/playerData/search/club/count?skater=${showingSkaters}&clubId=${teamId}&name=${searchTerm}`
-        } else {
-          url = `/playerData/search/count?skater=${showingSkaters}&name=${searchTerm}`
-        }
+      let url = `/playerData/pagination/count?skater=${showingSkaters}`
+
+      if ( teamId ) {
+        url += `&clubId=${teamId}`
       }
+
+      if ( searchTerm.length > 0 ) {
+        url += `&name=${searchTerm}`
+      }
+      console.log(url)
       return url
     }
 

@@ -1,19 +1,33 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import Col from 'react-bootstrap/Col'
 import { useDispatch } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
+import chelService from '../services/api'
 
-const PlayerDetailExpandedRow = ({ playerName, playerId, players, itemsPerPage, statValue, rank, valueClass }) => {
+const PlayerDetailExpandedRow = ({ player, players, itemsPerPage, statValue, rank, valueClass }) => {
   const navigate = useNavigate('')
   const dispatch = useDispatch()
-  const url = `/players?playerId=${playerId}`
+
+  const sortField = useSelector(state => state.sortField)
+  const sort = sortField.descending ? 'desc' : 'asc'
+  const statName = sortField.field
+  console.log(player)
+  const statVal = player[statName]
+  const playerName = player.playerName
+  const playerId = player.playerId
+  const to_url = `/players?playerId=${playerId}`
   const playerIndex = players.findIndex(p => p.playerId === playerId)
 
   const handlePlayerClick = () => {
-    navigate(url)
-    const pageNum = Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage))
-    dispatch(setPlayersActivePage(pageNum))
+    const url = `/playerData/pagination/indexNum?skater=true&playerId=${playerId}&statName=${statName}&sort=${sort}`
+    chelService.getData(url).then(index => {
+
+      const pageNum = Math.ceil(parseFloat(index + 1)/parseFloat(itemsPerPage))
+      dispatch(setPlayersActivePage(pageNum))
+      navigate(to_url)
+    })
+
   }
 
   return (

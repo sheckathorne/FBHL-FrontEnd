@@ -1,21 +1,37 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Col } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import ThemeContext from './ThemeContext'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
+import chelService from '../services/api'
 
 const LeaderDetailValue = ({ offset, position, name, playerId, teamId, value }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate('')
+
+  const [ playerIndex, setPlayerIndex ] = useState(0)
+  const sortField = useSelector(state => state.sortField)
   const lightTheme = useContext(ThemeContext).value === 'light'
-  const playerIndex = useSelector(state => state.players.skaters.filter(player => player.teamId === teamId).findIndex(p => p.playerId === playerId))
-  const itemsPerPage = 6
   
+  const itemsPerPage = 6
+  const sort = sortField.descending ? 'desc' : 'asc'
+  const statName = sortField.field
+
+  useEffect(() => {
+    const countUrl = `/playerData/pagination/count?skater=true`
+    chelService.getData(countUrl).then(count => {
+      const indexUrl = `/playerData/pagination/indexNum?skater=true&playerId=${playerId}&statName=${statName}&sort=${sort}&playerCount=${count}`
+      chelService.getData(indexUrl).then(index => {
+        setPlayerIndex(index)
+      })
+    })
+  },[playerId, sort, statName])
+
   const handlePlayerClick = () => {
     const pageNum = Math.ceil(parseFloat(playerIndex + 1)/parseFloat(itemsPerPage))
     dispatch(setPlayersActivePage(pageNum))
-    navigate(`/players/${teamId}?playerId=${playerId}`)
+    navigate(`/players?playerId=${playerId}`)
   }
 
   return (

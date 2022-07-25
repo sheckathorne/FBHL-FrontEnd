@@ -13,6 +13,7 @@ import { setSkaterOrGoalie } from '../reducers/skaterOrGoalieReducer'
 import { setSortField } from '../reducers/playerSortReducer'
 import data from '../helpers/data'
 import MobileContext from './MobileContext'
+import { setPlayersActivePage } from '../reducers/paginationReducer'
 
 const LeagueDashboard = ({ width }) => {
   const [ tabPage, setTabPaqe ] = useState('standings')
@@ -35,6 +36,7 @@ const LeagueDashboard = ({ width }) => {
 
     dispatch(setSortField({ field: newSortField.field, descending: true, alpha: newSortField.alpha, secondaryField: newSortField.secondaryField, secondaryReversed: newSortField.secondaryReversed }))
     dispatch(setSkaterOrGoalie({ field: playerType }))
+    dispatch(setPlayersActivePage(1))
     navigate(url)
   }
 

@@ -9,7 +9,7 @@ import PlayerStatsBarChart from './PlayerStatsBarChart'
 import { useSelector } from 'react-redux'
 
 
-const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) => {
+const PlayerDetailStatCategory = ({ category, player, itemsPerPage }) => {
   const [ selectedStat, setSelectedStat ] = useState({ title: '', name: ''})
   const [ chartArr, setChartArr ] = useState([])
 
@@ -142,7 +142,6 @@ const PlayerDetailStatCategory = ({ category, player, players, itemsPerPage }) =
             statAverage={statAverages[stat.statName]}
             actualStatName={stat.statName}
             player={player}
-            players={players}
             playerStatValue={playerStats[`${stat.statName}`]}
             lightTheme={lightTheme}
             currentIndex={i}

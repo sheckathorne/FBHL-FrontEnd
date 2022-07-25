@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { setPlayersActivePage } from '../reducers/paginationReducer'
 import chelService from '../services/api'
 
-const PlayerDetailExpandedRow = ({ player, players, itemsPerPage, statValue, rank, valueClass }) => {
+const PlayerDetailExpandedRow = ({ player, itemsPerPage, statValue, rank, valueClass }) => {
   const navigate = useNavigate('')
   const dispatch = useDispatch()
 

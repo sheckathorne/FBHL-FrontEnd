@@ -128,7 +128,6 @@ const PlayersLayout = () => {
             key={category.id}
             category={category}
             player={queriedPlayer}
-            players={rankedFilteredPlayers}
             playerIsSkater={queriedPlayer.posSorted !== '0'}
             itemsPerPage={itemsPerPage}
           />

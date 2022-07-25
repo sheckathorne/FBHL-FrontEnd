@@ -5,7 +5,7 @@ import PlayerDetailExpandedStatRow from './PlayerDetailExpandedStatRow'
 import chelService from '../services/api'
 import { useSelector } from 'react-redux'
 
-const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName, statAverage, players, player, playerStatValue, lightTheme, ordinal_suffix_of, statType, selectedStat, statClicked, itemsPerPage, color }) => {
+const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName, statAverage, player, playerStatValue, lightTheme, ordinal_suffix_of, statType, selectedStat, statClicked, itemsPerPage, color }) => {
   const [ topPlayers, setTopPlayers ] = useState([])
 
   useEffect(() => {
@@ -67,7 +67,6 @@ const PlayerDetailStatRow = ({ setChartArr, statTitle, statName, actualStatName,
       <Row key={i} className={topPlayers.length === i + 1 ? 'mb-4' : ''}>
         <PlayerDetailExpandedStatRow
           key={i}
-          players={players}
           player={player}
           itemsPerPage={itemsPerPage}
           statValue={percentageStat ? player.value.toFixed(2).toString()+'%' : player.value.toFixed(2).toString()}

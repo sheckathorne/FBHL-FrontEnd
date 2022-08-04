@@ -11,7 +11,7 @@ import MobileTitle from './MobileTitle'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-const CalendarContentLayout = ({ queriedMatchId, onChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, matchTypeFilter, handleMatchTypeChange }) => {
+const CalendarContentLayout = ({ queriedMatchId, onChange, onActiveStartDateChange, tileDisabled, filteredMatchCards, rangedFilteredMatchCards, teamId, matchTypeFilter, handleMatchTypeChange }) => {
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const lightTheme = useContext(ThemeContext).value === 'light'
   const isMobile = useContext(MobileContext)
@@ -47,6 +47,7 @@ const CalendarContentLayout = ({ queriedMatchId, onChange, tileDisabled, filtere
         <Col className='d-flex justify-content-center mt-2'>
           <Calendar
             onChange={onChange}
+            onActiveStartDateChange={onActiveStartDateChange}
             value={calendarDate}
             tileDisabled={tileDisabled}
             className={lightTheme ? 'flex-fill calendar-light' : 'flex-fill calendar-dark'}

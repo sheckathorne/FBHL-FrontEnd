@@ -18,6 +18,9 @@ import playoffRaceReducer from './playoffRaceReducer'
 import topPlayersReducer from './topPlayersReducer'
 import paginatedPlayersReducer from './paginatedPlayersReducer'
 import playerAveragesReducer from './playerAveragesReducer'
+import scheduleDatesReducer from './scheduleDatesReducer'
+import validCalendarDateReducer from './validCalendarDateReducer'
+import dayScheduleReducer from './dayScheduleReducer'
 
 const store = configureStore({
   reducer: {
@@ -40,6 +43,9 @@ const store = configureStore({
     topPlayers: topPlayersReducer,
     paginatedPlayers: paginatedPlayersReducer,
     playerAverages: playerAveragesReducer,
+    scheduleDates: scheduleDatesReducer,
+    validCalendarDates: validCalendarDateReducer,
+    daySchedule: dayScheduleReducer,
   }
 })
 

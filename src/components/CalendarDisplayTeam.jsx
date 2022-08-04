@@ -9,13 +9,33 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
+import { initializeScheduleDates } from '../reducers/validCalendarDateReducer'
+import { initializeDaySchedule } from '../reducers/dayScheduleReducer'
 
 const CalendarDashboard = () => {
   const dispatch = useDispatch()
   const contextObj = useOutletContext()
-  const matchTypeFilter = contextObj.matchTypeFilter
-  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
   const teamId = useParams().teamId.toString()
+  const matchTypeFilter = contextObj.matchTypeFilter
+  const selectedTimestamp = useSelector(state => state.calendarSelectedDate)
+  const user = useSelector(state => state.user.user)
+
+  useEffect(() => {
+    const selectedDate = dayjs.unix(selectedTimestamp)
+    const firstOfMonthDate = dayjs(selectedDate).startOf('month')
+    const lastOfMonthDate = dayjs(selectedDate).endOf('month')
+    const startDate =  dayjs(firstOfMonthDate).unix()
+    const endDate = dayjs(lastOfMonthDate).unix()
+    dispatch(initializeScheduleDates(startDate, endDate, matchTypeFilter, user, teamId))
+  },[dispatch, selectedTimestamp, matchTypeFilter, user, teamId])
+
+  const validCalendarDates = useSelector(state => state.validCalendarDates)
+  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
+
+  useEffect(() => {
+    dispatch(initializeDaySchedule(timestampRangeOfSelectedDay.begin, timestampRangeOfSelectedDay.end, teamId))
+  },[dispatch, timestampRangeOfSelectedDay, teamId])
+
   const matcheSkeletons = useSelector(state => state.matchSkeletons)
   const selectedDate = useSelector(state => state.calendarSelectedDate)
   const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
@@ -37,7 +57,7 @@ const CalendarDashboard = () => {
   const matchesWithForfeits = [...matcheSkeletons, ...forfeitedMatches]
   const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...matchesWithForfeits.map(o => o.timestamp), 0)).startOf('day')).unix()
   const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
-  const filteredSchedule = useSelector(state => state.schedule).filter(match => match.teams.includes(teamId)).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
+  const filteredSchedule = useSelector(state => state.daySchedule)
   const filteredMatchesWithDate = matchesWithForfeits.filter(match => match.clubs.map(club => club.clubId).includes(teamId))
 
   useEffect(() => {
@@ -81,12 +101,11 @@ const CalendarDashboard = () => {
       filteredMatchesWithDate.map(match => ({ ...match, matchWasPlayed: true })) :
       scheduleWithoutPlayedMatches.map(match => ({ ...match, matchDateString: match.matchDate, matchWasPlayed: false }))
 
-  const user = useSelector(state => state.user.user)
   const filteredMatchCardsWithoutInvalid = user !== null && user.role === 'admin' ? 
     filteredMatchCards : filteredMatchCards.filter(match => !invalidMatches.includes(match.matchId))
 
   
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCardsWithoutInvalid.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')))
+  const tileDisabled = ({ date, view }) => (view === 'month' &&  !validCalendarDates.includes(dayjs(date).format('M/D/YYYY')))
   const teamName = data.teams.find(team => team.clubId.toString() === teamId).name
 
   return (
@@ -96,6 +115,7 @@ const CalendarDashboard = () => {
       </Helmet>
       <CalendarContentLayout
         onChange={contextObj.onChange}
+        onActiveStartDateChange={contextObj.onActiveStartDateChange}
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCardsWithoutInvalid}
         rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}

@@ -7,15 +7,35 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
 import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
+import { initializeScheduleDates } from '../reducers/validCalendarDateReducer'
+import { initializeDaySchedule } from '../reducers/dayScheduleReducer'
 
 const CalendarDashboard = () => {
   const dispatch = useDispatch()
   const contextObj = useOutletContext()
   const matchTypeFilter = contextObj.matchTypeFilter
-  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
-  const schedule = useSelector(state => state.schedule).map(match => ({ timestamp: dayjs(match.matchDate).unix() + contextObj.TWENTY_THREE_HOURS_FIFTY_NINE_MINUTES, ...match }))
-  const matchSkeletons = useSelector(state => state.matchSkeletons)
   const selectedTimestamp = useSelector(state => state.calendarSelectedDate)
+  const user = useSelector(state => state.user.user)
+
+  useEffect(() => {
+    const selectedDate = dayjs.unix(selectedTimestamp)
+    const firstOfMonthDate = dayjs(selectedDate).startOf('month')
+    const lastOfMonthDate = dayjs(selectedDate).endOf('month')
+    const startDate =  dayjs(firstOfMonthDate).unix()
+    const endDate = dayjs(lastOfMonthDate).unix()
+    dispatch(initializeScheduleDates(startDate, endDate, matchTypeFilter, user))
+  },[dispatch, selectedTimestamp, matchTypeFilter, user])
+
+  const validCalendarDates = useSelector(state => state.validCalendarDates)
+  const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
+
+  useEffect(() => {
+    dispatch(initializeDaySchedule(timestampRangeOfSelectedDay.begin, timestampRangeOfSelectedDay.end))
+  },[dispatch, timestampRangeOfSelectedDay])
+
+  const schedule = useSelector(state => state.daySchedule)
+  const matchSkeletons = useSelector(state => state.matchSkeletons)
+
   const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
     { 
       matchDate: match.matchDate,
@@ -32,11 +52,6 @@ const CalendarDashboard = () => {
     }
   ))
 
-  const selectedDate = dayjs.unix(selectedTimestamp)
-  const firstOfMonthDate = dayjs(selectedDate).startOf('month')
-  const lastOfMonthDate = dayjs(selectedDate).endOf('month')
-  const firstOfMonthTimestamp =  dayjs(firstOfMonthDate).unix()
-  const lastOfMonthTimestamp = dayjs(lastOfMonthDate).unix()
 
   const matchesWithForfeits = [...matchSkeletons, ...forfeitedMatches]
   const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...matchesWithForfeits.map(o => o.timestamp), 0)).startOf('day')).unix()
@@ -82,17 +97,16 @@ const CalendarDashboard = () => {
     matchesWithForfeits.map(match => ({ ...match, matchWasPlayed: true })) :
       scheduleWithoutPlayedMatches.map(match => ({ ...match, matchDateString: match.matchDate, matchWasPlayed: false }))
   
-
-  const user = useSelector(state => state.user.user)
   const filteredMatchCardsWithoutInvalid = user !== null && user.role === 'admin' ? 
     filteredMatchCards : filteredMatchCards.filter(match => !invalidMatches.includes(match.matchId))
 
-  const tileDisabled = ({ date, view }) => (view === 'month' && !filteredMatchCardsWithoutInvalid.map(match => match.matchDate).find(dDate => dDate === dayjs(date).format('M/D/YYYY')) )
+  const tileDisabled = ({ date, view }) => (view === 'month' &&  !validCalendarDates.includes(dayjs(date).format('M/D/YYYY')))
 
   return (
     <>
       <CalendarContentLayout
         onChange={contextObj.onChange}
+        onActiveStartDateChange={contextObj.onActiveStartDateChange}
         tileDisabled={tileDisabled}
         filteredMatchCards={filteredMatchCardsWithoutInvalid}
         rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}

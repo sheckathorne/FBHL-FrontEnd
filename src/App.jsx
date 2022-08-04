@@ -27,7 +27,6 @@ const App = () => {
   const leagueName = 'FBHL'
   
   const appLoadChecklist = { 
-    schedule: false,
     teamRankings: false,
     invalidMatches: false,
     matchSkeletons: false,
@@ -67,11 +66,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeTeamRankings())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, teamRankings: true })))
-  },[dispatch])
-
-  useEffect(() => {
-    dispatch(initializeSchedule())
-    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, schedule: true })))
   },[dispatch])
 
   useEffect(() => {

@@ -31,9 +31,14 @@ const scheduleSlice = createSlice({
 
 export const { setSchedule, deleteScheduledMatch, createScheduledMatch, changeDateOfMatch } = scheduleSlice.actions
 
-export const initializeSchedule = () => {
+export const initializeSchedule = (startDate, endDate, clubId) => {
   return async dispatch => {
-    const schedule = await chelService.getData('/schedule')
+    let url = `/schedule/fromRange?startDate=${startDate}&endDate=${endDate}`
+    if ( clubId ) {
+      url += `$clubId=${clubId}`
+    }
+    console.log(url)
+    const schedule = await chelService.getData(url)
     dispatch(setSchedule(schedule))
   }
 }

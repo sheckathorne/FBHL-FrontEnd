@@ -1,68 +1,111 @@
-import { useEffect } from 'react'
-import { useOutletContext } from 'react-router-dom'
-import CalendarContentLayout from './CalendarContentLayout'
+import { useState, useEffect, useMemo, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import 'react-calendar/dist/Calendar.css'
+import data from '../helpers/data.js'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMatchActivePage } from '../reducers/paginationReducer'
-import { setSelectedDate } from '../reducers/calendarReducer'
 import { setTimestampRange } from '../reducers/calenderRangeReducer'
-import { initializeScheduleDates } from '../reducers/validCalendarDateReducer'
-import { initializeDaySchedule } from '../reducers/dayScheduleReducer'
+import { initializeValidDates } from '../reducers/validCalendarDateReducer'
+import { initializeDayMatches } from '../reducers/dayMatchesReducer'
+import LeagueContext from './LeagueContext'
+import Calendar from 'react-calendar'
+import { useLocation } from 'react-router-dom'
+import { setSelectedDate } from '../reducers/calendarReducer'
+import { Container, Row, Col } from 'react-bootstrap'
+import TeamDropdown from './TeamDropdown'
+import MatchDetailDashboard from './MatchDetailDashboard'
+import MatchCardDashboard from './MatchCardDashboard'
+import MatchTypeDropdown from './MatchTypeDropdown'
+import ThemeContext from './ThemeContext'
+import MobileContext from './MobileContext'
+import MobileTitle from './MobileTitle'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const CalendarDashboard = () => {
+  const [ calendarTimestamps, setCalendarTimestamps ] = useState({ startDate: 0, endDate: 0 })
+  const [ matchTypeFilter, setMatchTypeFilter ] = useState('all')
+  const [ calendarLoading, setCalendarLoading ] = useState(true)
+
   const dispatch = useDispatch()
-  const contextObj = useOutletContext()
-  const matchTypeFilter = contextObj.matchTypeFilter
   const selectedTimestamp = useSelector(state => state.calendarSelectedDate)
   const user = useSelector(state => state.user.user)
-
-  useEffect(() => {
-    const selectedDate = dayjs.unix(selectedTimestamp)
-    const firstOfMonthDate = dayjs(selectedDate).startOf('month')
-    const lastOfMonthDate = dayjs(selectedDate).endOf('month')
-    const startDate =  dayjs(firstOfMonthDate).unix()
-    const endDate = dayjs(lastOfMonthDate).unix()
-    dispatch(initializeScheduleDates(startDate, endDate, matchTypeFilter, user))
-  },[dispatch, selectedTimestamp, matchTypeFilter, user])
-
-  const validCalendarDates = useSelector(state => state.validCalendarDates)
+  const selectedDate = dayjs.unix(selectedTimestamp)
+  const validCalendarDatesObj = useSelector(state => state.validCalendarDates)
+  const matchesWithForfeits = useSelector(state => state.dayMatches)
   const timestampRangeOfSelectedDay = useSelector(state => state.timestampRangeOfSelectedDay)
+  const teamIdParam = useParams().teamId
+  const leagueName = useContext(LeagueContext)
+  const teamId = teamIdParam ? teamIdParam.toString() : teamIdParam
+
+  function useQuery() {
+    const { search } = useLocation()
+    return useMemo(() => new URLSearchParams(search), [search])
+  }
+
+  const query = useQuery()
+  const queriedTimestamp = query.get('timestamp')
+  const queriedMatchId = query.get('matchId')
+
+  function setDateState(dateVal) {
+    const startTimeStamp = dayjs(dateVal).unix()
+    const endTimestamp = dayjs(dateVal).add(1,'d').subtract(1,'s').unix()
+    dispatch(setTimestampRange({ begin: startTimeStamp, end: endTimestamp }))
+    dispatch(setSelectedDate(dayjs(dateVal).startOf('day').unix()))
+    dispatch(setMatchActivePage(1))
+  }
+
+  function onChange(newSelectedDate) {
+    setDateState(newSelectedDate)
+  }
+
+  function onActiveStartDateChange({ activeStartDate }) {
+    setDateState(activeStartDate)
+  }
+
+  function handleMatchTypeChange(type) {
+    return () => setMatchTypeFilter(type)
+  }
+
+  if ( queriedTimestamp ) {
+    dispatch(setSelectedDate(dayjs(dayjs.unix(queriedTimestamp).startOf('day')).unix()))
+  }
+
+  const validCalendarDates = useMemo(() => {
+    return Object.entries(validCalendarDatesObj).filter(date => date[1] > 0).map(date => date[0])
+  },[validCalendarDatesObj])
+  
+  const monthAndYear = useMemo(() => {
+    return dayjs(selectedDate).month().toString() + '-' + dayjs(selectedDate).year().toString()
+  },[selectedDate])
 
   useEffect(() => {
-    dispatch(initializeDaySchedule(timestampRangeOfSelectedDay.begin, timestampRangeOfSelectedDay.end))
-  },[dispatch, timestampRangeOfSelectedDay])
+    setCalendarTimestamps({ 
+      startDate: dayjs(dayjs(selectedDate).startOf('month')).unix(),
+      endDate: dayjs(dayjs(selectedDate).endOf('month')).unix() })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[monthAndYear])
 
-  const schedule = useSelector(state => state.daySchedule)
-  const matchSkeletons = useSelector(state => state.matchSkeletons)
+  useEffect(() => {
+    setCalendarLoading(true)
+    const { startDate, endDate } = calendarTimestamps
+    dispatch(initializeValidDates(startDate, endDate, matchTypeFilter, user, teamId))
+    setCalendarLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[dispatch, calendarTimestamps, matchTypeFilter, user, teamId])
 
-  const forfeitedMatches = useSelector(state => state.forfeits).map(match => (
-    { 
-      matchDate: match.matchDate,
-      _id: match._id,
-      matchId: match.matchId,
-      timestamp: match.timestamp,
-      forfeit: true,
-      clubs: [{
-        clubId: match.winningClub,
-        data: { goals: '1'}
-      },{
-        clubId: match.losingClub,
-        data: { goals: '0' }}]
-    }
-  ))
-
-
-  const matchesWithForfeits = [...matchSkeletons, ...forfeitedMatches]
-  const lastMatchTimestampForTeams = dayjs(dayjs.unix(Math.max(...matchesWithForfeits.map(o => o.timestamp), 0)).startOf('day')).unix()
+  useEffect(() => {
+    const { begin, end } = timestampRangeOfSelectedDay
+    dispatch(initializeDayMatches(begin, end, matchTypeFilter, user, teamId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[dispatch, timestampRangeOfSelectedDay, matchTypeFilter, user, teamId])
 
   useEffect(() => {
     dispatch(setMatchActivePage(1))
   },[dispatch])
 
-  useEffect(() => {
-    dispatch(setSelectedDate(lastMatchTimestampForTeams))
-  },[dispatch, lastMatchTimestampForTeams])
+  const lastMatchTimestampForTeams = 
 
   // sets calendar to last date a given team (or all teams if none selected) played a game
   useEffect(() => {
@@ -78,43 +121,86 @@ const CalendarDashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[matchTypeFilter, dispatch])
 
-  // sets a range of unix timestamps from 12:00:00AM - 11:59:59PM for the selected date
+
   useEffect(() => {
-    dispatch(setTimestampRange({ begin: selectedTimestamp, end: dayjs.unix(selectedTimestamp).add(1,'d').subtract(1,'s').unix() }))
+    dispatch(setTimestampRange({ 
+      begin: selectedTimestamp, 
+      end: dayjs.unix(selectedTimestamp).add(1,'d').subtract(1,'s').unix() }))
   },[dispatch, selectedTimestamp])
 
-  const invalidMatches = useSelector(state => state.invalidMatches).map(invalidMatch => invalidMatch.matchId)
-
-  const scheduleWithoutPlayedMatches = schedule.filter(match => {
-    const scheduledMatchWasPlayed = matchesWithForfeits.find(m => m.clubs.map(club => club.clubId).includes(match.teams[0]) && m.clubs.map(club => club.clubId).includes(match.teams[1]) && m.matchDate === match.matchDate )
-    return !scheduledMatchWasPlayed
-  })
-
-  const filteredMatchCards =
-    contextObj.matchTypeFilter === 'all' ?
-    matchesWithForfeits.map(match => ({ ...match, matchWasPlayed: true })).concat(scheduleWithoutPlayedMatches.map(match => ({ ...match, matchWasPlayed: false, matchDateString: match.matchDate }))) :
-    contextObj.matchTypeFilter === 'played' ?
-    matchesWithForfeits.map(match => ({ ...match, matchWasPlayed: true })) :
-      scheduleWithoutPlayedMatches.map(match => ({ ...match, matchDateString: match.matchDate, matchWasPlayed: false }))
-  
-  const filteredMatchCardsWithoutInvalid = user !== null && user.role === 'admin' ? 
-    filteredMatchCards : filteredMatchCards.filter(match => !invalidMatches.includes(match.matchId))
-
   const tileDisabled = ({ date, view }) => (view === 'month' &&  !validCalendarDates.includes(dayjs(date).format('M/D/YYYY')))
+  const title = teamId ? `Calendar - ${data.teams.find(team => team.clubId.toString() === teamId).name}` : `Calendar - ${leagueName}`
+
+
+  const lightTheme = useContext(ThemeContext).value === 'light'
+  const isMobile = useContext(MobileContext)
+  const queriedMatch = matchesWithForfeits.filter(match => match.matchId).find(match => match.matchId.toString() === queriedMatchId)
+  const cardDashboardColSize = queriedMatch ? 4 : 8
+  const mobileTitle = isMobile ? <MobileTitle title='Season Calendar' lightTheme={lightTheme} /> : null
+  const calendarDate = selectedTimestamp === 'Invalid Date' ? dayjs().startOf('day').toDate() : dayjs.unix(selectedTimestamp).toDate()
+
+  const matchDetails = queriedMatchId ? (
+    <Col lg={8} className='mt-2'>
+      <MatchDetailDashboard
+        queriedMatchId={queriedMatchId}
+      />
+    </Col> ) : null
+
+  const matchCardDashboard = (timestampRangeOfSelectedDay.begin > 0 && timestampRangeOfSelectedDay.end > 0) ? (
+    <Col lg={cardDashboardColSize} className='mt-2'>
+      <MatchCardDashboard
+        filteredMatchCards={matchesWithForfeits}
+        queriedMatch={queriedMatch}
+        teamId={teamId}
+        matchTypeFilter={matchTypeFilter}
+      />
+    </Col>) : null
+    
+  const calendar = queriedMatchId ? null : (
+    <Col lg={4} className='mt-2 '>
+      {mobileTitle}
+      <Row><Col><TeamDropdown source='calendar' /></Col></Row>
+      <Row className='mt-2'><Col><MatchTypeDropdown selectedType={matchTypeFilter} handleMatchTypeChange={handleMatchTypeChange} /></Col></Row>
+      <Row>
+        <Col className='d-flex justify-content-center mt-2'>
+          <Calendar
+            onChange={onChange}
+            onActiveStartDateChange={onActiveStartDateChange}
+            value={calendarDate}
+            tileDisabled={tileDisabled}
+            defaultActiveStartDate={new Date()}
+            className={lightTheme ? 'flex-fill calendar-light' : 'flex-fill calendar-dark'}
+          />
+        </Col>
+      </Row>
+    </Col>
+  )
+
+  const calendarCanvas = calendarLoading ?
+    <Col lg={4} className='mt-2 '>
+      {mobileTitle}
+      <Row><Col><TeamDropdown source='calendar' /></Col></Row>
+      <Row className='mt-2'><Col><MatchTypeDropdown selectedType={matchTypeFilter} handleMatchTypeChange={handleMatchTypeChange} /></Col></Row>
+      <Row>
+        <Col className='d-flex justify-content-center mt-4'>
+          <CircularProgress />
+        </Col>
+      </Row>
+    </Col> : calendar
 
   return (
-    <>
-      <CalendarContentLayout
-        onChange={contextObj.onChange}
-        onActiveStartDateChange={contextObj.onActiveStartDateChange}
-        tileDisabled={tileDisabled}
-        filteredMatchCards={filteredMatchCardsWithoutInvalid}
-        rangedFilteredMatchCards={filteredMatchCardsWithoutInvalid.filter(match => match.timestamp > timestampRangeOfSelectedDay.begin && match.timestamp < timestampRangeOfSelectedDay.end )}
-        matchTypeFilter={contextObj.matchTypeFilter}
-        handleMatchTypeChange={contextObj.handleMatchTypeChange}
-        queriedMatchId={contextObj.queriedMatchId}
-      />
-    </>
+    <HelmetProvider>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+      <Container>
+        <Row>
+          {calendarCanvas}
+          {matchCardDashboard}
+          {matchDetails}
+        </Row>
+      </Container>
+    </HelmetProvider>
   )
 }
 

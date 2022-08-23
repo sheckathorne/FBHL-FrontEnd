@@ -16,7 +16,7 @@ const dayScheduleSlice = createSlice({
 export const { setDaySchedule } = dayScheduleSlice.actions
 
 export const initializeDaySchedule = (startDate: number, endDate: number, clubId: string | null) => {
-  return async dispatch => { 
+  return async dispatch => {
     let url: string = `/calendar/daySchedule?startDate=${startDate}&endDate=${endDate}`
     if ( clubId ) {
       url += `&clubId=${clubId}`

@@ -7,7 +7,7 @@ const calendarSlice = createSlice({
   name: 'calendarSelectedDate',
   initialState,
   reducers: {
-    setSelectedDate(state, action) {
+    setSelectedDate(_state, action) {
       return action.payload
     },
   },

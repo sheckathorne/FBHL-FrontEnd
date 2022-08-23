@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeSchedule } from './reducers/scheduleReducer'
-import { initializeMatchSkeletons } from './reducers/matchSkeletonsReducer'
 import { initializeTeamRankings } from './reducers/teamRankingsReducer'
-import { initializeInvalidMatches } from './reducers/invalidMatchReducer'
 import { setResultsOpen } from './reducers/viewToggleReducer'
 import { setUser } from './reducers/userReducer'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
@@ -20,7 +17,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import CircularProgress from '@mui/material/CircularProgress'
 import jwt_decode from 'jwt-decode'
-import { initializeForfeits } from './reducers/forfeitReducer'
 import { initializeAverages } from './reducers/playerAveragesReducer'
 
 const App = () => {
@@ -28,9 +24,6 @@ const App = () => {
   
   const appLoadChecklist = { 
     teamRankings: false,
-    invalidMatches: false,
-    matchSkeletons: false,
-    forfeits: false,
     averages: false,
   }
 
@@ -49,16 +42,6 @@ const App = () => {
 
   // retrieve match history from database
   useEffect(() => {
-    dispatch(initializeMatchSkeletons())
-    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, matchSkeletons: true })))
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(initializeInvalidMatches())
-    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, invalidMatches: true })))
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(initializeAverages())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, averages: true })))
   }, [dispatch])
@@ -66,11 +49,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeTeamRankings())
     .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, teamRankings: true })))
-  },[dispatch])
-
-  useEffect(() => {
-    dispatch(initializeForfeits())
-    .then(() => setLoadingProgress(loadingProgress => ({ ...loadingProgress, forfeits: true })))
   },[dispatch])
 
   useEffect(() => {

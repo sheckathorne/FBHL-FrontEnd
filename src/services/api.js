@@ -31,7 +31,7 @@ const deleteScheduledMatch = async (id) => {
   }
 
   const res = await axios.delete(`${baseUrl}/schedule/${id.toString()}`, config)
-  return res.status
+  return res
 }
 
 const updateScheduledMatch = async (id, newMatch) => {

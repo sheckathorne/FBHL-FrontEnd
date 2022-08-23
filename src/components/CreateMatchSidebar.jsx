@@ -5,14 +5,14 @@ import MatchCreateTeamDropdown from './MatchCreateTeamDropdown'
 import dayjs from 'dayjs'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCreateMatchIsOpen } from '../reducers/viewToggleReducer'
-import { createSchedule } from '../reducers/scheduleReducer'
+import { createSchedule } from '../reducers/dayMatchesReducer'
 import data from '../helpers/data'
 import { setNotification, clearNotification } from '../reducers/notificationReducer'
 import TimePickerForm from './TimePickerForm'
 import { StyledEngineProvider } from '@mui/material/styles'
 
 const CreateMatchSidebar = () => {
-  const [ value, setValue ] = useState(new Date())
+  const [ value, setValue ] = useState(dayjs().startOf('day').toDate())
   const [ timePick, setTimePick ] = useState(null)
   const [ awayTeamId, setAwayTeamId ] = useState('')
   const [ homeTeamId, setHomeTeamId ] = useState('')

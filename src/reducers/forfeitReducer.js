@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import chelService from '../services/api'
 import { setNotification, clearNotification } from './notificationReducer'
 import { setUser } from './userReducer'
+import { addValidDate, removeValidDate } from './validCalendarDateReducer'
 
 const initialState = []
 
@@ -42,6 +43,7 @@ export const createForfeit = (match) => {
         dispatch(clearNotification())
       }, 5000)
     } else if ( newForfeitedMatch) {
+      dispatch(addValidDate(match.matchDate))
       dispatch(setNotification({ type: 'success', text: `This game was successfully forfeited`, scope: 'MatchCardDashboard' }))
       setTimeout(() => {
         dispatch(clearNotification())
@@ -64,6 +66,7 @@ export const deleteForfeit = (matchId) => {
       }, 5000)
     } else if ( response.status === 204) {
       dispatch(removeForfeit(matchId))
+      dispatch(removeValidDate(response.data.matchDate))
       dispatch(setNotification({ type: 'success', text: 'Forfeit was successfully undone.', scope: 'MatchCardDashboard' }))
       setTimeout(() => {
         dispatch(clearNotification())

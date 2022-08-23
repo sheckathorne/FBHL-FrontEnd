@@ -23,8 +23,8 @@ const LeagueDashboard = ({ width }) => {
 
   const lightTheme = useContext(ThemeContext).value === 'light'
   const numOfMatchDaysToDisplayOnHeader = 2
-  const matches = useSelector(state => state.matchSkeletons)
-  const recentMatchDates = matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
+  const matches = []//useSelector(state => state.matchSkeletons)
+  const recentMatchDates = []//matches.map(match => ({ timestamp: match.timestamp, matchDate: match.matchDate })).sort((a,b) => b.timestamp - a.timestamp).map(match => match.matchDate).filter((v, i, a) => a.indexOf(v) === i).slice(0,numOfMatchDaysToDisplayOnHeader)
   const leagueName = useContext(LeagueContext)
   const isMobile = useContext(MobileContext)
   const themeClass = lightTheme ? '' : 'dark-theme-text'

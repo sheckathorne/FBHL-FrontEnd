@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const nonZeroPage = (page) => Math.max(page,1)
+
 const initialState = {
   matchActivePage: 1,
   playersActivePage: 1,
@@ -15,28 +17,28 @@ const paginationSlice = createSlice({
   initialState,
   reducers: {
     setMatchActivePage(state, action) {
-      return { ...state, matchActivePage: action.payload }
+      return { ...state, matchActivePage: nonZeroPage(action.payload) }
     },
     setPlayersActivePage(state, action) {
-      return { ...state, playersActivePage: action.payload }
+      return { ...state, playersActivePage: nonZeroPage(action.payload) }
     },
     setTeamsActivePage(state, action) {
-      return { ...state, teamsActivePage: action.payload }
+      return { ...state, teamsActivePage: nonZeroPage(action.payload) }
     },
     setPlayerStandingsPage(state, action) {
-      return { ...state, playerStandingsPage: action.payload }
+      return { ...state, playerStandingsPage: nonZeroPage(action.payload) }
     },
     setConferencePage(state, action) {
-      return { ...state, conferencePage: action.payload }
+      return { ...state, conferencePage: nonZeroPage(action.payload) }
     },
     setDivisionPage(state, action) {
-      return { ...state, divisionPage: action.payload }
+      return { ...state, divisionPage: nonZeroPage(action.payload) }
     },
     setPlayerType(state, action) {
-      return { ...state, playerType: action.payload }
+      return { ...state, playerType: nonZeroPage(action.payload) }
     },
     setStatId(state, action) {
-      return { ...state, statId: action.payload }
+      return { ...state, statId: nonZeroPage(action.payload) }
     },
     resetPagination(_state, _action) {
       return initialState

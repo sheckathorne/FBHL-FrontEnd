@@ -72,7 +72,6 @@ const LoadedMatchDetailDashboard = ({ match }) => {
 
   const addDefaultSrc = (e) => e.target.src = 'https://media.contentapi.ea.com/content/dam/eacom/nhl/pro-clubs/custom-crests/42.png'
 
-  console.log(leaders)
   const swiperItems = [...leaders.map((leader,i) =>
     <SwiperSlide key={i}>
       <LeaderCard
@@ -102,7 +101,6 @@ const LoadedMatchDetailDashboard = ({ match }) => {
           colors={colors}
         />
         <HorizontalDivider width='11'/>
-        
           <Swiper
             navigation={false}
             modules={[Autoplay, Pagination ]}

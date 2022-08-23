@@ -8,7 +8,7 @@ import ThemeContext from './ThemeContext'
 import data from '../helpers/data.js'
 import dayjs from 'dayjs'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteSchedule, modifySchedule } from '../reducers/scheduleReducer'
+import { deleteSchedule, modifySchedule } from '../reducers/dayMatchesReducer'
 import { createForfeit } from '../reducers/forfeitReducer'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { HiOutlinePencil } from 'react-icons/hi'
@@ -20,7 +20,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
   const [ deleteConfirmIsOpen, setDeleteConfirmIsOpen ] = useState(false)
   const [ forfeitIsOpen, setForfeitIsOpen ] = useState(false)
   const [ finishedCollapsing, setFinishedCollapsing ] = useState(true)
-  const [ selectedDate, setSelectedDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
+  const [ scheduledDate, setScheduledDate ]  = useState(dayjs.unix(match.timestamp).startOf('day').toDate())
   const [ selectedTime, setSelectedTime ] = useState(dayjs(`1/1/2020 ${match.timeString}`, 'M/D/YYYY h:mm A', 'en'))
   const [ winningTeam, setWinningTeam ] = useState('')
   const [ overtimeLoss, setOvertimeLoss ] = useState(false)
@@ -30,7 +30,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
   const dispatch = useDispatch()
 
   const onChange = (newSelectedDate) => {
-    setSelectedDate(newSelectedDate)
+    setScheduledDate(newSelectedDate)
   }
 
   const lightTheme = useContext(ThemeContext).value === 'light'
@@ -57,7 +57,8 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
 
   const handleSubmitClick = (id, selectedDate) => () => {
     goToLastPaginationPage()
-    dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY'), timeString: dayjs(selectedTime).format('h:mm A') }))
+    const oldMatchDate = match.matchDate
+    dispatch(modifySchedule(id, { _id: id, teams: match.teams, matchDate: dayjs(selectedDate).format('M/D/YYYY'), timeString: dayjs(selectedTime).format('h:mm A') }, oldMatchDate))
     setEditIsOpen(false)
   }
 
@@ -147,7 +148,7 @@ const MatchCardUnplayed = ({ id, match, addDefaultSrc, goToLastPaginationPage, m
           editIsOpen={editIsOpen}
           setFinishedCollapsing={setFinishedCollapsing}
           onChange={onChange}
-          selectedDate={selectedDate}
+          selectedDate={scheduledDate}
           lightTheme={lightTheme}
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
